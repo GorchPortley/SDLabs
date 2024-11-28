@@ -1,0 +1,27 @@
+.fi-btn{
+    @apply text-base rounded-none;
+}
+
+.fi-btn.fi-size-lg{
+    @apply px-6 py-3.5 text-lg rounded-none;
+}
+
+.fi-btn.fi-size-md{
+    @apply px-5 rounded-none;
+}
+
+.fi-btn.fi-size-sm{
+    @apply px-3 py-1.5;
+}
+
+.fi-btn.fi-color-primary{
+    @apply inline-flex items-center justify-center gap-3 font-medium text-white duration-200 bg-gray-900 hover:bg-gray-800 focus:ring-2 focus:ring-offset-2 focus:ring-gray-900;
+}
+
+.fi-btn.fi-color-secondary{
+    @apply inline-flex items-center justify-center gap-3 font-medium duration-200 bg-gray-100 text-zinc-800 hover:bg-gray-200 focus:ring-2 focus:ring-offset-2 focus:ring-zinc-200;
+}
+
+label{
+    @apply space-x-1 text-sm leading-none;
+}

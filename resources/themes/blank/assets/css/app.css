@@ -1,0 +1,26 @@
+@import './component-styles.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+[x-cloak]{
+  display:none;
+}
+
+.fi-input-wrp {
+    @apply rounded-none;
+}
+
+.fi-no-notification{
+    @apply rounded-none border border-black;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* For IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
