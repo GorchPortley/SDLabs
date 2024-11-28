@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 use Wave\User as WaveUser;
 use Illuminate\Notifications\Notifiable;
@@ -43,7 +45,7 @@ class User extends WaveUser
     protected static function boot()
     {
         parent::boot();
-        
+
         // Listen for the creating event of the model
         static::creating(function ($user) {
             // Check if the username attribute is empty
@@ -67,4 +69,24 @@ class User extends WaveUser
             $user->assignRole( config('wave.default_user_role', 'registered') );
         });
     }
+    public function designs(): HasMany
+    {
+        return $this->hasMany(Design::class);
+    }
+
+    public function drivers(): HasMany
+    {
+        return $this->hasMany(Driver::class);
+    }
+
+    public function designPurchases(): HasMany
+    {
+        return $this->hasMany(DesignPurchase::class);
+    }
+
+//    public function cart(): HasOne
+//    {
+//        return $this->hasOne(Cart::class)
+//            ->with('items');
+//    }
 }

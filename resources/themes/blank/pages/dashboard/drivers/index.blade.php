@@ -83,7 +83,9 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                 CreateAction::make()
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['user_id'] = auth()->id();
-
+                        if(auth()->user()->hasRole('manufacturer')){
+                            $data['official'] = 1;
+                        };
                         return $data;
                     })
                     ->form([
@@ -334,10 +336,8 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
 
 
 <x-layouts.app>
-    <x-app.container>
         @volt('drivers')
         {{ $this->table }}
         @endvolt
-    </x-app.container>
 </x-layouts.app>
 
