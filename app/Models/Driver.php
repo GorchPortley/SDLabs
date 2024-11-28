@@ -32,7 +32,8 @@ class Driver extends Model
         'frequency_files',
         'impedance_files',
         'other_files',
-        'card_image'
+        'card_image',
+        'official'
     ];
     protected $casts = [
         'active' => 'boolean',

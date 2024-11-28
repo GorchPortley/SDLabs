@@ -30,6 +30,7 @@ class Design extends Model
         'enclosure_files',
         'electronic_files',
         'design_other_files',
+        'official'
     ];
 
     protected $casts = [

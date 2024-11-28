@@ -83,7 +83,9 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                 CreateAction::make()
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['user_id'] = auth()->id();
-
+                        if(auth()->user()->hasRole('manufacturer')){
+                            $data['official'] = 1;
+                        };
                         return $data;
                     })
                     ->form([

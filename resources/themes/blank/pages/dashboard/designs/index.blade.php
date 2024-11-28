@@ -204,6 +204,10 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                 CreateAction::make()
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['user_id'] = auth()->id();
+                        $data['card_image'] = $data['card_image'] ?? '/demo/Design_Placeholder.JPG';
+                        if(auth()->user()->hasRole('manufacturer')){
+                            $data['official'] = 1;
+                        };
                         return $data;
                     })
                     ->form([
@@ -226,7 +230,7 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                             ->disk('public')
                             ->directory('designthumbs')
                             ->visibility('public')
-                            ->default('demo/800x800.jpg'),
+                            ->default('/demo/Design_Placeholder.jpg'),
 
 
                         FileUpload::make('frd_files')

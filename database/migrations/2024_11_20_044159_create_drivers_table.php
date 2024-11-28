@@ -32,6 +32,7 @@ return new class extends Migration
             $table->json('frequency_files')->nullable();
             $table->json('impedance_files')->nullable();
             $table->json('other_files')->nullable();
+            $table->boolean('official')->default(false);
             $table->timestamps();
         });
     }
