@@ -4,7 +4,6 @@
 use App\Models\Design;
 use App\Models\Driver;
 use App\Models\DesignDriver;
-use Dotswan\FilamentGrapesjs\Fields\GrapesJs;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
@@ -230,15 +229,15 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                             ->default('demo/800x800.jpg'),
 
 
-                                FileUpload::make('frd_files')
-                                    ->label('Response Previews')
-                                    ->hint('These are representative of your designs. Upload multiple component responses or a single response')
-                                    ->multiple()
-                                    ->preserveFilenames()
-                                    ->directory(function ($get) {
-                                        $name = $get('name');
-                                        return $this->getwidgetresponsepath($name);
-                                    }),
+                        FileUpload::make('frd_files')
+                            ->label('Response Previews')
+                            ->hint('These are representative of your designs. Upload multiple component responses or a single response')
+                            ->multiple()
+                            ->preserveFilenames()
+                            ->directory(function ($get) {
+                                $name = $get('name');
+                                return $this->getwidgetresponsepath($name);
+                            }),
 
                         TextInput::make('tag')
                             ->label('Tagline')
@@ -289,42 +288,42 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                                     ->collapsible()
                                     ->collapsed()
                                     ->schema([
-                                        FileUpload::make('enclosure_files')
-                                            ->hint('These are files related to the enclosure design')
-                                            ->helperText('Drawings, CAD files, Blueprints, etc...')
-                                            ->label('Enclosure Files')
-                                            ->multiple()
-                                            ->preserveFilenames()
-                                            ->directory(function ($get) {
-                                                $name = $get('name');
-                                                return $this->getenclosurepath($name);
-                                            }),
+                                FileUpload::make('enclosure_files')
+                                    ->hint('These are files related to the enclosure design')
+                                    ->helperText('Drawings, CAD files, Blueprints, etc...')
+                                    ->label('Enclosure Files')
+                                    ->multiple()
+                                    ->preserveFilenames()
+                                    ->directory(function ($get) {
+                                        $name = $get('name');
+                                        return $this->getenclosurepath($name);
+                                    }),
 
-                                        FileUpload::make('electronic_files')
-                                            ->hint('These are files related to the electronics')
-                                            ->helperText('Crossover Schematics, PCB Designs, etc...')
-                                            ->label('Electronics Files')
-                                            ->multiple()
-                                            ->preserveFilenames()
-                                            ->directory(function ($get) {
-                                                $name = $get('name');
-                                                return $this->getelectronicspath($name);
-                                            }),
+                                FileUpload::make('electronic_files')
+                                    ->hint('These are files related to the electronics')
+                                    ->helperText('Crossover Schematics, PCB Designs, etc...')
+                                    ->label('Electronics Files')
+                                    ->multiple()
+                                    ->preserveFilenames()
+                                    ->directory(function ($get) {
+                                        $name = $get('name');
+                                        return $this->getelectronicspath($name);
+                                    }),
 
-                                        FileUpload::make('design_other_files')
-                                            ->hint('These are other files related to the design')
-                                            ->helperText('Images, Recordings, Writeups, etc...')
-                                            ->label('Other Design Files')
-                                            ->multiple()
-                                            ->preserveFilenames()
-                                            ->directory(function ($get) {
-                                                $name = $get('name');
-                                                return $this->getdesignotherpath($name);
-                                            }),
+                                FileUpload::make('design_other_files')
+                                    ->hint('These are other files related to the design')
+                                    ->helperText('Images, Recordings, Writeups, etc...')
+                                    ->label('Other Design Files')
+                                    ->multiple()
+                                    ->preserveFilenames()
+                                    ->directory(function ($get) {
+                                        $name = $get('name');
+                                        return $this->getdesignotherpath($name);
+                                    }),
                             ]),]),]),
-                        Section::make('Design Drivers')
-                            ->collapsed()
-                            ->description('Attach and upload data for the drivers in your design')
+                            Section::make('Design Drivers')
+                                ->collapsed()
+                                ->description('Attach and upload data for the drivers in your design')
                 ->schema([
                         Repeater::make('components')
                             ->label('')
@@ -747,13 +746,10 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
 ?>
 
 
+
 <x-layouts.app>
-    <x-app.container>
-        @volt('dashboard.designs')
-        <div>
+    @volt('dashboard.designs')
             {{ $this->table }}
-        </div>
-        @endvolt
-    </x-app.container>
+    @endvolt
 </x-layouts.app>
 
