@@ -41,11 +41,7 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
 ?>
 
 <x-layouts.app>
-    @volt('library')
-    <x-app.container>
-
+    @volt('dashboard.design-library')
     {{ $this->table }}
-
-    </x-app.container>
     @endvolt
 </x-layouts.app>
