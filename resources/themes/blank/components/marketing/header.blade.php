@@ -11,7 +11,7 @@
                     <ul class="flex items-center mr-16">
                         <li class="font-medium mr-9 hover:text-gray-700"><a href="{{route('designs')}}">Design Database</a></li>
                         <li class="font-medium mr-9 hover:text-gray-700"><a href="#">Driver Database</a></li>
-                        <li class="font-medium mr-9 hover:text-gray-700"><a href="{{route('soapbox')}}">Soap Box</a></li>
+                        <li class="font-medium mr-9 hover:text-gray-700"><a href="/blog">Soap Box</a></li>
                         <li class="font-medium hover:text-gray-700"><a href="/forum">Forum</a></li>
                     </ul>
                 </div>
