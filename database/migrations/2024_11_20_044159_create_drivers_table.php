@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id');
             $table->string('brand');
             $table->string('model');
-            $table->json('card_image');
+            $table->json('card_image')->nullable();
             $table->string('tag')->nullable();
             $table->boolean('active')->default(false);
             $table->enum('category',

@@ -1,6 +1,6 @@
 <?php
     use function Laravel\Folio\{name};
-    name('blog');
+    name('soapbox');
 
     $posts = \Wave\Post::orderBy('created_at', 'DESC')->paginate(6);
     $categories = \Wave\Category::all();
@@ -19,7 +19,7 @@
                 description="Check out some of our latest blog posts below."
                 align="left"
             />
-            
+
             <x-marketing.blog-categories />
 
             <div class="grid gap-5 mx-auto mt-10 sm:grid-cols-2 lg:grid-cols-3">
