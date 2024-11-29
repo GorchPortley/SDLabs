@@ -12,7 +12,7 @@ name('dashboard.files');
         description="Manage your files here, this is your personal folder containing all the documents uploaded through the create/edit dialogs">
     </x-app.heading>
     @volt('dashboard.files')
-    <iframe src="/filemanager"
+    <iframe src="/laravel-filemanager"
             class="rounded-lg"
             style="width: 100%; height:800px; overflow: hidden;"></iframe>
     @endvolt

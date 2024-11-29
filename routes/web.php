@@ -17,6 +17,6 @@ use Wave\Facades\Wave;
 // Wave routes
 Wave::routes();
 
-Route::group(['prefix' => 'filemanager', 'middleware' => ['web', 'auth']], function () {
+Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
     \UniSharp\LaravelFilemanager\Lfm::routes();
 });
