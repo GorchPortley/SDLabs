@@ -1,6 +1,6 @@
 <?php
     use function Laravel\Folio\{name};
-    name('soapbox');
+    name('blog');
 
     $posts = \Wave\Post::orderBy('created_at', 'DESC')->paginate(6);
     $categories = \Wave\Category::all();
