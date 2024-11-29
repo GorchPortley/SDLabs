@@ -19,7 +19,7 @@ class DriverFactory extends Factory
     {
         return [
             'user_id' => $this->faker->numberBetween(1, 30),
-            'card_image' => '/demo/Design_Placeholder.jpg',
+            'card_image' => 'demo/Design_Placeholder.jpg',
             'brand' => $this->faker->randomElement([
                 'ScanSpeak',
                 'SEAS',
