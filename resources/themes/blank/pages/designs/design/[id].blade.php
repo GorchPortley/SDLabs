@@ -146,6 +146,15 @@ new class extends Component {
                         <div x-show="lockedSectionOpen" x-transition>
                             @if(auth()->check())
                                 @if($design->price < 0.01 || $design->sales()->where('user_id', auth()->id())->exists() || auth()->user()->hasRole('admin'))
+                                    <!-- Discussion Area -->
+                                    @if($design->forum_slug)
+                                        <iframe
+                                            src="https://sandbox.sdlabs.cc/embed/{{ $design->forum_slug }}"
+                                            width="100%"
+                                            height="500px"
+                                            frameborder="0"
+                                        ></iframe>
+                                    @endif
                                     <!-- Bill of Materials -->
                                     @if($design->description)
                                         <div class="mt-8 border-t border-gray-200 pt-8">

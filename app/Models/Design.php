@@ -32,7 +32,8 @@ class Design extends Model
         'enclosure_files',
         'electronic_files',
         'design_other_files',
-        'official'
+        'official',
+        'forum_slug'
     ];
 
     protected $casts = [
@@ -86,10 +87,29 @@ class Design extends Model
                         'attributes' => [
                             'title' => $design->name,
                             'content' => "New design posted: " . $design->description
+                        ],
+                        'relationships' => [
+                            'tags' => [
+                                'data' => [
+                                    [
+                                        'type' => 'tags',
+                                        'id' => '2'
+                                    ]
+                                ]
+                            ]
                         ]
                     ]
                 ]);
 
+                if ($response->successful()) {
+                    $responseData = $response->json();
+                    $slug = $responseData['data']['attributes']['slug'] ?? null;
+
+                    if ($slug) {
+                        $design->forum_slug = $slug;
+                        $design->save();
+                    }
+                }
                 Log::info('Flarum API Response:', [
                     'status' => $response->status(),
                     'body' => $response->json()

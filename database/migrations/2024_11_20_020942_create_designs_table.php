@@ -32,6 +32,7 @@ return new class extends Migration
             $table->json('electronic_files')->nullable();
             $table->json('design_other_files')->nullable();
             $table->boolean('official')->default(false);
+            $table->string('forum_slug')->nullable();
             $table->timestamps();
         });
     }
