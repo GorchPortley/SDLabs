@@ -9,11 +9,12 @@ name('drivers');
 new class extends Component {
 
 //    use WithPagination;
-$user = auth()->user()?->load('cart.items');
-$cartItems = $user?->cart?->items->pluck('design_id')->toArray() ?? [];
+
 
     public function with(): array
     {
+        $user = auth()->user()?->load('cart.items');
+        $cartItems = $user?->cart?->items->pluck('design_id')->toArray() ?? [];
         return [
             'drivers' => Driver::query()
                 ->where('active', 1)
