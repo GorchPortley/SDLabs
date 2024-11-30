@@ -80,6 +80,6 @@
         </div>
     @endforeach
 </div>
-        <div class="flex gap-4 justify-center mt-8">{{ $designs->links() }}</div>
+        <div class="flex gap-4 justify-center mt-8">{{ $drivers->links() }}</div>
 </div>
 </div>

@@ -26,7 +26,7 @@ new class extends Component {
 }?>
 
 <x-layouts.marketing>
-    @volt('designs')
+    @volt('drivers')
     <div >
         <div class="flex h-full w-full bg-gray-300 rounded-md">
             <img src="https://placehold.co/1920x300">
