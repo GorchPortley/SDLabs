@@ -20,8 +20,7 @@ new class extends Component {
                     $query->where('user_id', auth()->id());
                 }])
                 ->paginate(12)
-
-        ]
+        ];
     }
 }?>
 
