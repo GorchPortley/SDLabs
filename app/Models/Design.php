@@ -69,7 +69,7 @@ class Design extends Model
                 $response = Http::withHeaders([
                     'Authorization' => 'Token ' . env('FLARUM_API_KEY') . '; userId=' . $design->user_id,
                     'Content-Type' => 'application/json',
-                ])->post(env('FLARUM_URL') . '/api/discussions', [
+                ])->post('forum/api/discussions', [
                     'data' => [
                         'type' => 'discussions',
                         'attributes' => [
