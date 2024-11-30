@@ -4,7 +4,7 @@
             <!-- Image Container: Using aspect-ratio for consistent sizing -->
             <div class="w-1/2 lg:w-full">
                 <a href="/designs/design/{{$driver->id}}" class="">
-                    <img src="{{$driver->card_image}}" class="w-full h-full object-cover" alt="{{$driver->brand}} - {{$driver->model}}">
+                    <img src="/storage/{{$driver->card_image}}" class="w-full h-full object-cover" alt="{{$driver->brand}} - {{$driver->model}}">
                 </a>
             </div>
 

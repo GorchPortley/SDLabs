@@ -4,7 +4,7 @@
         <div x-data="{ showSpecs: false }" wire:key="{{ $design->id }}" class="relative flex lg:h-full h-[300px] flex-row xs:flex-col lg:flex-col w-full bg-white rounded-lg border-2 border-gray-100 hover:shadow-lg shadow-sm overflow-hidden">
             <div class="w-1/2 lg:w-full flex-shrink-0">
                 <a href="/designs/design/{{$design->id}}" class="">
-                    <img src="{{$design->card_image}}" class="w-full h-full object-cover" alt="{{$design->name}}">
+                    <img src="/storage/{{$design->card_image}}" class="w-full h-full object-cover" alt="{{$design->name}}">
                 </a>
             </div>
             @if($design->official)
