@@ -8,6 +8,7 @@ use App\Models\Design;
 name('designs');
 
 new class extends Component {
+
     use WithPagination;
 
     public function with(): array

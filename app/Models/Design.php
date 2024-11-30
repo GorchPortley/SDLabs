@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class Design extends Model
 {
@@ -56,5 +58,50 @@ class Design extends Model
     {
         return $this->hasMany(DesignPurchase::class)
             ->with('user');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($design) {
+            try {
+                $apiKey = 'bidGs9^oX!9sNjvh@JhrKY$w*U$GzLeYc6WzkC3$';
+                $userId = $design->user_id;
+                $flarumUrl = 'https://sandbox.sdlabs.cc/forum'; // Remove trailing slash if present
+
+                Log::info('Attempting Flarum API call', [
+                    'api_key' => substr($apiKey, 0, 5) . '...',
+                    'user_id' => $userId,
+                    'url' => $flarumUrl . '/api/discussions' // Log full URL for debugging
+                ]);
+
+                $response = Http::withHeaders([
+                    'Authorization' => "Token {$apiKey}; userId={$userId}",
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/vnd.api+json'
+                ])->post($flarumUrl . '/api/discussions', [
+                    'data' => [
+                        'type' => 'discussions',
+                        'attributes' => [
+                            'title' => $design->name,
+                            'content' => "New design posted: " . $design->description
+                        ]
+                    ]
+                ]);
+
+                Log::info('Flarum API Response:', [
+                    'status' => $response->status(),
+                    'body' => $response->json()
+                ]);
+
+            } catch (\Exception $e) {
+                Log::error('Failed to create Flarum discussion:', [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                    'design_id' => $design->id
+                ]);
+            }
+        });
     }
 }

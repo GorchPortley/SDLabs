@@ -336,7 +336,7 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
 
 
 <x-layouts.app>
-        @volt('drivers')
+        @volt('dashboard.drivers')
         {{ $this->table }}
         @endvolt
 </x-layouts.app>

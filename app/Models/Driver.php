@@ -12,8 +12,6 @@ class Driver extends Model
     /** @use HasFactory<\Database\Factories\DriverFactory> */
     use HasFactory;
 
-    protected $table = 'drivers';
-
     protected $fillable = [
         'user_id',
         'brand',
@@ -41,7 +39,6 @@ class Driver extends Model
         'frequency_files' => 'array',
         'impedance_files' => 'array',
         'other_files' => 'array',
-        'card_image' => 'array'
     ];
 
     public function creator(): BelongsTo
