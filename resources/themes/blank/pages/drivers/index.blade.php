@@ -13,14 +13,12 @@ new class extends Component {
     public function with(): array
     {
         $user = auth()->user()?->load('cart.items');
-        $cartItems = $user?->cart?->items->pluck('design_id')->toArray() ?? [];
 
         return [
             'drivers' => Driver::query()
                 ->where('active', 1)
                 ->with('designs')
                 ->paginate(12),
-            'cartItems' => $cartItems
         ];
     }
 }?>
