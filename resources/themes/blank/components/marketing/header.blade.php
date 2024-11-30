@@ -10,7 +10,7 @@
                 <div class="hidden w-auto lg:block">
                     <ul class="flex items-center mr-16">
                         <li class="font-medium mr-9 hover:text-gray-700"><a href="{{route('designs')}}">Design Database</a></li>
-                        <li class="font-medium mr-9 hover:text-gray-700"><a href="#">Driver Database</a></li>
+                        <li class="font-medium mr-9 hover:text-gray-700"><a href="{{route('drivers')}}">Driver Database</a></li>
                         <li class="font-medium mr-9 hover:text-gray-700"><a href="/blog">Soap Box</a></li>
                         <li class="font-medium hover:text-gray-700"><a href="/forum">Forum</a></li>
                     </ul>
@@ -25,14 +25,10 @@
                             <a href="/auth/login" class="w-full px-5 py-3 font-medium transition duration-200 ease-in-out bg-transparent rounded-xl hover:text-gray-700" type="button">Sign In</a>
                         </div>
                     </div>
-                    <div class="hidden w-auto lg:block">
-                        <div class="inline-block">
-                            <x-button size="md" tag="a" href="/auth/register">Try 14 Days Free Trial</x-button>
-                        </div>
-                    </div>
                 @else
-                    <div class="hidden w-auto lg:block">
-                            <x-app.user-menu position="top" />
+                    <div class="hidden md:flex flex-row">
+                        <x-button href="{{ route('cart') }}" tag="a" wire:key="cart-button" class="mx-2" icon="phosphor-shopping-cart" badge="{{auth()->user()->load('cart.items')->cart?->items->count() ?? null}}"/>
+                        <x-app.user-menu position="top"/>
                     </div>
                 @endif
                 <div class="w-auto lg:hidden">
@@ -62,7 +58,7 @@
                 <div class="flex flex-col justify-center w-full px-3 py-16">
                     <ul>
                         <li class="mb-12"><a class="font-medium hover:text-gray-700" href="{{route('designs')}}">Design Database</a></li>
-                        <li class="mb-12"><a class="font-medium hover:text-gray-700" href="#">Driver Database</a></li>
+                        <li class="mb-12"><a class="font-medium hover:text-gray-700" href="{{route('drivers')}}">Driver Database</a></li>
                         <li class="mb-12"><a class="font-medium hover:text-gray-700" href="/blog">SoapBox</a></li>
                         <li class="mb-12"><a class="font-medium hover:text-gray-700" href="/forum">Community Forum</a></li>
                     </ul>

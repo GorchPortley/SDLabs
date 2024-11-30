@@ -1,9 +1,9 @@
 <div>
 <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 p-4">
     @foreach($designs as $design)
-        <div x-data="{ showSpecs: false }" class="relative flex lg:h-full h-[300px] flex-row xs:flex-col lg:flex-col w-full bg-white rounded-lg border-2 border-gray-100 hover:shadow-lg shadow-sm overflow-hidden">
+        <div x-data="{ showSpecs: false }" wire:key="{{ $design->id }}" class="relative flex lg:h-full h-[300px] flex-row xs:flex-col lg:flex-col w-full bg-white rounded-lg border-2 border-gray-100 hover:shadow-lg shadow-sm overflow-hidden">
             <div class="w-1/2 lg:w-full flex-shrink-0">
-                <a href="/designs/design/{{$design->id}}" class="block aspect-square">
+                <a href="/designs/design/{{$design->id}}" class="">
                     <img src="{{$design->card_image}}" class="w-full h-full object-cover" alt="{{$design->name}}">
                 </a>
             </div>
@@ -16,7 +16,7 @@
                     <h2 class="text-lg font-semibold text-center h-7 overflow-hidden text-ellipsis">{{$design->name}}</h2>
                     <p class="text-gray-600 text-center h-6 overflow-hidden text-ellipsis">By: {{$design->designer?->name}}</p>
                     <p class="text-gray-800 text-center mb-2 h-6 overflow-hidden text-ellipsis">{{$design->tag}}</p>
-                    <table class="w-full mb-2 lg:mb-4">
+                    <table class="w-full">
                         <tbody>
                         <tr class="text-lg font-semibold text-center h-8">
                             <td>Category</td>
@@ -39,7 +39,7 @@
                         :isInCart="in_array($design->id, $cartItems ?? [])"
                         wire:key="cart-{{ $design->id }}"
                     />
-                    <x-button tag="a" href="/designs/design/{{$design->id}}" class="w-full">View Design</x-button>
+                    <x-button tag="a" href="/designs/design/{{$design->id}}" class="w-full m-0">View Design</x-button>
                 </div>
 
             </div>
@@ -69,9 +69,9 @@
                 <x-button
                 x-show="!showSpecs"
                 @click="showSpecs = true"
-                class=" h-full"
+                class="lg:w-full w-[30px] h-full"
                 color="success">
-                <p class="w-full h-full -rotate-90 lg:rotate-0">Show Specs</p>
+                <p class="-rotate-90 lg:rotate-0">Show Specs</p>
             </x-button>
         </div>
     @endforeach

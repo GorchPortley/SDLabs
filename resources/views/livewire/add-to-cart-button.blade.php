@@ -1,4 +1,4 @@
-<div class="w-full">
+<div class="w-full" wire:key="{{ $design->id }}">
     @guest
         <x-button class="w-full" color="danger" tag="a" href="{{route('login')}}">Log In to Purchase</x-button>
     @endguest
