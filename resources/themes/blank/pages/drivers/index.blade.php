@@ -18,7 +18,7 @@ new class extends Component {
                 ->where('active', 1)
                 ->with(['designs',  'sales' => function($query) {
                     $query->where('user_id', auth()->id());
-                }]),
+                }])
                 ->paginate(12)
 
         ]
