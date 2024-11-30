@@ -16,9 +16,7 @@ new class extends Component {
         return [
             'drivers' => Driver::query()
                 ->where('active', 1)
-                ->with(['designs',  'sales' => function($query) {
-                    $query->where('user_id', auth()->id());
-                }])
+                ->with('designs')
                 ->paginate(12)
         ];
     }
