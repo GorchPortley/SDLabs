@@ -12,7 +12,6 @@ new class extends Component {
 
     public function with(): array
     {
-        $user = auth()->user()?->load('cart.items');
 
         return [
             'drivers' => Driver::query()
