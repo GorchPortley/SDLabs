@@ -33,7 +33,7 @@ new class extends Component {
             <div class="hidden lg:flex h-full lg:w-1/5 rounded-md">Text Test</div>
             <div class="flex flex-col h-full w-full lg:w-4/5 rounded-md">
                 <x-marketing.driver-card-container :drivers="$drivers"/>
-                {{ $drivers->links() }}
+                <div>{{ $drivers->links() }}</div>
             </div>
         </div>
     </div>
