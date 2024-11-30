@@ -70,13 +70,12 @@ class Design extends Model
                 $response = Http::withHeaders([
                     'Authorization' => 'Token ' . env('FLARUM_API_KEY'),
                     'Content-Type' => 'application/json',
-                ])->post(env('FLARUM_URL') . '/api/discussions', [
+                ])->post('forum/api/discussions', [
                     'data' => [
                         'type' => 'discussions',
                         'attributes' => [
                             'title' => $design->title,
                             'content' => "New design posted: " . $design->description,
-                            // Add any other attributes you want to send
                         ]
                     ]
                 ]);
