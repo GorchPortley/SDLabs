@@ -12,7 +12,6 @@ new class extends Component {
 
     public function with(): array
     {
-
         return [
             'drivers' => Driver::query()
                 ->where('active', 1)
