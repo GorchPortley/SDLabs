@@ -67,14 +67,22 @@ class Design extends Model
         static::created(function ($design) {
             try {
                 $response = Http::withHeaders([
-                    'Authorization' => 'Token ' . env('FLARUM_API_KEY'),
+                    'Authorization' => 'Token ' . env('FLARUM_API_KEY') . '; userId=' . $design->user_id,
                     'Content-Type' => 'application/json',
-                ])->post('https://sandbox.sdlabs.cc/forum/api/discussions', [
+                ])->post(env('FLARUM_URL') . '/api/discussions', [
                     'data' => [
                         'type' => 'discussions',
                         'attributes' => [
-                            'title' => $design->name, // changed from title to name to match your fillable
-                            'content' => "New design posted: " . $design->description,
+                            'title' => $design->name,
+                            'content' => "New design posted: " . $design->description
+                        ],
+                        'relationships' => [
+                            'user' => [
+                                'data' => [
+                                    'type' => 'users',
+                                    'id' => (string)$design->user_id
+                                ]
+                            ]
                         ]
                     ]
                 ]);
@@ -83,7 +91,7 @@ class Design extends Model
                     Log::error('Flarum API Error:', [
                         'status' => $response->status(),
                         'response' => $response->json(),
-                        'url' => env('FLARUM_URL') . '/api/discussions' // log the URL for debugging
+                        'url' => env('FLARUM_URL') . '/api/discussions'
                     ]);
                 } else {
                     Log::info('Successfully created Flarum discussion', [
