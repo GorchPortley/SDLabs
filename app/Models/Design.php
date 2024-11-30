@@ -64,17 +64,16 @@ class Design extends Model
     {
         parent::boot();
 
-        // This will fire when a design is created
         static::created(function ($design) {
             try {
                 $response = Http::withHeaders([
-                    'Authorization' => 'Token bidGs9^oX!9sNjvh@JhrKY$w*U$GzLeYc6WzkC3$; userID='. auth()->id,
+                    'Authorization' => 'Token ' . env('FLARUM_API_KEY'),
                     'Content-Type' => 'application/json',
-                ])->post('/forum/api/discussions', [
+                ])->post(env('FLARUM_URL') . '/api/discussions', [
                     'data' => [
                         'type' => 'discussions',
                         'attributes' => [
-                            'title' => $design->title,
+                            'title' => $design->name, // changed from title to name to match your fillable
                             'content' => "New design posted: " . $design->description,
                         ]
                     ]
@@ -83,7 +82,13 @@ class Design extends Model
                 if (!$response->successful()) {
                     Log::error('Flarum API Error:', [
                         'status' => $response->status(),
-                        'response' => $response->json()
+                        'response' => $response->json(),
+                        'url' => env('FLARUM_URL') . '/api/discussions' // log the URL for debugging
+                    ]);
+                } else {
+                    Log::info('Successfully created Flarum discussion', [
+                        'design_id' => $design->id,
+                        'discussion_id' => $response->json()['data']['id'] ?? null
                     ]);
                 }
 
