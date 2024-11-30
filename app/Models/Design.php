@@ -69,7 +69,7 @@ class Design extends Model
                 $response = Http::withHeaders([
                     'Authorization' => 'Token ' . env('FLARUM_API_KEY') . '; userId=' . $design->user_id,
                     'Content-Type' => 'application/json',
-                ])->post('forum/api/discussions', [
+                ])->post('https://sandbox.sdlabs.cc/forum/api/discussions', [
                     'data' => [
                         'type' => 'discussions',
                         'attributes' => [
@@ -91,7 +91,7 @@ class Design extends Model
                     Log::error('Flarum API Error:', [
                         'status' => $response->status(),
                         'response' => $response->json(),
-                        'url' => env('FLARUM_URL') . '/api/discussions'
+                        'url' => 'https://sandbox.sdlabs.cc/forum/api/discussions'
                     ]);
                 } else {
                     Log::info('Successfully created Flarum discussion', [
