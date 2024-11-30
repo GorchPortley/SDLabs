@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class Design extends Model
 {
@@ -56,5 +58,42 @@ class Design extends Model
     {
         return $this->hasMany(DesignPurchase::class)
             ->with('user');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        // This will fire when a design is created
+        static::created(function ($design) {
+            try {
+                $response = Http::withHeaders([
+                    'Authorization' => 'Token ' . env('FLARUM_API_KEY'),
+                    'Content-Type' => 'application/json',
+                ])->post(env('FLARUM_URL') . '/api/discussions', [
+                    'data' => [
+                        'type' => 'discussions',
+                        'attributes' => [
+                            'title' => $design->title,
+                            'content' => "New design posted: " . $design->description,
+                            // Add any other attributes you want to send
+                        ]
+                    ]
+                ]);
+
+                if (!$response->successful()) {
+                    Log::error('Flarum API Error:', [
+                        'status' => $response->status(),
+                        'response' => $response->json()
+                    ]);
+                }
+
+            } catch (\Exception $e) {
+                Log::error('Failed to create Flarum discussion:', [
+                    'error' => $e->getMessage(),
+                    'design_id' => $design->id
+                ]);
+            }
+        });
     }
 }
