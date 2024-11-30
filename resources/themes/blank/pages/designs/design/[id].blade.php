@@ -149,7 +149,7 @@ new class extends Component {
                                     <!-- Discussion Area -->
                                     @if($design->forum_slug)
                                         <iframe
-                                            src="https://sandbox.sdlabs.cc/embed/{{ $design->forum_slug }}"
+                                            src="https://sandbox.sdlabs.cc/forum/embed/{{ $design->forum_slug }}"
                                             width="100%"
                                             height="500px"
                                             frameborder="0"
