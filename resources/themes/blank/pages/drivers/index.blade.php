@@ -9,13 +9,20 @@ name('drivers');
 new class extends Component {
 
 //    use WithPagination;
+$user = auth()->user()?->load('cart.items');
+$cartItems = $user?->cart?->items->pluck('design_id')->toArray() ?? [];
 
     public function with(): array
     {
         return [
             'drivers' => Driver::query()
                 ->where('active', 1)
-                ->with('designs')
+                ->with(['designs',  'sales' => function($query) {
+                    $query->where('user_id', auth()->id());
+                }]),
+//                ->paginate(12)
+
+            'cartItems' => $cartItems
         ];
     }
 }?>
