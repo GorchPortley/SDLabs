@@ -153,6 +153,7 @@ new class extends Component {
                                             src="https://sandbox.sdlabs.cc/forum/embed/{{ $design->forum_slug }}"
                                             width="100%"
                                             height="500px"
+                                            scrolling="no"
                                         ></iframe>
                                             <div>
                                     @endif
