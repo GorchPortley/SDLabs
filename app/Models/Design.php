@@ -66,43 +66,45 @@ class Design extends Model
 
         static::created(function ($design) {
             try {
+                $apiKey = env('FLARUM_API_KEY');
+                $userId = $design->user_id;
+
+                Log::info('Attempting Flarum API call', [
+                    'api_key' => substr($apiKey, 0, 5) . '...', // Log first 5 chars for debugging
+                    'user_id' => $userId
+                ]);
+
                 $response = Http::withHeaders([
-                    'Authorization' => 'Token ' . env('FLARUM_API_KEY') . '; userId=' . $design->user_id,
-                    'Content-Type' => 'application/json',
-                ])->post('https://sandbox.sdlabs.cc/forum/api/discussions', [
+                    'Authorization' => "Token {$apiKey}; userId={$userId}",
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/vnd.api+json'
+                ])->post(env('FLARUM_URL') . '/api/discussions', [
                     'data' => [
                         'type' => 'discussions',
                         'attributes' => [
                             'title' => $design->name,
                             'content' => "New design posted: " . $design->description
-                        ],
-                        'relationships' => [
-                            'user' => [
-                                'data' => [
-                                    'type' => 'users',
-                                    'id' => (string)$design->user_id
-                                ]
-                            ]
                         ]
                     ]
+                ]);
+
+                Log::info('Flarum API Response Headers:', [
+                    'headers' => $response->headers()
                 ]);
 
                 if (!$response->successful()) {
                     Log::error('Flarum API Error:', [
                         'status' => $response->status(),
                         'response' => $response->json(),
-                        'url' => 'https://sandbox.sdlabs.cc/forum/api/discussions'
-                    ]);
-                } else {
-                    Log::info('Successfully created Flarum discussion', [
-                        'design_id' => $design->id,
-                        'discussion_id' => $response->json()['data']['id'] ?? null
+                        'url' => env('FLARUM_URL') . '/api/discussions',
+                        'auth_header' => "Token " . substr($apiKey, 0, 5) . '...' . "; userId={$userId}"
                     ]);
                 }
 
             } catch (\Exception $e) {
                 Log::error('Failed to create Flarum discussion:', [
                     'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
                     'design_id' => $design->id
                 ]);
             }
