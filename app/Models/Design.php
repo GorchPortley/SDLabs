@@ -68,9 +68,9 @@ class Design extends Model
         static::created(function ($design) {
             try {
                 $response = Http::withHeaders([
-                    'Authorization' => 'Token ' . env('FLARUM_API_KEY'),
+                    'Authorization' => 'Token bidGs9^oX!9sNjvh@JhrKY$w*U$GzLeYc6WzkC3$; userID='. auth()->id,
                     'Content-Type' => 'application/json',
-                ])->post('forum/api/discussions', [
+                ])->post('/forum/api/discussions', [
                     'data' => [
                         'type' => 'discussions',
                         'attributes' => [
