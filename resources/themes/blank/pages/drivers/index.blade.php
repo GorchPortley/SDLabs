@@ -11,10 +11,6 @@ new class extends Component {
     use WithPagination;
 
     protected $table = 'drivers';
-    protected function paginationView()
-    {
-        return 'pagination::tailwind';
-    }
 
     public function with(): array
     {
