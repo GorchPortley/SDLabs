@@ -1,6 +1,4 @@
-<div>
-<div class="grid grid-cols-1 lg:grid-cols-5 gap-6 p-4">
-    <div>
+<div class="grid flex-no-shrink grid-cols-1 lg:grid-cols-5 gap-6 p-4">
     @foreach($drivers as $driver)
         <div x-data="{ showSpecs: false }" wire:key="{{$driver->id}}" class="relative flex flex-row xs:flex-col lg:flex-col bg-white rounded-lg border-2 border-gray-100 hover:shadow-lg shadow-sm overflow-hidden">
             <div class="w-1/2 lg:w-full">
@@ -79,6 +77,4 @@
             </x-button>
         </div>
     @endforeach
-</div>
-</div>
 </div>

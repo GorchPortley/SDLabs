@@ -36,7 +36,9 @@ new class extends Component {
         </div>
         <div class="flex w-full h-full mt-5">
             <div class="hidden lg:flex h-full lg:w-1/5 rounded-md">Tex Test</div>
-            <div class="flex flex-col h-full w-full lg:w-4/5 rounded-md"><x-marketing.design-card-container wire:key="{{$designs}}" :designs="$designs"/>
+            <div class="flex flex-col h-full w-full lg:w-4/5 rounded-md">
+                <x-marketing.design-card-container wire:key="{{$designs}}" :designs="$designs"/>
+                <div class="flex gap-4 justify-center mt-8">{{ $designs->links() }}</div>
             </div>
         </div>
     </div>

@@ -1,3 +1,4 @@
+@php $badge = auth()->user()->load('cart.items')->cart?->items->count() ?? null; @endphp
 <section x-data="{ mobileNavOpen: false }" class="overflow-hidden">
     <div class="flex items-center justify-between p-5 mx-auto bg-white">
         <div class="w-auto">
@@ -27,7 +28,7 @@
                     </div>
                 @else
                     <div class="hidden md:flex flex-row">
-                        <x-button href="{{ route('cart') }}" tag="a" wire:key="cart-button" class="mx-2" icon="phosphor-shopping-cart" badge="{{auth()->user()->load('cart.items')->cart?->items->count() ?? null}}"/>
+                        <x-button href="{{ route('cart') }}" tag="a" wire:key="cart-button" class="mx-2" icon="phosphor-shopping-cart" badge="{{ $badge }}"/>
                         <x-app.user-menu position="top"/>
                     </div>
                 @endif
