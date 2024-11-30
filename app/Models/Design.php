@@ -69,7 +69,7 @@ class Design extends Model
                 $response = Http::withHeaders([
                     'Authorization' => 'Token ' . env('FLARUM_API_KEY'),
                     'Content-Type' => 'application/json',
-                ])->post(env('FLARUM_URL') . '/api/discussions', [
+                ])->post('https://sandbox.sdlabs.cc/forum/api/discussions', [
                     'data' => [
                         'type' => 'discussions',
                         'attributes' => [
