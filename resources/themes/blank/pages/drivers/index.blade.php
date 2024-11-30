@@ -10,6 +10,12 @@ new class extends Component {
 
     use WithPagination;
 
+    protected $table = 'drivers';
+    protected function paginationView()
+    {
+        return 'pagination::tailwind';
+    }
+
     public function with(): array
     {
         return [
@@ -29,7 +35,9 @@ new class extends Component {
         </div>
         <div class="flex w-full h-full mt-5">
             <div class="hidden lg:flex h-full lg:w-1/5 rounded-md">Text Test</div>
-            <div class="flex flex-col h-full w-full lg:w-4/5 rounded-md"><x-marketing.driver-card-container :drivers="$drivers"/>
+            <div class="flex flex-col h-full w-full lg:w-4/5 rounded-md">
+                <x-marketing.driver-card-container :drivers="$drivers"/>
+                {{ $drivers->links() }}
             </div>
         </div>
 </section>

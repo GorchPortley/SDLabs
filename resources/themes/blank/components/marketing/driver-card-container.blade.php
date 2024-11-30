@@ -1,21 +1,16 @@
 <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 p-4">
     @foreach($drivers as $driver)
-        <div x-data="{ showSpecs: false }" class="relative flex flex-row xs:flex-col lg:flex-col bg-white rounded-lg border-2 border-gray-100 hover:shadow-lg shadow-sm overflow-hidden">
-            <!-- Image Container: Using aspect-ratio for consistent sizing -->
+        <div x-data="{ showSpecs: false }" wire:key="{{$driver->id}}" class="relative flex flex-row xs:flex-col lg:flex-col bg-white rounded-lg border-2 border-gray-100 hover:shadow-lg shadow-sm overflow-hidden">
             <div class="w-1/2 lg:w-full">
                 <a href="/designs/design/{{$driver->id}}" class="">
                     <img src="/storage/{{$driver->card_image}}" class="w-full h-full object-cover" alt="{{$driver->brand}} - {{$driver->model}}">
                 </a>
             </div>
-
-            <!-- Official Badge -->
             @if($driver->official)
                 <div class="absolute left-2 lg:left-auto lg:right-2 top-2 bg-yellow-400 text-white px-2 py-1 rounded-full flex items-center gap-1">
                     <i class="ph ph-seal-check"></i>
                 </div>
             @endif
-
-            <!-- Content Container: Removed fixed height constraints -->
             <div class="w-1/2 flex-shrink-0 lg:w-full flex flex-col">
                 <h2 class="text-lg font-semibold text-center truncate px-4">{{$driver->model}}</h2>
                 <p class="text-gray-600 text-center truncate px-4">By: {{$driver->brand}}</p>
@@ -82,6 +77,4 @@
             </x-button>
         </div>
     @endforeach
-
-    <div class="col-span-full flex gap-4 justify-center mt-8">{{ $drivers->links() }}</div>
 </div>
