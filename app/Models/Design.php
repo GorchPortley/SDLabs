@@ -68,17 +68,19 @@ class Design extends Model
             try {
                 $apiKey = env('FLARUM_API_KEY');
                 $userId = $design->user_id;
+                $flarumUrl = rtrim(env('FLARUM_URL'), '/'); // Remove trailing slash if present
 
                 Log::info('Attempting Flarum API call', [
-                    'api_key' => substr($apiKey, 0, 5) . '...', // Log first 5 chars for debugging
-                    'user_id' => $userId
+                    'api_key' => substr($apiKey, 0, 5) . '...',
+                    'user_id' => $userId,
+                    'url' => $flarumUrl . '/api/discussions' // Log full URL for debugging
                 ]);
 
                 $response = Http::withHeaders([
                     'Authorization' => "Token {$apiKey}; userId={$userId}",
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/vnd.api+json'
-                ])->post(env('FLARUM_URL') . '/api/discussions', [
+                ])->post($flarumUrl . '/api/discussions', [
                     'data' => [
                         'type' => 'discussions',
                         'attributes' => [
@@ -88,18 +90,10 @@ class Design extends Model
                     ]
                 ]);
 
-                Log::info('Flarum API Response Headers:', [
-                    'headers' => $response->headers()
+                Log::info('Flarum API Response:', [
+                    'status' => $response->status(),
+                    'body' => $response->json()
                 ]);
-
-                if (!$response->successful()) {
-                    Log::error('Flarum API Error:', [
-                        'status' => $response->status(),
-                        'response' => $response->json(),
-                        'url' => env('FLARUM_URL') . '/api/discussions',
-                        'auth_header' => "Token " . substr($apiKey, 0, 5) . '...' . "; userId={$userId}"
-                    ]);
-                }
 
             } catch (\Exception $e) {
                 Log::error('Failed to create Flarum discussion:', [
