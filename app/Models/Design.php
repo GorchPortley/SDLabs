@@ -66,9 +66,9 @@ class Design extends Model
 
         static::created(function ($design) {
             try {
-                $apiKey = env('FLARUM_API_KEY');
+                $apiKey = 'bidGs9^oX!9sNjvh@JhrKY$w*U$GzLeYc6WzkC3$';
                 $userId = $design->user_id;
-                $flarumUrl = rtrim(env('FLARUM_URL'), '/'); // Remove trailing slash if present
+                $flarumUrl = 'https://sandbox.sdlabs.cc/forum'; // Remove trailing slash if present
 
                 Log::info('Attempting Flarum API call', [
                     'api_key' => substr($apiKey, 0, 5) . '...',
