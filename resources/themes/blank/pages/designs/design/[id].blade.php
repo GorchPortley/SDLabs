@@ -148,12 +148,13 @@ new class extends Component {
                                 @if($design->price < 0.01 || $design->sales()->where('user_id', auth()->id())->exists() || auth()->user()->hasRole('admin'))
                                     <!-- Discussion Area -->
                                     @if($design->forum_slug)
+                                        <div>
                                         <iframe
                                             src="https://sandbox.sdlabs.cc/forum/embed/{{ $design->forum_slug }}"
                                             width="100%"
                                             height="500px"
-                                            frameborder="0"
                                         ></iframe>
+                                            <div>
                                     @endif
                                     <!-- Bill of Materials -->
                                     @if($design->description)
