@@ -25,7 +25,6 @@ new class extends Component {
 
 <x-layouts.marketing>
     @volt('drivers')
-<section>
         <div class="flex h-full w-full bg-gray-300 rounded-md">
             <img src="https://placehold.co/1920x300">
         </div>
@@ -36,7 +35,6 @@ new class extends Component {
                 {{ $drivers->links() }}
             </div>
         </div>
-</section>
     @endvolt
 </x-layouts.marketing>
 
