@@ -9,7 +9,7 @@ name('drivers');
 new class extends Component {
 
 //    use WithPagination;
-    public $tableKey = 'drivers';
+
     public function with(): array
     {
         return [

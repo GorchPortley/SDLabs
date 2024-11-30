@@ -12,8 +12,6 @@ class Driver extends Model
     /** @use HasFactory<\Database\Factories\DriverFactory> */
     use HasFactory;
 
-    protected $table = 'drivers';
-
     protected $fillable = [
         'user_id',
         'brand',
