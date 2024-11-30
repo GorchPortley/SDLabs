@@ -41,7 +41,6 @@ class Driver extends Model
         'frequency_files' => 'array',
         'impedance_files' => 'array',
         'other_files' => 'array',
-        'card_image' => 'array'
     ];
 
     public function creator(): BelongsTo
