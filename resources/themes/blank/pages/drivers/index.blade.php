@@ -16,7 +16,6 @@ new class extends Component {
             'drivers' => Driver::query()
                 ->where('active', 1)
                 ->with('designs')
-                ->paginate(12),
         ];
     }
 }?>
