@@ -31,11 +31,11 @@ new class extends Component {
 
 <x-layouts.marketing>
     @volt('design')
-    <div class="bg-white dark:bg-zinc-900 dark:text-white" x-data="{
+    <div class="bg-zinc-200 dark:text-white" x-data="{
         publicSectionOpen: true,
         lockedSectionOpen: true
     }">
-        <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <main class="mx-auto bg-white max-w-7xl px-4 sm:px-6 lg:px-8">
             <!-- Breadcrumb -->
             <nav class="flex py-4" aria-label="Breadcrumb">
                 <ol class="flex items-center space-x-2">
@@ -103,47 +103,60 @@ new class extends Component {
                                         wire:key="cart-{{ $design->id }}" /></dd>
                             </div>
                         </dl>
+                        <!-- Components -->
+                        @if($design->components->count() > 0)
+                            <div class="">
+                                <h2 class="text-xl font-semibold text-gray-900 border-b-2 p-2 border-zinc-400">Components</h2>
+                                <table class="mt-4 divide-y divide-gray-200">
+                                    @foreach($design->components as $component)
+                                        <div class="border-b py-2">
+                                            <div class="flex justify-between">
+                                                <div class="flex-1">
+                                                    <h4 class="text-lg font-medium text-gray-900">
+                                                        {{$component->driver->brand}} - {{$component->driver->model}}
+                                                    </h4>
+                                                    <div class="mt-1 flex items-center space-x-4 text-sm text-gray-500">
+                                                        <span>{{$component->position}}</span>
+                                                        <span>•</span>
+                                                        <span>{{$component->driver->size}}</span>
+                                                        <span>•</span>
+                                                        <span>{{$component->driver->category}}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="ml-4 flex flex-col items-end">
+                                                    <span class="text-sm font-medium text-gray-900">Qty: {{$component->quantity}}</span>
+                                                    <span class="mt-1 text-sm text-gray-500">
+                                {{$component->low_frequency}} Hz - {{$component->high_frequency}} Hz
+                            </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </table>
+                            </div>
+                        @endif
+
                     </div>
                 </div>
 {{--      End Key Details Section              --}}
                 </div>
-                    {{-- Collapsible Public Section --}}
-                    <div class="mt-8 col-span-2">
-                        <button
-                            @click="publicSectionOpen = !publicSectionOpen"
-                            class="w-full flex justify-between items-center p-4 bg-gray-100 hover:bg-gray-200 rounded-t-lg transition-colors"
-                        >
-                            <h2 class="text-xl font-bold">Frequency Response & Design Overview</h2>
-                            <span x-text="publicSectionOpen ? '−' : '+'" class="text-2xl"></span>
-                        </button>
-
-                        <div x-show="publicSectionOpen" x-transition>
-                            <div class="w-auto py-4 col-span-2">
-                                <livewire:frequency-response-viewer :design="$design" />
-
-
-                            <div>
-                                <div class="border-gray-200 pt-8">
-                                    <h2 class="text-xl font-semibold text-gray-900">About this Design</h2>
-                                    <div class="mt-4">
-                                        <x-safe-html-renderer :content="$design->summary" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    </div>
                     {{-- Collapsible Locked Section --}}
-                    <div class="mt-8">
-                        <button
-                            @click="lockedSectionOpen = !lockedSectionOpen"
-                            class="w-full flex justify-between items-center p-4 bg-gray-100 hover:bg-gray-200 rounded-t-lg transition-colors"
-                        >
-                            <h2 class="text-xl font-bold">Build Details & Full Description</h2>
-                            <span x-text="lockedSectionOpen ? '−' : '+'" class="text-2xl"></span>
-                        </button>
-                        <div x-show="lockedSectionOpen" x-transition>
-                            <livewire:design-description :design="$design" />
-                        </div>
+                <main class=" mt-8">
+                    <button
+                        @click="lockedSectionOpen = !lockedSectionOpen"
+                        class="w-full flex justify-between items-center p-4 bg-gray-100 hover:bg-gray-200 rounded-t-lg transition-colors"
+                    >
+                        <h2 class="text-xl font-bold">Build Details & Full Description</h2>
+                        <span x-text="lockedSectionOpen ? '−' : '+'" class="text-2xl"></span>
+                    </button>
+                    <div
+                        x-show="lockedSectionOpen"
+                        x-transition
+                        class="bg-white h-full w-full overflow-visible"
+                    >
+                        <livewire:design-description :design="$design" />
+                    </div>
+                </main>
+            </div>
     @endvolt
 </x-layouts.marketing>
