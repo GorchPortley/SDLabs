@@ -21,6 +21,6 @@
                 </x-app.sidebar-dropdown>
             </nav>
         </div>
-            <x-app.user-menu />
+            <x-app.user-menu position="bottom" />
         </div>
 </aside>

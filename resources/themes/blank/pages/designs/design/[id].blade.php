@@ -142,78 +142,8 @@ new class extends Component {
                             <h2 class="text-xl font-bold">Build Details & Full Description</h2>
                             <span x-text="lockedSectionOpen ? '−' : '+'" class="text-2xl"></span>
                         </button>
-
                         <div x-show="lockedSectionOpen" x-transition>
-                            @if(auth()->check())
-                                @if($design->price < 0.01 || $design->sales()->where('user_id', auth()->id())->exists() || auth()->user()->hasRole('admin'))
-                                    <!-- Discussion Area -->
-                                    @if($design->forum_slug)
-                                        <div>
-                                        <iframe
-                                            src="https://sandbox.sdlabs.cc/forum/embed/{{ $design->forum_slug }}"
-                                            width="100%"
-                                            height="500px"
-                                            scrolling="no"
-                                        ></iframe>
-                                            <div>
-                                    @endif
-                                    <!-- Bill of Materials -->
-                                    @if($design->description)
-                                        <div class="mt-8 border-t border-gray-200 pt-8">
-                                            <x-safe-html-renderer :content="$design->description" />
-                                        </div>
-                                    @endif
-                                    @if($design->bill_of_materials)
-                                        <div class="mt-8 border-t border-gray-200 pt-8">
-                                            <h2 class="text-xl font-semibold text-gray-900">Bill of Materials</h2>
-                                            <div class="mt-4">
-                                                <ul class="divide-y divide-gray-200">
-                                                    @foreach($design->bill_of_materials as $material=>$quantity)
-                                                        <li class="py-3 flex justify-between">
-                                                            <span class="text-gray-900">{{ $material ?? 'Unknown Item' }}</span>
-                                                            <div class="flex items-center space-x-4">
-                                                                <span class="text-gray-500">x{{ $quantity }}</span>
-                                                            </div>
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    @endif
-
-                                    <!-- Main Description -->
-
-                                @else
-                                    {{-- User is logged in but doesn't have access --}}
-                                    <div class="mt-8 border-t border-gray-200 pt-8">
-                                        <div class="w-full bg-zinc-600 p-8 rounded-lg text-center">
-                                            <p class="text-white text-lg">Sorry, you need Access for this section</p>
-                                            <a href="{{ route('shop.show', $design->id) }}" class="mt-4 inline-block px-4 py-2 bg-white text-zinc-600 rounded-md hover:bg-zinc-100">
-                                                Purchase Access
-                                            </a>
-                                        </div>
-                                    </div>
-                                @endif
-                            @else
-                                {{-- Guest user --}}
-                                <div class="mt-8 border-t border-gray-200 pt-8">
-                                    <div class="w-full bg-zinc-600 p-8 rounded-lg text-center">
-                                        <p class="text-white text-lg">Sorry, you need to be logged in to access this section</p>
-                                        <div class="mt-4 space-x-4">
-                                            <a href="{{ route('login') }}" class="inline-block px-4 py-2 bg-white text-zinc-600 rounded-md hover:bg-zinc-100">
-                                                Login
-                                            </a>
-                                            <a href="{{ route('register') }}" class="inline-block px-4 py-2 bg-white text-zinc-600 rounded-md hover:bg-zinc-100">
-                                                Register
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
+                            <livewire:design-description :design="$design" />
                         </div>
-                    </div>
-
-        </main>
-    </div>
     @endvolt
 </x-layouts.marketing>

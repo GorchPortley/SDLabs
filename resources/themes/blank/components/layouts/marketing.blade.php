@@ -19,6 +19,6 @@
     @livewireScripts
 
     {{ $javascript ?? '' }}
-
+<x-marketing.footer />
 </body>
 </html>
