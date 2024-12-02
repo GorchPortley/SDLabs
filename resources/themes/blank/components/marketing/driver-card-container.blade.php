@@ -2,7 +2,7 @@
     @foreach($drivers as $driver)
         <div x-data="{ showSpecs: false }" wire:key="{{$driver->id}}" class="relative flex flex-row xs:flex-col lg:flex-col bg-white rounded-lg border-2 border-gray-100 hover:shadow-lg shadow-sm overflow-hidden">
             <div class="w-1/2 lg:w-full">
-                <a href="/designs/design/{{$driver->id}}" class="">
+                <a href="/drivers/driver/{{$driver->id}}" class="">
                     <img src="/storage/{{$driver->card_image}}" class="w-full h-full object-cover" alt="{{$driver->brand}} - {{$driver->model}}">
                 </a>
             </div>
