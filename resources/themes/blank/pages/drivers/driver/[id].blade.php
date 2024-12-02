@@ -152,7 +152,7 @@ new class extends Component {
                         </svg>
                     </button>
                     <div x-show="isOpen" class="border-t border-gray-200 pt-8">
-                        <livewire:driverfrequencyresponseviewer :driver="$driver"></livewire:driverfrequencyresponseviewer>
+                        <livewire:DriverFrequencyResponseViewer :driver="$driver"></livewire:DriverFrequencyResponseViewer>
                         <div>
                             <span class="text-xl justify-center font-semibold text-gray-900">T/S Parameters</span>
                         <dl class="grid grid-cols-2 gap-4 mx-20">
