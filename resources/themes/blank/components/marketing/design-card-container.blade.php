@@ -1,18 +1,16 @@
 <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 p-4">
     @foreach($designs as $design)
         <div x-data="{
-            showSpecs: false,
-            currentIndex: 0,
-            images: {{ Js::from($design->card_image) }},
-            next() {
-                this.currentIndex = (this.currentIndex + 1) % this.images.length;
-            },
-            previous() {
-                this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
-            }
-        }"
-             wire:key="{{ $design->id }}"
-             class="relative flex lg:flex-col flex-row h-[300px] lg:h-full w-full bg-white rounded-lg border-2 border-gray-100 hover:shadow-lg shadow-sm overflow-hidden">
+    currentIndex: 0,
+    images: {{ Js::from(is_array($design->card_image) ? $design->card_image : [$design->card_image]) }},
+
+    next() {
+        this.currentIndex = (this.currentIndex + 1) % this.images.length;
+    },
+    previous() {
+        this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
+    }"
+    class="relative flex lg:flex-col flex-row h-[300px] lg:h-full w-full bg-white rounded-lg border-2 border-gray-100 hover:shadow-lg shadow-sm overflow-hidden">
 
             {{-- Image Section --}}
             <div class="w-1/2 lg:w-full flex-shrink-0 relative">

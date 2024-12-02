@@ -48,29 +48,18 @@ new class extends Component {
             <div class="space-y-8">
                 <!-- Top Section: Image and Details -->
                 <div class="lg:grid lg:grid-cols-2 lg:gap-8">
-{{--                    <!-- Left: Image -->--}}
-{{--                    <div class="mb-6 lg:mb-0">--}}
-{{--                        <div class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">--}}
-{{--                            <img--}}
-{{--                                src="{{$appUrl = config('app.url')}}/storage/{{ $design->card_image }}"--}}
-{{--                                alt="{{ $design->name }}"--}}
-{{--                                class="w-full h-full object-contain"--}}
-{{--                            >--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-                    <!-- Left: Image Slider -->
                     <div class="mb-6 lg:mb-0">
                         <div x-data="{
-        currentIndex: 0,
-        images: {{ Js::from($design->card_image) }},
+    currentIndex: 0,
+    images: {{ Js::from(is_array($design->card_image) ? $design->card_image : [$design->card_image]) }},
 
-        next() {
-            this.currentIndex = (this.currentIndex + 1) % this.images.length;
-        },
-        previous() {
-            this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
-        }
-    }" class="relative aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
+    next() {
+        this.currentIndex = (this.currentIndex + 1) % this.images.length;
+    },
+    previous() {
+        this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
+    }
+}" class="relative aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
                             <!-- Current image -->
                             <template x-if="images.length > 0">
                                 <img
