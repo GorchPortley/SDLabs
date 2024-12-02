@@ -19,7 +19,7 @@
                     <img
                         :src="`/storage/${images[currentIndex]}`"
                         :alt="`Image ${currentIndex + 1} of ${images.length}`"
-                        class="w-full h-full object-cover"
+                        class="w-full h-full object-contain"
                     >
                 </template>
 
