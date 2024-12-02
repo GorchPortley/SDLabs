@@ -11,7 +11,8 @@ new class extends Component {
     public Design $design;
     public array $cartItems = [];
 
-    public function mount(string $id) {
+    public function mount(string $id)
+    {
         $user = auth()->user()?->load('cart.items');
         $this->cartItems = collect($user?->cart?->items ?? [])->pluck('design_id')->toArray();
 
@@ -27,7 +28,8 @@ new class extends Component {
         return [
             'cartItems' => $this->cartItems
         ];
-    }} ?>
+    }
+} ?>
 
 <x-layouts.marketing>
     @volt('design')
@@ -70,7 +72,8 @@ new class extends Component {
                             </template>
 
                             <!-- Navigation buttons - only show if there are multiple images -->
-                            <div x-show="images.length > 1" class="absolute inset-0 flex items-center justify-between p-4">
+                            <div x-show="images.length > 1"
+                                 class="absolute inset-0 flex items-center justify-between p-4">
                                 <!-- Previous -->
                                 <button
                                     @click="previous()"
@@ -128,11 +131,13 @@ new class extends Component {
                                 </div>
                                 <div>
                                     <dt class="text-sm text-gray-500">Plans Price</dt>
-                                    <dd class="mt-1 text-lg font-medium text-gray-900">${{ number_format($design->price, 2) }}</dd>
+                                    <dd class="mt-1 text-lg font-medium text-gray-900">
+                                        ${{ number_format($design->price, 2) }}</dd>
                                 </div>
                                 <div>
                                     <dt class="text-sm text-gray-500">Estimated Build Cost</dt>
-                                    <dd class="mt-1 text-lg font-medium text-gray-900">${{ number_format($design->build_cost, 2) }}</dd>
+                                    <dd class="mt-1 text-lg font-medium text-gray-900">
+                                        ${{ number_format($design->build_cost, 2) }}</dd>
                                 </div>
                                 <div>
                                     <dt class="text-sm text-gray-500">Category</dt>
@@ -152,11 +157,8 @@ new class extends Component {
                 <!-- Components Section - Now Collapsible -->
                 @if($design->components->count() > 0)
                     <div x-data="{ isOpen: true }" class="border-t border-gray-200 pt-8">
-                        <button
-                            @click="isOpen = !isOpen"
-                            class="flex items-center justify-between w-full text-xl font-semibold text-gray-900 pb-4 border-b-2 border-zinc-400"
-                        >
-                            <span>Components</span>
+                        <button @click="isOpen = !isOpen" class="flex items-center justify-between w-full text-xl font-semibold text-gray-900 pb-4 border-b-2 border-zinc-400">
+                            <span>File Overview</span>
                             <svg
                                 class="w-6 h-6 transition-transform"
                                 :class="{ 'rotate-180': !isOpen }"
@@ -164,7 +166,7 @@ new class extends Component {
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
                             >
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
                         </button>
 
@@ -178,26 +180,84 @@ new class extends Component {
                             x-transition:leave-end="opacity-0 -translate-y-2"
                             class="divide-y divide-gray-200"
                         >
+                            <div class="w-full gap-4">
+                                <dl class="space-y-1">
+                                    <div class="flex justify-between">
+                                        <dt class="">Design Enclosure Files:</dt>
+                                        <dd>{{ json_decode(count($design->enclosure_files)) }}</dd>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <dt class="">Design Electronics Files:</dt>
+                                        <dd>{{ json_decode(count($design->electronic_files))}}</dd>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <dt class="">Design Other Files:</dt>
+                                        <dd>{{ json_decode(count($design->design_other_files))}}</dd>
+                                    </div>
+                                </dl>
+                            </div>
                             @foreach($design->components as $component)
-                                <div class="py-4">
-                                    <div class="flex justify-between items-start">
-                                        <div class="flex-1">
-                                            <h4 class="text-lg font-medium text-gray-900">
-                                                {{$component->driver->brand}} - {{$component->driver->model}}
-                                            </h4>
-                                            <div class="mt-1 flex items-center space-x-4 text-sm text-gray-500">
-                                                <span>{{$component->position}}</span>
-                                                <span>•</span>
-                                                <span>{{$component->driver->size}}</span>
-                                                <span>•</span>
-                                                <span>{{$component->driver->category}}</span>
+                                <div x-data="{ showDetails: false }" class="border-b last:border-b-0">
+                                    <div
+                                        @click="showDetails = !showDetails"
+                                        class="py-4 cursor-pointer hover:bg-gray-50 transition-colors"
+                                    >
+                                        <div class="flex justify-between items-start">
+                                            <div class="flex-1">
+                                                <div class="flex items-center gap-2">
+                        <span
+                            class="transform transition-transform duration-200"
+                            :class="{ 'rotate-90': showDetails }"
+                        >
+                            →
+                        </span>
+                                                    <h4 class="text-lg font-medium text-gray-900">
+                                                        {{$component->driver->brand}} - {{$component->driver->model}}
+                                                    </h4>
+                                                </div>
+                                                <div class="mt-1 flex items-center space-x-4 text-sm text-gray-500">
+                                                    <span>{{$component->position}}</span>
+                                                    <span>•</span>
+                                                    <span>{{$component->driver->size}}</span>
+                                                    <span>•</span>
+                                                    <span>{{$component->driver->category}}</span>
+                                                </div>
+                                            </div>
+                                            <div class="ml-4 text-right">
+                                                <span class="text-sm font-medium text-gray-900">Qty: {{$component->quantity}}</span>
+                                                <div class="mt-1 text-sm text-gray-500">
+                                                    {{$component->low_frequency}} Hz - {{$component->high_frequency}} Hz
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="ml-4 text-right">
-                                            <span class="text-sm font-medium text-gray-900">Qty: {{$component->quantity}}</span>
-                                            <div class="mt-1 text-sm text-gray-500">
-                                                {{$component->low_frequency}} Hz - {{$component->high_frequency}} Hz
-                                            </div>
+                                    </div>
+
+                                    <!-- Expandable Details Section -->
+                                    <div
+                                        x-show="showDetails"
+                                        x-transition:enter="transition ease-out duration-200"
+                                        x-transition:enter-start="opacity-0 transform -translate-y-2"
+                                        x-transition:enter-end="opacity-100 transform translate-y-0"
+                                        x-transition:leave="transition ease-in duration-150"
+                                        x-transition:leave-start="opacity-100 transform translate-y-0"
+                                        x-transition:leave-end="opacity-0 transform -translate-y-2"
+                                        class="bg-gray-50 p-4"
+                                    >
+                                        <div class="w-full gap-4">
+                                            <dl class="space-y-1">
+                                                <div class="flex justify-between">
+                                                    <dt class="text-gray-600">Frequency Files:</dt>
+                                                    <dd>{{ json_decode(count($component->frequency_files)) }}</dd>
+                                                </div>
+                                                <div class="flex justify-between">
+                                                    <dt class="text-gray-600">Impedance Files:</dt>
+                                                    <dd>{{ json_decode(count($component->impedance_files))}}</dd>
+                                                </div>
+                                                <div class="flex justify-between">
+                                                    <dt class="text-gray-600">Other Files:</dt>
+                                                    <dd>{{ json_decode(count($component->other_files))}}</dd>
+                                                </div>
+                                            </dl>
                                         </div>
                                     </div>
                                 </div>
@@ -207,7 +267,7 @@ new class extends Component {
                 @endif
                 <!-- Description Section -->
                 <div class="border-t border-gray-200 pt-8">
-                    <livewire:design-description :design="$design" />
+                    <livewire:design-description :design="$design"/>
                 </div>
             </div>
         </main>
