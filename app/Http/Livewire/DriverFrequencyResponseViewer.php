@@ -32,17 +32,7 @@ class DriverFrequencyResponseViewer extends Component
     {
         $this->driver = $driver;
 
-        // Try to get from cache first
-        $cacheKey = "driver_{$driver->id}_response_data";
-        if (Cache::has($cacheKey)) {
-            $data = Cache::get($cacheKey);
-            $this->setData($data);
-            return;
-        }
-
-        // Process data if not cached
         $data = $this->processAllData();
-        Cache::put($cacheKey, $data, now()->addHours(12));
         $this->setData($data);
     }
 

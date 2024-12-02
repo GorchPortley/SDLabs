@@ -32,17 +32,9 @@ class FrequencyResponseViewer extends Component
     {
         $this->design = $design;
 
-        // Try to get from cache first
-        $cacheKey = "design_{$design->id}_response_data";
-        if (Cache::has($cacheKey)) {
-            $data = Cache::get($cacheKey);
-            $this->setData($data);
-            return;
-        }
 
         // Process data if not cached
         $data = $this->processAllData();
-        Cache::put($cacheKey, $data, now()->addHours(12));
         $this->setData($data);
     }
 
