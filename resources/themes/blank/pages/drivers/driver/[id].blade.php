@@ -1,216 +1,185 @@
 <?php
 
-use App\Models\Driver;
+use Livewire\WithPagination;
 use function Laravel\Folio\{name};
 use Livewire\Volt\Component;
-use App\Models\Design;
+use App\Models\Driver;
 
 name('driver');
 
-
 new class extends Component {
+
+    use WithPagination;
+
     public Driver $driver;
+
     public function mount(string $id)
     {
-        $user = auth()->user()?->load('cart.items');
-        $this->cartItems = collect($user?->cart?->items ?? [])->pluck('design_id')->toArray();
-
-        $this->design = Design::with([
-            'designer',
-            'components.driver',
-            'sales' => fn($q) => $q->where('user_id', auth()->id())
+        $this->driver = Driver::with([
+            'designs.design'  // Load related designs with their parent design info
         ])->findOrFail($id);
-    }
-
-    public function with(): array
-    {
-        return [
-            'cartItems' => $this->cartItems
-        ];
     }
 } ?>
 
 <x-layouts.marketing>
-    @volt('design')
-    <div class="bg-white dark:bg-zinc-900 dark:text-white" x-data="{
-        publicSectionOpen: true,
-        lockedSectionOpen: true
-    }">
-        <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    @volt('driver')
+    <div class="bg-zinc-200 min-h-dvh dark:text-white">
+        <main class="mx-auto bg-white max-w-7xl px-4 sm:px-6 lg:px-8 min-h-full py-4">
             <!-- Breadcrumb -->
-            <nav class="flex py-4" aria-label="Breadcrumb">
+            <nav class="mb-6" aria-label="Breadcrumb">
                 <ol class="flex items-center space-x-2">
-                    <li><a href="/designs" class="text-gray-500 hover:text-gray-700">Designs</a></li>
+                    <li><a href="/drivers" class="text-gray-500 hover:text-gray-700">Drivers</a></li>
                     <li class="text-gray-400">/</li>
-                    <li class="text-gray-900">{{ $design->name }}</li>
+                    <li class="text-gray-900">{{ $driver->brand }} - {{ $driver->model }}</li>
                 </ol>
             </nav>
-            <hr class="my-6 border-t-2 border-gray-300">
 
-            {{--Begin Key Details section--}}
+            <hr class="mb-8 border-t-2 border-gray-300">
 
-            <div class="">
-                <!-- Image section -->
-                <div class="lg:grid lg:grid-cols-2">
-                    <div class="aspect-w-16 aspect-h-9 w-full rounded-lg mb-2 lg:mb-0 flex items-center justify-center">
-                        <img
-                            src="{{$appUrl = config('app.url')}}/storage/{{ $design->card_image }}"
-                            alt="{{ $design->name }}"
-                            class="w-full h-auto object-contain"
-                        >
+            <!-- Content Container -->
+            <div class="space-y-8">
+                <!-- Top Section: Image and Details -->
+                <div class="lg:grid lg:grid-cols-2 lg:gap-8">
+                    <!-- Left: Image Section -->
+                    <div class="mb-6 lg:mb-0">
+                        <div x-data="{
+                            currentIndex: 0,
+                            images: {{ Js::from(is_array($driver->card_image) ? $driver->card_image : [$driver->card_image]) }},
+                            next() { this.currentIndex = (this.currentIndex + 1) % this.images.length; },
+                            previous() { this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length; }
+                        }" class="relative aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
+                            <!-- Image display and navigation (same as design page) -->
+                            <!-- ... -->
+                        </div>
                     </div>
 
-                    <!-- Design info -->
-                    <div class="px-4 lg:px-8">
-                        <h1 class="text-3xl font-bold text-gray-900">{{ $design->name }}</h1>
-                        @if($design->tag)
-                            <p class="mt-1 text-lg text-gray-600 italic">{{ $design->tag }}</p>
-                        @endif
-
-                        <div class="mt-2">
-                            <p class="text-sm text-gray-500">Designed by</p>
-                            <p class="text-lg font-medium text-gray-900">{{ $design->designer->name ?? 'Speaker Designer' }}</p>
+                    <!-- Right: Driver Info -->
+                    <div class="space-y-6">
+                        <!-- Title and Tag -->
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-900">{{ $driver->brand }}
+                                - {{ $driver->model }}</h1>
+                            @if($driver->tag)
+                                <p class="mt-2 text-lg text-gray-600 italic">{{ $driver->tag }}</p>
+                            @endif
                         </div>
 
-                        <!-- Key Specifications -->
-                        <div class="mt-2 border-t border-gray-200 pt-4">
-                            <h2 class="text-xl font-semibold text-gray-900">Specifications</h2>
-                            <dl class="mt-2 grid grid-cols-2 gap-4">
+                        <!-- Specifications -->
+                        <div class="border-t border-gray-200 pt-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Specifications</h2>
+                            <dl class="grid grid-cols-2 gap-x-6 gap-y-4">
                                 <div>
                                     <dt class="text-sm text-gray-500">Power Handling</dt>
-                                    <dd class="mt-1 text-lg font-medium text-gray-900">{{ $design->power }}W</dd>
+                                    <dd class="mt-1 text-lg font-medium text-gray-900">{{ $driver->power }}W</dd>
                                 </div>
                                 <div>
                                     <dt class="text-sm text-gray-500">Impedance</dt>
-                                    <dd class="mt-1 text-lg font-medium text-gray-900">{{ $design->impedance }}Ω</dd>
+                                    <dd class="mt-1 text-lg font-medium text-gray-900">{{ $driver->impedance }}Ω</dd>
                                 </div>
                                 <div>
-                                    <dt class="text-sm text-gray-500">Plans Price</dt>
-                                    <dd class="mt-1 text-lg font-medium text-gray-900">
-                                        ${{ number_format($design->price, 2) }}</dd>
-                                </div>
-                                <div>
-                                    <dt class="text-sm text-gray-500">Estimated Build Cost</dt>
-                                    <dd class="mt-1 text-lg font-medium text-gray-900">
-                                        ${{ number_format($design->build_cost, 2) }}</dd>
+                                    <dt class="text-sm text-gray-500">Size</dt>
+                                    <dd class="mt-1 text-lg font-medium text-gray-900">{{ $driver->size }}</dd>
                                 </div>
                                 <div>
                                     <dt class="text-sm text-gray-500">Category</dt>
-                                    <dd class="mt-1 text-lg font-medium text-gray-900">{{ $design->category }}</dd>
+                                    <dd class="mt-1 text-lg font-medium text-gray-900">{{ $driver->category }}</dd>
                                 </div>
-                                <div>
-                                    <dd class="mt-4">
-                                        <livewire:add-to-cart-button
-                                            :design="$design"
-                                            :isInCart="in_array($design->id, $cartItems)"
-                                            wire:key="cart-{{ $design->id }}"/>
-                                    </dd>
-                                </div>
+                                @if($driver->price)
+                                    <div>
+                                        <dt class="text-sm text-gray-500">Price</dt>
+                                        <dd class="mt-1 text-lg font-medium text-gray-900">
+                                            ${{ number_format($driver->price, 2) }}</dd>
+                                    </div>
+                                @endif
+                                @if($driver->link)
+                                    <div class="mt-4">
+                                        <x-button  tag="a" href="{{ $driver->link }}"
+                                           class="hover:bg-blue-800">
+                                            View Manufacturer Page →
+                                        </x-button>
+                                    </div>
+                                @endif
                             </dl>
                         </div>
                     </div>
-                    {{--      End Key Details Section              --}}
                 </div>
-                {{-- Collapsible Public Section --}}
-                <div class="mt-8 col-span-2">
-                    <button
-                        @click="publicSectionOpen = !publicSectionOpen"
-                        class="w-full flex justify-between items-center p-4 bg-gray-100 hover:bg-gray-200 rounded-t-lg transition-colors"
-                    >
-                        <h2 class="text-xl font-bold">Frequency Response & Design Overview</h2>
-                        <span x-text="publicSectionOpen ? '−' : '+'" class="text-2xl"></span>
-                    </button>
 
-                    <div x-show="publicSectionOpen" x-transition>
-                        <div class="w-auto py-4 col-span-2">
-                            <livewire:frequency-response-viewer :design="$design"/>
+                <!-- Designs Using This Driver -->
+                @if($driver->designs->count() > 0)
+                    <div x-data="{ isOpen: true }" class="border-t border-gray-200 pt-8">
+                        <button @click="isOpen = !isOpen"
+                                class="flex items-center justify-between w-full text-xl font-semibold text-gray-900 pb-4 border-b-2 border-zinc-400">
+                            <span>Designs Using This Driver</span>
+                            <svg class="w-6 h-6 transition-transform" :class="{ 'rotate-180': !isOpen }" fill="none"
+                                 stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
 
-
-                            <div>
-                                <div class="border-gray-200 pt-8">
-                                    <h2 class="text-xl font-semibold text-gray-900">About this Design</h2>
-                                    <div class="mt-4">
-                                        <x-safe-html-renderer :content="$design->summary"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {{-- Collapsible Locked Section --}}
-                <div class="mt-8">
-                    <button
-                        @click="lockedSectionOpen = !lockedSectionOpen"
-                        class="w-full flex justify-between items-center p-4 bg-gray-100 hover:bg-gray-200 rounded-t-lg transition-colors"
-                    >
-                        <h2 class="text-xl font-bold">Build Details & Full Description</h2>
-                        <span x-text="lockedSectionOpen ? '−' : '+'" class="text-2xl"></span>
-                    </button>
-
-                    <div x-show="lockedSectionOpen" x-transition>
-                        @if(auth()->check())
-                            @if($design->price < 0.01 || $design->sales()->where('user_id', auth()->id())->exists() || auth()->user()->hasRole('admin'))
-                                <!-- Bill of Materials -->
-                                @if($design->description)
-                                    <div class="mt-8 border-t border-gray-200 pt-8">
-                                        <x-safe-html-renderer :content="$design->description"/>
-                                    </div>
-                                @endif
-                                @if($design->bill_of_materials)
-                                    <div class="mt-8 border-t border-gray-200 pt-8">
-                                        <h2 class="text-xl font-semibold text-gray-900">Bill of Materials</h2>
-                                        <div class="mt-4">
-                                            <ul class="divide-y divide-gray-200">
-                                                @foreach($design->bill_of_materials as $material=>$quantity)
-                                                    <li class="py-3 flex justify-between">
-                                                        <span
-                                                            class="text-gray-900">{{ $material ?? 'Unknown Item' }}</span>
-                                                        <div class="flex items-center space-x-4">
-                                                            <span class="text-gray-500">x{{ $quantity }}</span>
-                                                        </div>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
+                        <div x-show="isOpen" class="divide-y divide-gray-200">
+                            @foreach($driver->designs as $design)
+                                <a href="/designs/design/{{$design->id}}">
+                                    <div class="py-4">
+                                        <div class="flex justify-between items-start">
+                                            <div class="flex-1">
+                                                <h4 class="text-lg font-medium text-gray-900">
+                                                    <a href="/designs/design/{{$design->design->id}}"
+                                                       class="hover:text-blue-600">
+                                                        {{ $design->design->name }}
+                                                    </a>
+                                                </h4>
+                                                <div class="mt-1 flex items-center space-x-4 text-sm text-gray-500">
+                                                    <span>{{ $design->position }}</span>
+                                                    <span>•</span>
+                                                    <span>{{ $design->design->category }}</span>
+                                                    <span>•</span>
+                                                    <span>{{ $design->low_frequency }} Hz - {{ $design->high_frequency }} Hz</span>
+                                                    <span>•</span>
+                                                    <span>Qty: {{ $design->quantity }}</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                @endif
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
 
-                                <!-- Main Description -->
+                <!-- Factory Specs -->
+                @if($driver->factory_specs)
+                    <div x-data="{ isOpen: true }">
+                    <button @click="isOpen = !isOpen"
+                            class="flex items-center justify-between w-full text-xl font-semibold text-gray-900 pb-4 border-b-2 border-zinc-400">
+                        <span>T/S Parameters</span>
+                        <svg class="w-6 h-6 transition-transform" :class="{ 'rotate-180': !isOpen }" fill="none"
+                             stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div x-show="isOpen" class="border-t border-gray-200 pt-8">
+                        <dl class="grid grid-cols-2 gap-4">
+                            @foreach($driver->factory_specs as $key => $value)
+                                <div class="flex justify-between col-span-2 py-2 border-b">
+                                    <dt class="font-medium text-gray-600">{{ $key }}</dt>
+                                    <dd class="text-gray-900">{{ $value }}</dd>
+                                </div>
+                            @endforeach
+                        </dl>
+                    </div>
+                    </div>
+                @endif
 
-                            @else
-                                {{-- User is logged in but doesn't have access --}}
-                                <div class="mt-8 border-t border-gray-200 pt-8">
-                                    <div class="w-full bg-zinc-600 p-8 rounded-lg text-center">
-                                        <p class="text-white text-lg">Sorry, you need Access for this section</p>
-                                        <a href="{{ route('shop.show', $design->id) }}"
-                                           class="mt-4 inline-block px-4 py-2 bg-white text-zinc-600 rounded-md hover:bg-zinc-100">
-                                            Purchase Access
-                                        </a>
-                                    </div>
-                                </div>
-                            @endif
-                        @else
-                            {{-- Guest user --}}
-                            <div class="mt-8 border-t border-gray-200 pt-8">
-                                <div class="w-full bg-zinc-600 p-8 rounded-lg text-center">
-                                    <p class="text-white text-lg">Sorry, you need to be logged in to access this
-                                        section</p>
-                                    <div class="mt-4 space-x-4">
-                                        <a href="{{ route('login') }}"
-                                           class="inline-block px-4 py-2 bg-white text-zinc-600 rounded-md hover:bg-zinc-100">
-                                            Login
-                                        </a>
-                                        <a href="{{ route('register') }}"
-                                           class="inline-block px-4 py-2 bg-white text-zinc-600 rounded-md hover:bg-zinc-100">
-                                            Register
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
+                <!-- Description Section -->
+                <div class="border-t border-gray-200 pt-8">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Description</h2>
+                    <div class="prose max-w-none">
+                        <iframe srcdoc="{{$driver->description}}" class="w-full min-h-dvh"></iframe>
                     </div>
                 </div>
-
+            </div>
         </main>
     </div>
     @endvolt
