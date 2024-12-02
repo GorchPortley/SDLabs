@@ -1,14 +1,83 @@
 <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 p-4">
     @foreach($designs as $design)
-        <div x-data="{ showSpecs: false }" wire:key="{{ $design->id }}" class="relative flex lg:h-full h-[300px] flex-row xs:flex-col lg:flex-col w-full bg-white rounded-lg border-2 border-gray-100 hover:shadow-lg shadow-sm overflow-hidden">
-{{--            image section--}}
-            <div class="w-1/2 lg:w-full flex-shrink-0">
-                <a href="/designs/design/{{$design->id}}" class="">
-                    <img src="/storage/{{$design->card_image}}" class="w-full h-full object-cover" alt="{{$design->name}}">
+        <div x-data="{
+    showSpecs: false,
+    currentImageIndex: 0,
+    touchStart: null,
+    images: @js(array_map(function($filepath) {
+        return [
+            'src' => '/storage/' . $filepath,
+            'alt' => 'Design Image'
+        ];
+    }, is_array($design->card_image) ? $design->card_image : [$design->card_image])),
+
+    handleTouchStart(e) {
+        this.touchStart = e.touches[0].clientX;
+    },
+    handleTouchMove(e) {
+        if (!this.touchStart) return;
+
+        const touch = e.touches[0].clientX;
+        const diff = this.touchStart - touch;
+
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) {
+                this.currentImageIndex = (this.currentImageIndex + 1) % this.images.length;
+            } else {
+                this.currentImageIndex = (this.currentImageIndex - 1 + this.images.length) % this.images.length;
+            }
+            this.touchStart = null;
+        }
+    }
+}"
+             wire:key="{{ $design->id }}"
+             class="relative flex lg:h-full h-[300px] flex-row xs:flex-col lg:flex-col w-full bg-white rounded-lg border-2 border-gray-100 hover:shadow-lg shadow-sm overflow-hidden">
+            {{-- Image Carousel Section --}}
+            <div class="w-1/2 lg:w-full flex-shrink-0 relative"
+                 @touchstart="handleTouchStart"
+                 @touchmove.prevent="handleTouchMove"
+                 @touchend="touchStart = null">
+                <a href="/designs/design/{{$design->id}}" class="block h-full">
+                    <template x-for="(image, index) in images" :key="index">
+                        <img
+                            :src="image.src"
+                            :alt="image.alt"
+                            class="absolute w-full h-full object-cover transition-opacity duration-300"
+                            :class="{'opacity-100': currentImageIndex === index, 'opacity-0': currentImageIndex !== index}"
+                        >
+                    </template>
+
+                    <!-- Navigation arrows (if multiple images) -->
+                    <template x-if="images.length > 1">
+                        <div>
+                            <button
+                                @click.prevent="currentImageIndex = (currentImageIndex - 1 + images.length) % images.length"
+                                class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/75 transition-colors z-10">
+                                ←
+                            </button>
+                            <button
+                                @click.prevent="currentImageIndex = (currentImageIndex + 1) % images.length"
+                                class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/75 transition-colors z-10">
+                                →
+                            </button>
+
+                            <!-- Navigation dots -->
+                            <div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
+                                <template x-for="(image, index) in images" :key="index">
+                                    <button
+                                        @click.prevent="currentImageIndex = index"
+                                        class="w-2 h-2 rounded-full transition-colors"
+                                        :class="currentImageIndex === index ? 'bg-white' : 'bg-white/50'">
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
                 </a>
             </div>
+
             @if($design->official)
-                <div class="absolute left-2 lg:left-auto lg:right-2 top-2 bg-yellow-400 text-white px-2 py-1 rounded-full flex items-center gap-1">
+                <div class="absolute left-2 lg:left-auto lg:right-2 top-2 bg-yellow-400 text-white px-2 py-1 rounded-full flex items-center gap-1 z-20">
                     <i class="ph ph-seal-check"></i>
                 </div>
             @endif
