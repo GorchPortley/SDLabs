@@ -41,17 +41,9 @@ new class extends Component {
                 <!-- Top Section: Image and Details -->
                 <div class="lg:grid lg:grid-cols-2 lg:gap-8">
                     <!-- Left: Image Section -->
-                    <div class="mb-6 lg:mb-0">
-                        <div x-data="{
-                            currentIndex: 0,
-                            images: {{ Js::from(is_array($driver->card_image) ? $driver->card_image : [$driver->card_image]) }},
-                            next() { this.currentIndex = (this.currentIndex + 1) % this.images.length; },
-                            previous() { this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length; }
-                        }" class="relative aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
-                            <!-- Image display and navigation (same as design page) -->
-                            <!-- ... -->
+                    <div>
+                                <img src="/storage/{{$driver->card_image}}" class="w-full h-full object-contain" alt="{{$driver->brand}} - {{$driver->model}}">
                         </div>
-                    </div>
 
                     <!-- Right: Driver Info -->
                     <div class="space-y-6">
@@ -152,7 +144,7 @@ new class extends Component {
                     <div x-data="{ isOpen: true }">
                     <button @click="isOpen = !isOpen"
                             class="flex items-center justify-between w-full text-xl font-semibold text-gray-900 pb-4 border-b-2 border-zinc-400">
-                        <span>T/S Parameters</span>
+                        <span>Factory Data</span>
                         <svg class="w-6 h-6 transition-transform" :class="{ 'rotate-180': !isOpen }" fill="none"
                              stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -160,7 +152,10 @@ new class extends Component {
                         </svg>
                     </button>
                     <div x-show="isOpen" class="border-t border-gray-200 pt-8">
-                        <dl class="grid grid-cols-2 gap-4">
+                        <livewire:driverfrequencyresponseviewer :driver="$driver"></livewire:driverfrequencyresponseviewer>
+                        <div>
+                            <span class="text-xl justify-center font-semibold text-gray-900">T/S Parameters</span>
+                        <dl class="grid grid-cols-2 gap-4 mx-20">
                             @foreach($driver->factory_specs as $key => $value)
                                 <div class="flex justify-between col-span-2 py-2 border-b">
                                     <dt class="font-medium text-gray-600">{{ $key }}</dt>
@@ -168,6 +163,7 @@ new class extends Component {
                                 </div>
                             @endforeach
                         </dl>
+                        </div>
                     </div>
                     </div>
                 @endif
@@ -176,7 +172,7 @@ new class extends Component {
                 <div class="border-t border-gray-200 pt-8">
                     <h2 class="text-xl font-semibold text-gray-900 mb-4">Description</h2>
                     <div class="prose max-w-none">
-                        <iframe srcdoc="{{$driver->description}}" class="w-full min-h-dvh"></iframe>
+                        <iframe srcdoc="{{$driver->description}}" class="w-full"></iframe>
                     </div>
                 </div>
             </div>
