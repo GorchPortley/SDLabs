@@ -13,6 +13,4 @@
 >
     <x-marketing.hero></x-marketing.hero>
     <x-marketing.features></x-marketing.features>
-    <x-marketing.testimonials></x-marketing.testimonials>
-    <x-marketing.pricing></x-marketing.pricing>
-</x-layouts.marketing> 
+</x-layouts.marketing>
