@@ -3,23 +3,26 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
-use Illuminate\Support\Facades\{Storage, Log};
+use Illuminate\Support\Facades\{Storage, Cache};
 
 class FrequencyResponseViewer extends Component
 {
-    // Properties with type declarations for better code clarity
     public $design;
     public array $chartData = [];
     public array $summedResponse = [];
     public array $phaseData = [];
-    public array $debugInfo = [];
+    public string $activeTab = 'amplitude';
 
-    // Constants for frequency response calculations and validation
-    private const FREQ_MIN = 20;
-    private const FREQ_MAX = 20000;
-    private const AMP_MIN = 50;
-    private const AMP_MAX = 120;
-    private const LOW_FREQ_THRESHOLD = 120;
+    private const FREQ_RANGE = [
+        'min' => 20,
+        'max' => 20000
+    ];
+
+    private const AMP_RANGE = [
+        'min' => 50,
+        'max' => 120
+    ];
+
     private const COLORS = [
         '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
         '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
@@ -28,35 +31,66 @@ class FrequencyResponseViewer extends Component
     public function mount($design)
     {
         $this->design = $design;
-        $this->initDebugInfo();
-        $this->loadFrequencyResponses();
-    }
 
-    private function initDebugInfo(): void
-    {
-        $this->debugInfo = [
-            'has_design' => !is_null($this->design),
-            'frd_files_type' => gettype($this->design->frd_files)
-        ];
-    }
-
-    protected function loadFrequencyResponses(): void
-    {
-        if (empty($this->design->frd_files)) {
-            $this->debugInfo['error'] = 'No FRD files found in design';
+        // Try to get from cache first
+        $cacheKey = "design_{$design->id}_response_data";
+        if (Cache::has($cacheKey)) {
+            $data = Cache::get($cacheKey);
+            $this->setData($data);
             return;
         }
 
+        // Process data if not cached
+        $data = $this->processAllData();
+        Cache::put($cacheKey, $data, now()->addHours(12));
+        $this->setData($data);
+    }
+
+    private function processAllData(): array
+    {
+        if (empty($this->design->frd_files)) {
+            return [];
+        }
+
         $frdFiles = $this->getFrdFiles();
-        $summedData = [];
+        $processedData = [];
+        $colorIndex = 0;
 
         foreach ($frdFiles as $filePath) {
-            $this->processFile($filePath, $summedData);
+            if (!Storage::exists($filePath)) {
+                continue;
+            }
+
+            $fileData = $this->processFile($filePath);
+            if (!empty($fileData)) {
+                $label = pathinfo($filePath, PATHINFO_FILENAME);
+                $color = self::COLORS[$colorIndex % count(self::COLORS)];
+                $colorIndex++;
+
+                $processedData[] = [
+                    'data' => $fileData,
+                    'label' => $label,
+                    'color' => $color
+                ];
+            }
         }
 
-        if (!empty($summedData)) {
-            $this->processSummedData($summedData);
-        }
+        // Process both amplitude and phase data at once
+        $amplitudeData = $this->processAmplitudeData($processedData);
+        $phaseData = $this->processPhaseData($processedData);
+
+        return [
+            'chartData' => $amplitudeData['chartData'],
+            'summedResponse' => $amplitudeData['summedResponse'],
+            'phaseData' => $phaseData['phaseData']
+        ];
+    }
+
+    private function setData(array $data): void
+    {
+        $this->chartData = $data['chartData'] ?? [];
+        $this->summedResponse = $data['summedResponse'] ?? [];
+        $this->phaseData = $data['phaseData'] ?? [];
     }
 
     private function getFrdFiles(): array
@@ -66,89 +100,122 @@ class FrequencyResponseViewer extends Component
             : $this->design->frd_files;
     }
 
-    private function processFile(string $filePath, array &$summedData): bool
+    private function processFile(string $filePath): array
     {
-        if (!Storage::exists($filePath)) {
-            $this->debugInfo['missing_files'][] = $filePath;
-            return false;
-        }
-
         $content = Storage::get($filePath);
-        $data = $this->parseFRDFile($content);
-
-        if (empty($data)) {
-            return false;
-        }
-
-        $this->addChartData($filePath, $data);
-        $this->addToSummedData($data, $summedData);
-
-        return true;
+        return $this->parseFRDFile($content);
     }
 
-    private function addChartData(string $filePath, array $data): void
+    private function parseFRDFile(string $content): array
     {
-        $label = pathinfo($filePath, PATHINFO_FILENAME);
-        $color = $this->getRandomColor();
+        $lines = array_filter(
+            explode("\n", trim($content)),
+            fn($line) => !empty($line) && $line[0] !== '*' && $line[0] !== '#'
+        );
 
-        $this->chartData[] = [
-            'label' => $label,
-            'data' => $this->formatPointData($data, 'amplitude'),
-            'borderColor' => $color,
-            'fill' => false
-        ];
+        $data = [];
+        foreach ($lines as $line) {
+            $values = preg_split('/\s+/', trim($line));
+            if (count($values) < 3) continue;
 
-        $this->phaseData[] = [
-            'label' => $label . ' Phase',
-            'data' => $this->formatPointData($data, 'phase'),
-            'borderColor' => $color,
-            'fill' => false
-        ];
-    }
-
-    private function addToSummedData(array $data, array &$summedData): void
-    {
-        foreach ($data as $point) {
-            $freq = $point['frequency'];
-            $amplitude = pow(10, $point['amplitude'] / 20.0);
-            $phase = $this->normalizePhase($point['phase']);
-            $phaseRad = deg2rad($phase);
-
-            $real = $amplitude * cos($phaseRad);
-            $imag = $amplitude * sin($phaseRad);
-
-            if (!isset($summedData[$freq])) {
-                $summedData[$freq] = ['real' => $real, 'imag' => $imag, 'count' => 1];
-            } else {
-                $summedData[$freq]['real'] += $real;
-                $summedData[$freq]['imag'] += $imag;
-                $summedData[$freq]['count']++;
+            $point = $this->validateDataPoint($values);
+            if ($point) {
+                $data[] = $point;
             }
         }
+
+        return $data;
     }
 
-    private function processSummedData(array $summedData): void
+    private function validateDataPoint(array $values): ?array
     {
-        ksort($summedData);
-        $lastValidDb = null;
+        $freq = (float)$values[0];
+        $amp = (float)$values[1];
 
-        foreach ($summedData as $freq => $complex) {
-            $magnitude = sqrt(pow($complex['real'], 2) + pow($complex['imag'], 2));
-            $db = 20 * log10(max($magnitude, 1e-20));
+        if ($freq < self::FREQ_RANGE['min'] || $freq > self::FREQ_RANGE['max']) {
+            return null;
+        }
 
-            // Smooth low frequency response
-            if ($freq < self::LOW_FREQ_THRESHOLD && $lastValidDb !== null) {
-                $dbDiff = abs($db - $lastValidDb);
-                if ($dbDiff > 3) {
-                    $db = $lastValidDb + (3 * ($db > $lastValidDb ? 1 : -1));
+        if ($amp < self::AMP_RANGE['min'] || $amp > self::AMP_RANGE['max']) {
+            return null;
+        }
+
+        return [
+            'frequency' => $freq,
+            'amplitude' => $amp,
+            'phase' => (float)$values[2]
+        ];
+    }
+
+    private function processAmplitudeData(array $processedData): array
+    {
+        $chartData = [];
+        $summedData = [];
+
+        foreach ($processedData as $dataset) {
+            $chartData[] = [
+                'label' => $dataset['label'],
+                'data' => array_map(fn($point) => [
+                    'x' => $point['frequency'],
+                    'y' => $point['amplitude']
+                ], $dataset['data']),
+                'borderColor' => $dataset['color'],
+                'fill' => false
+            ];
+
+            foreach ($dataset['data'] as $point) {
+                $freq = $point['frequency'];
+                $amplitude = pow(10, $point['amplitude'] / 20.0);
+                $phase = deg2rad($point['phase']);
+
+                $real = $amplitude * cos($phase);
+                $imag = $amplitude * sin($phase);
+
+                if (!isset($summedData[$freq])) {
+                    $summedData[$freq] = ['real' => $real, 'imag' => $imag, 'count' => 1];
+                } else {
+                    $summedData[$freq]['real'] += $real;
+                    $summedData[$freq]['imag'] += $imag;
+                    $summedData[$freq]['count']++;
                 }
             }
-
-            $db = max(min($db, self::AMP_MAX), self::AMP_MIN);
-            $lastValidDb = $db;
-
-            $this->summedResponse[] = ['x' => $freq, 'y' => $db];
         }
+
+        $summedResponse = [];
+        if (!empty($summedData)) {
+            ksort($summedData);
+            foreach ($summedData as $freq => $complex) {
+                $magnitude = sqrt(pow($complex['real'], 2) + pow($complex['imag'], 2));
+                $db = 20 * log10(max($magnitude, 1e-20));
+                $db = max(min($db, self::AMP_RANGE['max']), self::AMP_RANGE['min']);
+
+                $summedResponse[] = ['x' => $freq, 'y' => $db];
+            }
+        }
+
+        return [
+            'chartData' => $chartData,
+            'summedResponse' => $summedResponse
+        ];
+    }
+
+    private function processPhaseData(array $processedData): array
+    {
+        $phaseData = [];
+
+        foreach ($processedData as $dataset) {
+            $phaseData[] = [
+                'label' => $dataset['label'] . ' Phase',
+                'data' => array_map(fn($point) => [
+                    'x' => $point['frequency'],
+                    'y' => $this->normalizePhase($point['phase'])
+                ], $dataset['data']),
+                'borderColor' => $dataset['color'],
+                'fill' => false
+            ];
+        }
+
+        return ['phaseData' => $phaseData];
     }
 
     private function normalizePhase(float $phase): float
@@ -158,88 +225,13 @@ class FrequencyResponseViewer extends Component
         return $phase;
     }
 
-    private function formatPointData(array $data, string $valueKey): array
-    {
-        return array_map(fn($point) => [
-            'x' => $point['frequency'],
-            'y' => $point[$valueKey]
-        ], $data);
-    }
-
-    protected function parseFRDFile(string $content): array
-    {
-        $lines = explode("\n", trim($content));
-        $data = [];
-
-        foreach ($lines as $line) {
-            $point = $this->parseDataPoint($line);
-            if ($point) {
-                $data[] = $point;
-            }
-        }
-
-        return $this->filterAndSortData($data);
-    }
-
-    private function parseDataPoint(string $line): ?array
-    {
-        $line = trim($line);
-        if (empty($line) || $line[0] === '*' || $line[0] === '#') {
-            return null;
-        }
-
-        $values = preg_split('/\s+/', $line);
-        if (count($values) < 3) {
-            return null;
-        }
-
-        return $this->validateDataPoint($values);
-    }
-
-    private function validateDataPoint(array $values): ?array
-    {
-        $freq = (float)$values[0];
-        $amp = (float)$values[1];
-        $phase = (float)$values[2];
-
-        if ($freq < self::FREQ_MIN || $freq > self::FREQ_MAX) {
-            return null;
-        }
-
-        if ($amp < self::AMP_MIN || $amp > self::AMP_MAX) {
-            return null;
-        }
-
-        return [
-            'frequency' => $freq,
-            'amplitude' => $amp,
-            'phase' => $phase
-        ];
-    }
-
-    private function filterAndSortData(array $data): array
-    {
-        if (empty($data)) {
-            return [];
-        }
-
-        usort($data, fn($a, $b) => $a['frequency'] <=> $b['frequency']);
-        return $data;
-    }
-
-    protected function getRandomColor(): string
-    {
-        static $colorIndex = 0;
-        return self::COLORS[$colorIndex++ % count(self::COLORS)];
-    }
-
     public function render()
     {
         return view('livewire.frequency-response-viewer', [
             'chartData' => $this->chartData,
             'summedResponse' => $this->summedResponse,
             'phaseData' => $this->phaseData,
-            'debugInfo' => $this->debugInfo
+            'activeTab' => $this->activeTab
         ]);
     }
 }

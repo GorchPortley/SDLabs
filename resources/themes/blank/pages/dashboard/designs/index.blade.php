@@ -225,12 +225,16 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                             ->maxLength(255),
 
                         FileUpload::make('card_image')
+                            ->multiple()
                             ->label('Design Images')
                             ->hint('Images that will be displayed publicly')
                             ->disk('public')
-                            ->directory('designthumbs')
+                            ->directory(function ($get) {
+                                $name = $get('name');
+                                return $this->getphotospath($name);
+                            })
                             ->visibility('public')
-                            ->default('/demo/Design_Placeholder.jpg'),
+                            ->required(),
 
 
                         FileUpload::make('frd_files')
@@ -480,12 +484,16 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                                 ->maxLength(255),
 
                             FileUpload::make('card_image')
+                                ->multiple()
                                 ->label('Design Images')
                                 ->hint('Images that will be displayed publicly')
                                 ->disk('public')
-                                ->directory('designthumbs')
+                                ->directory(function ($get) {
+                                    $name = $get('name');
+                                    return $this->getphotospath($name);
+                                })
                                 ->visibility('public')
-                                ->default('demo/800x800.jpg'),
+                                ->required(),
 
 
                             FileUpload::make('frd_files')

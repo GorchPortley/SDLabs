@@ -1,9 +1,15 @@
+<div>
 <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 p-4">
     @foreach($designs as $design)
         <div x-data="{ showSpecs: false }" wire:key="{{ $design->id }}" class="relative flex lg:h-full h-[300px] flex-row xs:flex-col lg:flex-col w-full bg-white rounded-lg border-2 border-gray-100 hover:shadow-lg shadow-sm overflow-hidden">
             <div class="w-1/2 lg:w-full flex-shrink-0">
                 <a href="/designs/design/{{$design->id}}" class="">
-                    <img src="/storage/{{$design->card_image}}" class="w-full h-full object-cover" alt="{{$design->name}}">
+                    <img
+                        src="/storage/{{ is_array($design->card_image) && !empty($design->card_image) ? $design->card_image[0] : $design->card_image }}"
+                        class="w-full h-full object-cover"
+                        alt="{{ $design->name }}"
+                        onerror="this.src='/images/placeholder.jpg'"
+                    >
                 </a>
             </div>
             @if($design->official)
@@ -75,4 +81,5 @@
         </div>
     @endforeach
 </div>
-
+<div class="flex gap-4 justify-center mt-8">{{ $designs->links() }}</div>
+</div>

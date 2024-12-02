@@ -1,24 +1,21 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="{{ app()->getLocale() }}" class="min-h-full">
 <head>
     @include('theme::partials.head', ['seo' => ($seo ?? null) ])
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
+    @stack('head')
 </head>
-<body class="flex flex-col min-h-screen overflow-x-hidden @if($bodyClass ?? false){{ $bodyClass }}@endif">
+<body class="min-h-full flex flex-col">
+<x-marketing.header />
 
-    <x-marketing.header />
+<main class="flex-grow">
+    {{ $slot }}
+</main>
 
-    <main class="w-full h-full">
-        {{ $slot }}
-    </main>
+@livewire('notifications')
+@filamentScripts
+@livewireScripts
 
-    @livewire('notifications')
-    @filamentScripts
-    @livewireScripts
-
-    {{ $javascript ?? '' }}
-<x-marketing.footer />
+{{ $javascript ?? '' }}
 </body>
 </html>

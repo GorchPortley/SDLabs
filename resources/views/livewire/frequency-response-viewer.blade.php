@@ -1,262 +1,141 @@
-<div class="rounded-lg w-full">
+<div>
     @push('head')
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @endpush
 
-    <div class="w-full h-full"
-         x-data="{
-            activeTab: 'future',
-            amplitudeData: @js($chartData),
-            summedResponse: @js($summedResponse),
-            phaseData: @js($phaseData),
-            amplitudeChart: null,
-            phaseChart: null,
+        <div x-data="{
+    selectedTab: 'amplitude',
+    hideData: false,
 
-            initCharts() {
-    if (this.activeTab === 'amplitude') {
-        if (this.amplitudeChart) {
-            this.amplitudeChart.destroy();
-        }
-
-        this.$nextTick(() => {
-            const ctxAmplitude = document.getElementById('frequencyResponseChart').getContext('2d');
-            // Create a deep copy of the amplitude data
-            let datasetsAmplitude = JSON.parse(JSON.stringify(this.amplitudeData));
-
-            if (datasetsAmplitude.length > 0 && this.summedResponse) {
-                datasetsAmplitude.push({
-                    label: 'Summed Response',
-                    data: this.summedResponse,
-                    borderColor: '#000000',
-                    borderWidth: 2,
-                    borderDash: [5, 5],
-                    fill: false
-                });
-            }
-
-                        this.amplitudeChart = new Chart(ctxAmplitude, {
-                            type: 'line',
-                            data: { datasets: datasetsAmplitude },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: true,
-                                scales: {
-                                    x: {
-                                        type: 'logarithmic',
-                                        title: { display: true, text: 'Frequency (Hz)' },
-                                        min: 10,
-                                        max: 20000,
-                                        grid: { color: 'rgba(0, 0, 0, 0.1)' }
-                                    },
-                                    y: {
-                                        title: { display: true, text: 'Amplitude (dB)' },
-                                        min: 50,
-                                        max: 100,
-                                        grid: { color: 'rgba(0, 0, 0, 0.1)' }
-                                    }
-                                },
-                                plugins: {
-                                    legend: {
-                                        position: 'bottom',
-                                        labels: { usePointStyle: true, padding: 20 }
-                                    },
-                                    tooltip: {
-                                        mode: 'index',
-                                        intersect: false,
-                                        callbacks: {
-                                            label: function(context) {
-                                                return context.dataset.label + ': ' + context.parsed.y.toFixed(1) + ' dB';
-                                            }
-                                        }
-                                    }
-                                },
-                                parsing: { xAxisKey: 'x', yAxisKey: 'y' },
-                                elements: {
-                                    point: { radius: 0, hoverRadius: 5 },
-                                    line: { tension: 0.3 }
-                                }
-                            }
-                        });
-                    });
+    init() {
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: true,
+            elements: {
+                line: {
+                    tension: 0.4,  // Makes lines smoother (0 = no smoothing, 1 = maximum smoothing)
+                    borderWidth: 2  // Makes all lines thicker
+                },
+                point: {
+                    radius: 0  // Hides individual points
                 }
+            }
+        };
 
-                if (this.activeTab === 'phase') {
-                    if (this.phaseChart) {
-                        this.phaseChart.destroy();
+        // Create Amplitude Chart
+        const amplitudeCtx = document.getElementById('amplitudeChart').getContext('2d');
+        new Chart(amplitudeCtx, {
+            type: 'line',
+            data: {
+                datasets: [
+                    ...@js($chartData),
+                    {
+                        label: 'Summed Response',
+                        data: @js($summedResponse),
+                        borderColor: '#000000',
+                        borderWidth: 2,
+                        fill: false
                     }
-
-                    this.$nextTick(() => {
-                        const ctxPhase = document.getElementById('phaseResponseChart').getContext('2d');
-                        this.phaseChart = new Chart(ctxPhase, {
-                            type: 'line',
-                            data: { datasets: this.phaseData },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: true,
-                                scales: {
-                                    x: {
-                                        type: 'logarithmic',
-                                        title: { display: true, text: 'Frequency (Hz)' },
-                                        min: 20,
-                                        max: 20000,
-                                        grid: { color: 'rgba(0, 0, 0, 0.1)' }
-                                    },
-                                    y: {
-                                        title: { display: true, text: 'Phase (degrees)' },
-                                        min: -180,
-                                        max: 180,
-                                        grid: { color: 'rgba(0, 0, 0, 0.1)' }
-                                    }
-                                },
-                                plugins: {
-                                    legend: {
-                                        position: 'top',
-                                        labels: { usePointStyle: true, padding: 20 }
-                                    },
-                                    tooltip: {
-                                        mode: 'index',
-                                        intersect: false,
-                                        callbacks: {
-                                            label: function(context) {
-                                                return context.dataset.label + ': ' + context.parsed.y.toFixed(1) + '°';
-                                            }
-                                        }
-                                    }
-                                },
-                                parsing: { xAxisKey: 'x', yAxisKey: 'y' },
-                                elements: {
-                                    point: { radius: 0, hoverRadius: 5 },
-                                    line: { tension: 0.3 }
-                                }
+                ]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    x: {
+                        type: 'logarithmic',
+                        min: 20,
+                        max: 20000,
+                        title: { display: true, text: 'Frequency (Hz)' }
+                    },
+                    y: {
+                        min: 50,
+                        max: 100,
+                        title: { display: true, text: 'Amplitude (dB)' }
+                    }
+                },
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.parsed.y.toFixed(1)} dB`;
                             }
-                        });
-                    });
+                        }
+                    }
                 }
             }
-        }"
-         x-init="initCharts()"
-         @tab-changed.window="activeTab = $event.detail.tab; initCharts();">
+        });
 
-        <!-- Mobile Tabs (top) -->
-        <div class="lg:hidden w-full rounded-t-lg bg-zinc-800 p-4">
-            <div class="flex space-x-2 overflow-x-auto">
-                <x-button
-                    @click="activeTab = 'amplitude'; initCharts()"
-                    :class="{ 'bg-zinc-600': activeTab === 'amplitude' }"
-                    class="flex-shrink-0 px-4 py-2 rounded text-white hover:bg-zinc-700 transition-colors"
-                >
-                    Amplitude
-                </x-button>
-                <x-button
-                    @click="activeTab = 'phase'; initCharts()"
-                    :class="{ 'bg-zinc-600': activeTab === 'phase' }"
-                    class="flex-shrink-0 px-4 py-2 rounded text-white hover:bg-zinc-700 transition-colors"
-                >
-                    Phase
-                </x-button>
-                <x-button
-                    @click="activeTab = 'future'"
-                    :class="{ 'bg-zinc-600': activeTab === 'future' }"
-                    class="flex-shrink-0 px-4 py-2 rounded text-white hover:bg-zinc-700 transition-colors"
-                >
-                    Future
-                </x-button>
-            </div>
+        // Create Phase Chart
+        const phaseCtx = document.getElementById('phaseChart').getContext('2d');
+        new Chart(phaseCtx, {
+            type: 'line',
+            data: { datasets: @js($phaseData) },
+            options: {
+                ...commonOptions,
+                scales: {
+                    x: {
+                        type: 'logarithmic',
+                        min: 20,
+                        max: 20000,
+                        title: { display: true, text: 'Frequency (Hz)' }
+                    },
+                    y: {
+                        min: -180,
+                        max: 180,
+                        title: { display: true, text: 'Phase (degrees)' }
+                    }
+                },
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.parsed.y.toFixed(1)}°`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+}"
+    >
+        <div @keydown.right.prevent="$focus.wrap().next()" @keydown.left.prevent="$focus.wrap().previous()"
+             class="flex gap-2 overflow-x-auto border-b border-neutral-300 dark:border-neutral-700" role="tablist"
+             aria-label="tab options">
+            <button @click="selectedTab = 'amplitude'" :aria-selected="selectedTab === 'amplitude'"
+                    :tabindex="selectedTab === 'amplitude' ? '0' : '-1'"
+                    :class="selectedTab === 'amplitude' && !hideData  ? 'font-bold text-black border-b-2 border-black dark:border-white dark:text-white' : 'text-neutral-600 font-medium dark:text-neutral-300 dark:hover:border-b-neutral-300 dark:hover:text-white hover:border-b-2 hover:border-b-neutral-800 hover:text-neutral-900'"
+                    class="h-min px-4 py-2 text-sm" type="button" role="tab" aria-controls="tabpanelAmplitude">
+                Amplitude
+            </button>
+            <button @click="selectedTab = 'phase'" :aria-selected="selectedTab === 'phase'"
+                    :tabindex="selectedTab === 'phase' ? '0' : '-1'"
+                    :class="selectedTab === 'phase' && !hideData ? 'font-bold text-black border-b-2 border-black dark:border-white dark:text-white' : 'text-neutral-600 font-medium dark:text-neutral-300 dark:hover:border-b-neutral-300 dark:hover:text-white hover:border-b-2 hover:border-b-neutral-800 hover:text-neutral-900'"
+                    class="h-min px-4 py-2 text-sm" type="button" role="tab" aria-controls="tabpanelphase">Phase
+            </button>
+            <button
+                @click="hideData = !hideData"
+                :aria-selected="hideData"
+                :class="hideData ? 'font-bold text-black border-b-2 border-black dark:border-white dark:text-white' : 'text-neutral-600 font-medium dark:text-neutral-300 dark:hover:border-b-neutral-300 dark:hover:text-white hover:border-b-2 hover:border-b-neutral-800 hover:text-neutral-900'"
+                class="h-min px-4 py-2 text-sm"
+                type="button"
+                x-text="hideData ? 'Show Data' : 'Hide Data'"
+            >
+            </button>
         </div>
-
-        <!-- Desktop Layout -->
-        <div class="flex rounded-lg border border-gray-400 flex-col lg:flex-row">
-            <!-- Desktop Sidebar Tabs (left) -->
-            <div class="hidden border-r border-gray-400 lg:block lg:w-1/4 p-4">
-                <div class="space-y-2 flex flex-col items-center">
-                    <x-button
-                        @click="activeTab = 'future'"
-                        :class="{ 'bg-zinc-600': activeTab === 'future' }"
-                        class="w-full"
-                    >
-                        Components
-                    </x-button>
-                    <x-button
-                        @click="activeTab = 'amplitude'; initCharts()"
-                        :class="{ 'bg-zinc-600': activeTab === 'amplitude' }"
-                        class="w-full"
-                    >
-                        Amplitude Response
-                    </x-button>
-                    <x-button
-                        @click="activeTab = 'phase'; initCharts()"
-                        :class="{ 'bg-zinc-600': activeTab === 'phase' }"
-                        class="w-full"
-                    >
-                        Phase Response
-                    </x-button>
-
-                </div>
+        <div class="px-2 py-4 text-neutral-600 dark:text-neutral-300" x-show="!hideData">
+            <div x-show="selectedTab === 'amplitude'" class="w-full" id="tabpanelamplitude" role="tabpanel" aria-label="amplitude">
+                <canvas id="amplitudeChart"></canvas>
             </div>
-
-                <!-- Main Content -->
-                <div class="w-full h-full rounded-lg p-4 lg:p-6">
-                    <!-- Content Container -->
-                    <div class="w-full h-full bg-white rounded-lg shadow-sm">
-                        <!-- Tab Content -->
-                        <div class="w-full h-full">
-
-                            <!-- Future Content Tab -->
-                            <div x-show="activeTab === 'future'" class="w-full h-full">
-                                <!-- Components -->
-                                @if($design->components->count() > 0)
-                                    <div class="">
-                                        <h2 class="text-xl font-semibold text-gray-900 border-b-2 p-2 border-zinc-400">Components</h2>
-                                        <table class="mt-4 divide-y divide-gray-200">
-                                            @foreach($design->components as $component)
-                                                <div class="border-b py-2">
-                                                    <div class="flex justify-between">
-                                                        <div class="flex-1">
-                                                            <h4 class="text-lg font-medium text-gray-900">
-                                                                {{$component->driver->brand}} - {{$component->driver->model}}
-                                                            </h4>
-                                                            <div class="mt-1 flex items-center space-x-4 text-sm text-gray-500">
-                                                                <span>{{$component->position}}</span>
-                                                                <span>•</span>
-                                                                <span>{{$component->driver->size}}</span>
-                                                                <span>•</span>
-                                                                <span>{{$component->driver->category}}</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="ml-4 flex flex-col items-end">
-                                                            <span class="text-sm font-medium text-gray-900">Qty: {{$component->quantity}}</span>
-                                                            <span class="mt-1 text-sm text-gray-500">
-                                {{$component->low_frequency}} Hz - {{$component->high_frequency}} Hz
-                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                @endif
-                            </div>
-
-                            <!-- Amplitude Response Tab -->
-                            <div x-show="activeTab === 'amplitude'" class="h-full w-full p-4">
-                                <h4 class="text-xl font-semibold mb-4">Amplitude Response</h4>
-                                <div class=" lg:h-[calc(100%-2rem)]">
-                                    <canvas id="frequencyResponseChart"></canvas>
-                                </div>
-                            </div>
-
-                            <!-- Phase Response Tab -->
-                            <div x-show="activeTab === 'phase'" class="h-full w-full p-4">
-                                <h4 class="text-xl font-semibold mb-4">Phase Response</h4>
-                                <div class=" lg:h-[calc(100%-2rem)]">
-                                    <canvas id="phaseResponseChart"></canvas>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div x-show="selectedTab === 'phase'" class="w-full" id="tabpanelphase" role="tabpanel" aria-label="phase">
+                <canvas id="phaseChart"></canvas>
             </div>
         </div>
     </div>
+</div>
