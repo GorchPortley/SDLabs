@@ -10,7 +10,7 @@
     <div class="px-2 py-4 h-dvh text-neutral-600 dark:text-neutral-300">
         <div x-show="selectedTab === 'summary'" id="tabpanelSummary" class="" role="tabpanel" aria-label="summary">
             <livewire:frequency-response-viewer :design="$design" />
-            <iframe class="w-full " srcdoc="{{ $design->summary }}"></iframe>
+            <iframe class="w-full min-h-dvh" srcdoc="{{ $design->summary }}"></iframe>
         </div>
         <div class="h-dvh" x-show="selectedTab === 'description'" id="tabpanelDescription" role="tabpanel" aria-label="description">
             @if($this->hasAccess)
