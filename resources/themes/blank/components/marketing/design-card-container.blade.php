@@ -1,6 +1,7 @@
 <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 p-4">
     @foreach($designs as $design)
         <div x-data="{ showSpecs: false }" wire:key="{{ $design->id }}" class="relative flex lg:h-full h-[300px] flex-row xs:flex-col lg:flex-col w-full bg-white rounded-lg border-2 border-gray-100 hover:shadow-lg shadow-sm overflow-hidden">
+{{--            image section--}}
             <div class="w-1/2 lg:w-full flex-shrink-0">
                 <a href="/designs/design/{{$design->id}}" class="">
                     <img src="/storage/{{$design->card_image}}" class="w-full h-full object-cover" alt="{{$design->name}}">
@@ -11,6 +12,7 @@
                     <i class="ph ph-seal-check"></i>
                 </div>
             @endif
+{{--            end image section--}}
             <div class="w-1/2 lg:w-full flex flex-col justify-center">
                     <h2 class="text-lg font-semibold text-center h-7 overflow-hidden text-ellipsis">{{$design->name}}</h2>
                     <p class="text-gray-600 text-center h-6 overflow-hidden text-ellipsis">By: {{$design->designer?->name}}</p>

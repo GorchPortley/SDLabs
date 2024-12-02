@@ -42,7 +42,8 @@ class Design extends Model
         'frd_files' => 'array',
         'enclosure_files' => 'array',
         'electronic_files' => 'array',
-        'design_other_files' => 'array'
+        'design_other_files' => 'array',
+        'card_image'=> 'array'
     ];
 
     public function designer(): BelongsTo
