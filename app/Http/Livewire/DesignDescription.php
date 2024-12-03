@@ -53,7 +53,7 @@ class DesignDescription extends Component
         }
 
         // User is the designer
-        if ($this->design->designer->id === auth()->id()) {
+        if ($this->design->designer && $this->design->designer->id === auth()->id()) {
             return true;
         }
 
