@@ -84,8 +84,8 @@ new class extends Component {
         <div class="flex h-full w-full bg-gray-300 rounded-md">
             <img alt="temporary alt text" src="https://placehold.co/1920x300">
         </div>
-        <div class="flex w-full h-full mt-5">
-            <div class="hidden lg:flex flex-col h-full lg:w-1/5 rounded-md p-4 bg-white shadow">
+        <div class="lg:flex flex-row w-full h-full mt-5">
+            <div class=" h-full lg:w-1/5 rounded-md p-4 bg-white shadow">
                 <form method="GET" class="space-y-6">
 
                     <!-- Sort -->
@@ -171,9 +171,9 @@ new class extends Component {
 
                     <!-- Action Buttons -->
                     <div class="flex gap-2">
-                        <button type="submit" class="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                        <x-button type="submit" class="flex-1 px-4 py-2">
                             Apply Filters
-                        </button>
+                        </x-button>
                         <a href="{{ request()->url() }}" class="flex-1 px-4 py-2 bg-gray-100 text-center text-gray-700 rounded-md hover:bg-gray-200">
                             Clear
                         </a>
