@@ -20,15 +20,15 @@ use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Tables;
-use Filament\Tables\{Columns\ToggleColumn,
+use Filament\Tables\{Actions\Action,
+    Columns\ToggleColumn,
     Table,
     Concerns\InteractsWithTable,
     Actions\CreateAction,
     Actions\DeleteAction,
     Actions\EditAction,
     Actions\ViewAction,
-    Columns\TextColumn
-};
+    Columns\TextColumn};
 use Livewire\Volt\Component;
 use function Laravel\Folio\{middleware, name};
 
@@ -205,7 +205,7 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['user_id'] = auth()->id();
                         $data['card_image'] = $data['card_image'] ?? '/demo/Design_Placeholder.JPG';
-                        if(auth()->user()->hasRole('manufacturer')){
+                        if (auth()->user()->hasRole('manufacturer')) {
                             $data['official'] = 1;
                         };
                         return $data;
@@ -219,514 +219,531 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                             ->description('Basic information about the design')
                             ->collapsible()
                             ->schema([
-                        TextInput::make('name')
-                            ->hint('The name of your design')
-                            ->required()
-                            ->maxLength(255),
+                                TextInput::make('name')
+                                    ->hint('The name of your design')
+                                    ->required()
+                                    ->maxLength(255),
 
-                        FileUpload::make('card_image')
-                            ->multiple()
-                            ->label('Design Images')
-                            ->hint('Images that will be displayed publicly')
-                            ->disk('public')
-                            ->directory(function ($get) {
-                                $name = $get('name');
-                                return $this->getphotospath($name);
-                            })
-                            ->visibility('public')
-                            ->required(),
+                                FileUpload::make('card_image')
+                                    ->multiple()
+                                    ->label('Design Images')
+                                    ->hint('Images that will be displayed publicly')
+                                    ->disk('public')
+                                    ->directory(function ($get) {
+                                        $name = $get('name');
+                                        return $this->getphotospath($name);
+                                    })
+                                    ->visibility('public')
+                                    ->required(),
 
 
-                        FileUpload::make('frd_files')
-                            ->label('Response Previews')
-                            ->hint('These are representative of your designs. Upload multiple component responses or a single response')
-                            ->multiple()
-                            ->preserveFilenames()
-                            ->directory(function ($get) {
-                                $name = $get('name');
-                                return $this->getwidgetresponsepath($name);
-                            }),
+                                FileUpload::make('frd_files')
+                                    ->label('Response Previews')
+                                    ->hint('These are representative of your designs. Upload multiple component responses or a single response')
+                                    ->multiple()
+                                    ->preserveFilenames()
+                                    ->directory(function ($get) {
+                                        $name = $get('name');
+                                        return $this->getwidgetresponsepath($name);
+                                    }),
 
-                        TextInput::make('tag')
-                            ->label('Tagline')
-                            ->hint('A short descriptor for your design')
-                            ->maxLength(255)
-                            ->placeholder($this->speakerTaglines[array_rand($this->speakerTaglines)]),
+                                TextInput::make('tag')
+                                    ->label('Tagline')
+                                    ->hint('A short descriptor for your design')
+                                    ->maxLength(255)
+                                    ->placeholder($this->speakerTaglines[array_rand($this->speakerTaglines)]),
 
-                        Select::make('category')
-                            ->hint('What type of speaker is your design?')
-                            ->options(['Subwoofer' => 'Subwoofer', 'Full-Range' => 'Full-Range', 'Two-Way' => 'Two-Way'
-                                , 'Three-Way' => 'Three-Way', 'Four-Way+' => 'Four-Way+', 'Portable' => 'Portable', 'Esoteric' => 'Esoteric']),
+                                Select::make('category')
+                                    ->hint('What type of speaker is your design?')
+                                    ->options(['Subwoofer' => 'Subwoofer', 'Full-Range' => 'Full-Range', 'Two-Way' => 'Two-Way'
+                                        , 'Three-Way' => 'Three-Way', 'Four-Way+' => 'Four-Way+', 'Portable' => 'Portable', 'Esoteric' => 'Esoteric']),
 
-                        TextInput::make('price')
-                            ->disabled()
-                            ->helperText('Marketplace functionality disabled for beta')
-                            ->hint('The selling price of your design')
-                            ->default('0.00')
-                            ->inputMode('decimal')
-                            ->numeric(),
+                                TextInput::make('price')
+                                    ->disabled()
+                                    ->helperText('Marketplace functionality disabled for beta')
+                                    ->hint('The selling price of your design')
+                                    ->default('0.00')
+                                    ->inputMode('decimal')
+                                    ->numeric(),
 
-                        TextInput::make('build_cost')
-                            ->hint('The cost to build a single speaker')
-                            ->inputMode('decimal')
-                            ->numeric(),
+                                TextInput::make('build_cost')
+                                    ->hint('The cost to build a single speaker')
+                                    ->inputMode('decimal')
+                                    ->numeric(),
 
-                        TextInput::make('impedance')
-                            ->hint('The nominal impedance of the design')
-                            ->numeric(),
+                                TextInput::make('impedance')
+                                    ->hint('The nominal impedance of the design')
+                                    ->numeric(),
 
-                        TextInput::make('power')
-                            ->hint('The power rating of the design')
-                            ->numeric(),
+                                TextInput::make('power')
+                                    ->hint('The power rating of the design')
+                                    ->numeric(),
 
-                        RichEditor::make('summary')
-                            ->hint('The selling point of your design')
-                            ->fileAttachmentsDirectory('attachments')
-                            ->columns(2),
-
-                        Section::make('Private Information')
-                            ->collapsible()
-                            ->schema([
-                                RichEditor::make('description')
-                                    ->hint('The main information area of your design, describe the design in greater detail')
+                                RichEditor::make('summary')
+                                    ->hint('The selling point of your design')
                                     ->fileAttachmentsDirectory('attachments')
                                     ->columns(2),
-                                KeyValue::make('bill_of_materials')
-                                ->hint('The BOM of your design'),
-                                Section::make('Design File Uploads')
-                                    ->description('Upload your design files here')
+
+                                Section::make('Private Information')
                                     ->collapsible()
-                                    ->collapsed()
                                     ->schema([
-                                FileUpload::make('enclosure_files')
-                                    ->hint('These are files related to the enclosure design')
-                                    ->helperText('Drawings, CAD files, Blueprints, etc...')
-                                    ->label('Enclosure Files')
-                                    ->multiple()
-                                    ->preserveFilenames()
-                                    ->directory(function ($get) {
-                                        $name = $get('name');
-                                        return $this->getenclosurepath($name);
-                                    }),
+                                        RichEditor::make('description')
+                                            ->hint('The main information area of your design, describe the design in greater detail')
+                                            ->fileAttachmentsDirectory('attachments')
+                                            ->columns(2),
+                                        KeyValue::make('bill_of_materials')
+                                            ->hint('The BOM of your design'),
+                                        Section::make('Design File Uploads')
+                                            ->description('Upload your design files here')
+                                            ->collapsible()
+                                            ->collapsed()
+                                            ->schema([
+                                                FileUpload::make('enclosure_files')
+                                                    ->hint('These are files related to the enclosure design')
+                                                    ->helperText('Drawings, CAD files, Blueprints, etc...')
+                                                    ->label('Enclosure Files')
+                                                    ->multiple()
+                                                    ->preserveFilenames()
+                                                    ->directory(function ($get) {
+                                                        $name = $get('name');
+                                                        return $this->getenclosurepath($name);
+                                                    }),
 
-                                FileUpload::make('electronic_files')
-                                    ->hint('These are files related to the electronics')
-                                    ->helperText('Crossover Schematics, PCB Designs, etc...')
-                                    ->label('Electronics Files')
-                                    ->multiple()
-                                    ->preserveFilenames()
-                                    ->directory(function ($get) {
-                                        $name = $get('name');
-                                        return $this->getelectronicspath($name);
-                                    }),
+                                                FileUpload::make('electronic_files')
+                                                    ->hint('These are files related to the electronics')
+                                                    ->helperText('Crossover Schematics, PCB Designs, etc...')
+                                                    ->label('Electronics Files')
+                                                    ->multiple()
+                                                    ->preserveFilenames()
+                                                    ->directory(function ($get) {
+                                                        $name = $get('name');
+                                                        return $this->getelectronicspath($name);
+                                                    }),
 
-                                FileUpload::make('design_other_files')
-                                    ->hint('These are other files related to the design')
-                                    ->helperText('Images, Recordings, Writeups, etc...')
-                                    ->label('Other Design Files')
-                                    ->multiple()
-                                    ->preserveFilenames()
-                                    ->directory(function ($get) {
-                                        $name = $get('name');
-                                        return $this->getdesignotherpath($name);
-                                    }),
-                            ]),]),]),
-                            Section::make('Design Drivers')
-                                ->collapsed()
-                                ->description('Attach and upload data for the drivers in your design')
-                ->schema([
-                        Repeater::make('components')
-                            ->label('')
-                            ->addActionLabel('Add Driver To Design')
+                                                FileUpload::make('design_other_files')
+                                                    ->hint('These are other files related to the design')
+                                                    ->helperText('Images, Recordings, Writeups, etc...')
+                                                    ->label('Other Design Files')
+                                                    ->multiple()
+                                                    ->preserveFilenames()
+                                                    ->directory(function ($get) {
+                                                        $name = $get('name');
+                                                        return $this->getdesignotherpath($name);
+                                                    }),
+                                            ]),]),]),
+                        Section::make('Design Drivers')
                             ->collapsed()
-                            ->defaultItems(0)
-                            ->collapsible()
-                            ->relationship()
-                            ->itemLabel(fn(array $state): ?string => $state['position'] ?? 'New Component')
+                            ->description('Attach and upload data for the drivers in your design')
                             ->schema([
-
-                                Select::make('driver_id')
-                                    ->hint('attach a driver to this band. If the driver you used is not available please go create an entry in My Drivers')
-                                    ->searchable(['brand', 'model'])
-                                    ->searchPrompt('Search by Brand or Model')
-                                    ->options(Driver::where('active', 1)->select('id', 'brand', 'model', 'size', 'category')->get()->mapWithKeys(function ($driver) {
-                                        return [$driver->id => $driver->brand . ' ' . $driver->model . ': ' . $driver->size . ' inch ' . $driver->category];
-                                    }))
-                                    ->preload()
-                                    ->nullable(false)
-                                    ->live()
-                                    ->native(false)
-                                    ->label('Driver'),
-
-                                Select::make('position')
-                                    ->hint('Which frequency band this driver occupies in the design')
-                                    ->live()
-                                    ->options(['LF' => 'LF', 'LMF' => 'LMF', 'MF' => 'MF', 'HMF' => 'HMF', 'HF' => 'HF', 'Other' => 'Other']),
-
-                                TextInput::make('quantity')
-                                    ->hint('The number of drivers in this band')
-                                    ->numeric(),
-
-                                Section::make('Frequency Range')
-                                    ->description('The bandwidth the driver occupies')
-                                    ->columns(2)
-                                    ->schema([
-                                TextInput::make('low_frequency')
-                                    ->columns(1)
-                                    ->numeric(),
-
-                                TextInput::make('high_frequency')
-                                    ->columns(1)
-                                    ->numeric(),
-                                ]),
-
-                                TextInput::make('air_volume')
-                                    ->hint('The enclosed air volume of the driver')
-                                    ->default(0)
-                                    ->numeric(),
-
-                                Section::make('Driver File Uploads')
-                                    ->description('Upload the working files used to design your speaker')
+                                Repeater::make('components')
+                                    ->label('')
+                                    ->addActionLabel('Add Driver To Design')
                                     ->collapsed()
+                                    ->defaultItems(0)
                                     ->collapsible()
+                                    ->relationship()
+                                    ->itemLabel(fn(array $state): ?string => $state['position'] ?? 'New Component')
                                     ->schema([
-                                        FileUpload::make('frequency_files')
-                                        ->label('Frequency Measurements')
-                                        ->multiple()
-                                        ->preserveFilenames()
-                                        ->directory(function ($get) {
-                                            $name = $get('../../name');
-                                            $position = $get('position');
-                                            return $this->getfrqpath($name, $position);
-                                        }),
 
-                                        FileUpload::make('impedance_files')
-                                            ->label('Impedance Measurements')
-                                            ->multiple()
-                                            ->preserveFilenames()
-                                            ->directory(function ($get) {
-                                                $name = $get('../../name');
-                                                $position = $get('position');
-                                                return $this->getzpath($name, $position);
-                                            }),
+                                        Select::make('driver_id')
+                                            ->hint('attach a driver to this band. If the driver you used is not available please go create an entry in My Drivers')
+                                            ->searchable(['brand', 'model'])
+                                            ->searchPrompt('Search by Brand or Model')
+                                            ->options(Driver::where('active', 1)->select('id', 'brand', 'model', 'size', 'category')->get()->mapWithKeys(function ($driver) {
+                                                return [$driver->id => $driver->brand . ' ' . $driver->model . ': ' . $driver->size . ' inch ' . $driver->category];
+                                            }))
+                                            ->preload()
+                                            ->nullable(false)
+                                            ->live()
+                                            ->native(false)
+                                            ->label('Driver'),
 
-                                        FileUpload::make('other_files')
-                                            ->label('Other Files')
-                                            ->multiple()
-                                            ->preserveFilenames()
-                                            ->directory(function ($get) {
-                                                $name = $get('../../name');
-                                                $position = $get('position');
-                                                return $this->getotherpath($name, $position);
-                                            }),]),
-                                RichEditor::make('description')
-                                    ->hint('This area allows you to describe the design driver in more detail.')
-                                    ->fileAttachmentsDirectory('attachments'),
+                                        Select::make('position')
+                                            ->hint('Which frequency band this driver occupies in the design')
+                                            ->live()
+                                            ->options(['LF' => 'LF', 'LMF' => 'LMF', 'MF' => 'MF', 'HMF' => 'HMF', 'HF' => 'HF', 'Other' => 'Other']),
 
-                                KeyValue::make('specifications')
-                                    ->hint('These measurements are taken by the designer during testing, not copied from factory specs.')
-                                    ->default([
-                                        'fs' => '',
-                                        'qts' => '',
-                                        'vas' => '',
-                                        'xmax' => '',
-                                        'le' => '',
-                                        're' => '',
-                                        'bl' => '',
-                                        'sd' => '',
-                                        'mms' => '',
-                                        'cms' => '',
+                                        TextInput::make('quantity')
+                                            ->hint('The number of drivers in this band')
+                                            ->numeric(),
+
+                                        Section::make('Frequency Range')
+                                            ->description('The bandwidth the driver occupies')
+                                            ->columns(2)
+                                            ->schema([
+                                                TextInput::make('low_frequency')
+                                                    ->columns(1)
+                                                    ->numeric(),
+
+                                                TextInput::make('high_frequency')
+                                                    ->columns(1)
+                                                    ->numeric(),
+                                            ]),
+
+                                        TextInput::make('air_volume')
+                                            ->hint('The enclosed air volume of the driver')
+                                            ->default(0)
+                                            ->numeric(),
+
+                                        Section::make('Driver File Uploads')
+                                            ->description('Upload the working files used to design your speaker')
+                                            ->collapsed()
+                                            ->collapsible()
+                                            ->schema([
+                                                FileUpload::make('frequency_files')
+                                                    ->label('Frequency Measurements')
+                                                    ->multiple()
+                                                    ->preserveFilenames()
+                                                    ->directory(function ($get) {
+                                                        $name = $get('../../name');
+                                                        $position = $get('position');
+                                                        return $this->getfrqpath($name, $position);
+                                                    }),
+
+                                                FileUpload::make('impedance_files')
+                                                    ->label('Impedance Measurements')
+                                                    ->multiple()
+                                                    ->preserveFilenames()
+                                                    ->directory(function ($get) {
+                                                        $name = $get('../../name');
+                                                        $position = $get('position');
+                                                        return $this->getzpath($name, $position);
+                                                    }),
+
+                                                FileUpload::make('other_files')
+                                                    ->label('Other Files')
+                                                    ->multiple()
+                                                    ->preserveFilenames()
+                                                    ->directory(function ($get) {
+                                                        $name = $get('../../name');
+                                                        $position = $get('position');
+                                                        return $this->getotherpath($name, $position);
+                                                    }),]),
+                                        RichEditor::make('description')
+                                            ->hint('This area allows you to describe the design driver in more detail.')
+                                            ->fileAttachmentsDirectory('attachments'),
+
+                                        KeyValue::make('specifications')
+                                            ->hint('These measurements are taken by the designer during testing, not copied from factory specs. All fields optional.')
+                                            ->default([
+                                                'Re' => '',
+                                                'Fs' => '',
+                                                'Qms' => '',
+                                                'Qes' => '',
+                                                'Qts' => '',
+                                                'Rms' => '',
+                                                'Mms' => '',
+                                                'Cms' => '',
+                                                'Vas' => '',
+                                                'Sd' => '',
+                                                'BL' => '',
+                                                'Xmax' => '',
+                                                'Le' => '',
+                                                'SPL' => '',
+                                                'EBP' => '',
+                                                'Vd' => '',
+                                                'Mmd' => '',
+                                            ])
+                                            ->addable(false)
+                                            ->deletable(false)
+                                            ->reorderable(false)
+                                            ->editableKeys(false)
+                                            ->keyLabel('Parameter')
+                                            ->valueLabel('Value')
                                     ])
-                                    ->addable(false)
-                                    ->deletable(false)
-                                    ->reorderable(false)
-                                    ->editableKeys(false)
-                                    ->keyLabel('Parameter')
-                                    ->valueLabel('Value')
-                            ])
 
-                    ])])
+                            ])])
 
             ])
             ->columns([
 
-        ToggleColumn::make('active')
-            ->onColor('success'),
+                ToggleColumn::make('active')
+                    ->onColor('success'),
 
-        TextColumn::make('name')
-            ->searchable()
-            ->sortable(),
+                TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
 
-        TextColumn::make('tag')
-            ->limit(50)
-            ->searchable(),
+                TextColumn::make('tag')
+                    ->limit(50)
+                    ->searchable(),
 
-        TextColumn::make('sales_count')->counts('sales'),
+                TextColumn::make('sales_count')->counts('sales'),
 
-        TextColumn::make('created_at')
-            ->dateTime()
-            ->sortable()
-            ->toggleable(isToggledHiddenByDefault: true),
-    ])
-        ->defaultSort('created_at', 'desc')
-        ->actions([
-            EditAction::make()
-                ->form([
-                    Toggle::make('active')
-                        ->label('Published')
-                        ->onColor('success'),
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->defaultSort('created_at', 'desc')
+            ->actions([
+                Action::make('View')
+                    ->icon('phosphor-eye')
+                    ->url(fn($record): string => route('design', ['id' => $record->id])),
+                EditAction::make()
+                    ->form([
+                        Toggle::make('active')
+                            ->label('Published')
+                            ->onColor('success'),
 
-                    Section::make('Design Information')
-                        ->description('Basic information about the design')
-                        ->collapsible()
-                        ->schema([
-                            TextInput::make('name')
-                                ->hint('The name of your design')
-                                ->required()
-                                ->maxLength(255),
+                        Section::make('Design Information')
+                            ->description('Basic information about the design')
+                            ->collapsible()
+                            ->schema([
+                                TextInput::make('name')
+                                    ->hint('The name of your design')
+                                    ->required()
+                                    ->maxLength(255),
 
-                            FileUpload::make('card_image')
-                                ->multiple()
-                                ->label('Design Images')
-                                ->hint('Images that will be displayed publicly')
-                                ->disk('public')
-                                ->directory(function ($get) {
-                                    $name = $get('name');
-                                    return $this->getphotospath($name);
-                                })
-                                ->visibility('public')
-                                ->required(),
+                                FileUpload::make('card_image')
+                                    ->multiple()
+                                    ->label('Design Images')
+                                    ->hint('Images that will be displayed publicly')
+                                    ->disk('public')
+                                    ->directory(function ($get) {
+                                        $name = $get('name');
+                                        return $this->getphotospath($name);
+                                    })
+                                    ->visibility('public')
+                                    ->required(),
 
 
-                            FileUpload::make('frd_files')
-                                ->label('Response Previews')
-                                ->hint('These are representative of your designs. Upload multiple component responses or a single response')
-                                ->multiple()
-                                ->preserveFilenames()
-                                ->directory(function ($get) {
-                                    $name = $get('name');
-                                    return $this->getwidgetresponsepath($name);
-                                }),
+                                FileUpload::make('frd_files')
+                                    ->label('Response Previews')
+                                    ->hint('These are representative of your designs. Upload multiple component responses or a single response')
+                                    ->multiple()
+                                    ->preserveFilenames()
+                                    ->directory(function ($get) {
+                                        $name = $get('name');
+                                        return $this->getwidgetresponsepath($name);
+                                    }),
 
-                            TextInput::make('tag')
-                                ->label('Tagline')
-                                ->hint('A short descriptor for your design')
-                                ->maxLength(255)
-                                ->placeholder($this->speakerTaglines[array_rand($this->speakerTaglines)]),
+                                TextInput::make('tag')
+                                    ->label('Tagline')
+                                    ->hint('A short descriptor for your design')
+                                    ->maxLength(255)
+                                    ->placeholder($this->speakerTaglines[array_rand($this->speakerTaglines)]),
 
-                            Select::make('category')
-                                ->hint('What type of speaker is your design?')
-                                ->options(['Subwoofer' => 'Subwoofer', 'Full-Range' => 'Full-Range', 'Two-Way' => 'Two-Way'
-                                    , 'Three-Way' => 'Three-Way', 'Four-Way+' => 'Four-Way+', 'Portable' => 'Portable', 'Esoteric' => 'Esoteric']),
+                                Select::make('category')
+                                    ->hint('What type of speaker is your design?')
+                                    ->options(['Subwoofer' => 'Subwoofer', 'Full-Range' => 'Full-Range', 'Two-Way' => 'Two-Way'
+                                        , 'Three-Way' => 'Three-Way', 'Four-Way+' => 'Four-Way+', 'Portable' => 'Portable', 'Esoteric' => 'Esoteric']),
 
-                            TextInput::make('price')
-                                ->disabled()
-                                ->helperText('Marketplace functionality disabled for beta')
-                                ->hint('The selling price of your design')
-                                ->default('0.00')
-                                ->inputMode('decimal')
-                                ->numeric(),
+                                TextInput::make('price')
+                                    ->disabled()
+                                    ->helperText('Marketplace functionality disabled for beta')
+                                    ->hint('The selling price of your design')
+                                    ->default('0.00')
+                                    ->inputMode('decimal')
+                                    ->numeric(),
 
-                            TextInput::make('build_cost')
-                                ->hint('The cost to build a single speaker')
-                                ->inputMode('decimal')
-                                ->numeric(),
+                                TextInput::make('build_cost')
+                                    ->hint('The cost to build a single speaker')
+                                    ->inputMode('decimal')
+                                    ->numeric(),
 
-                            TextInput::make('impedance')
-                                ->hint('The nominal impedance of the design')
-                                ->numeric(),
+                                TextInput::make('impedance')
+                                    ->hint('The nominal impedance of the design')
+                                    ->numeric(),
 
-                            TextInput::make('power')
-                                ->hint('The power rating of the design')
-                                ->numeric(),
+                                TextInput::make('power')
+                                    ->hint('The power rating of the design')
+                                    ->numeric(),
 
-                            RichEditor::make('summary')
-                                ->hint('The selling point of your design')
-                                ->fileAttachmentsDirectory('attachments')
-                                ->columns(2),
+                                RichEditor::make('summary')
+                                    ->hint('The selling point of your design')
+                                    ->fileAttachmentsDirectory('attachments')
+                                    ->columns(2),
 
-                            Section::make('Private Information')
-                                ->collapsible()
-                                ->schema([
-                                    RichEditor::make('description')
-                                        ->hint('The main information area of your design, describe the design in greater detail')
-                                        ->fileAttachmentsDirectory('attachments')
-                                        ->columns(2),
-                                    KeyValue::make('bill_of_materials')
-                                        ->hint('The BOM of your design'),
-                                    Section::make('Design File Uploads')
-                                        ->description('Upload your design files here')
-                                        ->collapsible()
-                                        ->collapsed()
-                                        ->schema([
-                                            FileUpload::make('enclosure_files')
-                                                ->hint('These are files related to the enclosure design')
-                                                ->helperText('Drawings, CAD files, Blueprints, etc...')
-                                                ->label('Enclosure Files')
-                                                ->multiple()
-                                                ->preserveFilenames()
-                                                ->directory(function ($get) {
-                                                    $name = $get('name');
-                                                    return $this->getenclosurepath($name);
-                                                }),
+                                Section::make('Private Information')
+                                    ->collapsible()
+                                    ->schema([
+                                        RichEditor::make('description')
+                                            ->hint('The main information area of your design, describe the design in greater detail')
+                                            ->fileAttachmentsDirectory('attachments')
+                                            ->columns(2),
+                                        KeyValue::make('bill_of_materials')
+                                            ->hint('The BOM of your design'),
+                                        Section::make('Design File Uploads')
+                                            ->description('Upload your design files here')
+                                            ->collapsible()
+                                            ->collapsed()
+                                            ->schema([
+                                                FileUpload::make('enclosure_files')
+                                                    ->hint('These are files related to the enclosure design')
+                                                    ->helperText('Drawings, CAD files, Blueprints, etc...')
+                                                    ->label('Enclosure Files')
+                                                    ->multiple()
+                                                    ->preserveFilenames()
+                                                    ->directory(function ($get) {
+                                                        $name = $get('name');
+                                                        return $this->getenclosurepath($name);
+                                                    }),
 
-                                            FileUpload::make('electronic_files')
-                                                ->hint('These are files related to the electronics')
-                                                ->helperText('Crossover Schematics, PCB Designs, etc...')
-                                                ->label('Electronics Files')
-                                                ->multiple()
-                                                ->preserveFilenames()
-                                                ->directory(function ($get) {
-                                                    $name = $get('name');
-                                                    return $this->getelectronicspath($name);
-                                                }),
+                                                FileUpload::make('electronic_files')
+                                                    ->hint('These are files related to the electronics')
+                                                    ->helperText('Crossover Schematics, PCB Designs, etc...')
+                                                    ->label('Electronics Files')
+                                                    ->multiple()
+                                                    ->preserveFilenames()
+                                                    ->directory(function ($get) {
+                                                        $name = $get('name');
+                                                        return $this->getelectronicspath($name);
+                                                    }),
 
-                                            FileUpload::make('design_other_files')
-                                                ->hint('These are other files related to the design')
-                                                ->helperText('Images, Recordings, Writeups, etc...')
-                                                ->label('Other Design Files')
-                                                ->multiple()
-                                                ->preserveFilenames()
-                                                ->directory(function ($get) {
-                                                    $name = $get('name');
-                                                    return $this->getdesignotherpath($name);
-                                                }),
-                                        ]),]),]),
-                    Section::make('Design Drivers')
-                        ->collapsed()
-                        ->description('Attach and upload data for the drivers in your design')
-                        ->schema([
-                            Repeater::make('components')
-                                ->label('')
-                                ->addActionLabel('Add Driver To Design')
-                                ->collapsed()
-                                ->defaultItems(0)
-                                ->collapsible()
-                                ->relationship()
-                                ->itemLabel(fn(array $state): ?string => $state['position'] ?? 'New Component')
-                                ->schema([
+                                                FileUpload::make('design_other_files')
+                                                    ->hint('These are other files related to the design')
+                                                    ->helperText('Images, Recordings, Writeups, etc...')
+                                                    ->label('Other Design Files')
+                                                    ->multiple()
+                                                    ->preserveFilenames()
+                                                    ->directory(function ($get) {
+                                                        $name = $get('name');
+                                                        return $this->getdesignotherpath($name);
+                                                    }),
+                                            ]),]),]),
+                        Section::make('Design Drivers')
+                            ->collapsed()
+                            ->description('Attach and upload data for the drivers in your design')
+                            ->schema([
+                                Repeater::make('components')
+                                    ->label('')
+                                    ->addActionLabel('Add Driver To Design')
+                                    ->collapsed()
+                                    ->defaultItems(0)
+                                    ->collapsible()
+                                    ->relationship()
+                                    ->itemLabel(fn(array $state): ?string => $state['position'] ?? 'New Component')
+                                    ->schema([
 
-                                    Select::make('driver_id')
-                                        ->hint('attach a driver to this band. If the driver you used is not available please go create an entry in My Drivers')
-                                        ->searchable(['brand', 'model'])
-                                        ->searchPrompt('Search by Brand or Model')
-                                        ->options(Driver::where('active', 1)->select('id', 'brand', 'model', 'size', 'category')->get()->mapWithKeys(function ($driver) {
-                                            return [$driver->id => $driver->brand . ' ' . $driver->model . ': ' . $driver->size . ' inch ' . $driver->category];
-                                        }))
-                                        ->preload()
-                                        ->nullable(false)
-                                        ->live()
-                                        ->native(false)
-                                        ->label('Driver'),
+                                        Select::make('driver_id')
+                                            ->hint('attach a driver to this band. If the driver you used is not available please go create an entry in My Drivers')
+                                            ->searchable(['brand', 'model'])
+                                            ->searchPrompt('Search by Brand or Model')
+                                            ->options(Driver::where('active', 1)->select('id', 'brand', 'model', 'size', 'category')->get()->mapWithKeys(function ($driver) {
+                                                return [$driver->id => $driver->brand . ' ' . $driver->model . ': ' . $driver->size . ' inch ' . $driver->category];
+                                            }))
+                                            ->preload()
+                                            ->nullable(false)
+                                            ->live()
+                                            ->native(false)
+                                            ->label('Driver'),
 
-                                    Select::make('position')
-                                        ->hint('Which frequency band this driver occupies in the design')
-                                        ->live()
-                                        ->options(['LF' => 'LF', 'LMF' => 'LMF', 'MF' => 'MF', 'HMF' => 'HMF', 'HF' => 'HF', 'Other' => 'Other']),
+                                        Select::make('position')
+                                            ->hint('Which frequency band this driver occupies in the design')
+                                            ->live()
+                                            ->options(['LF' => 'LF', 'LMF' => 'LMF', 'MF' => 'MF', 'HMF' => 'HMF', 'HF' => 'HF', 'Other' => 'Other']),
 
-                                    TextInput::make('quantity')
-                                        ->hint('The number of drivers in this band')
-                                        ->numeric(),
+                                        TextInput::make('quantity')
+                                            ->hint('The number of drivers in this band')
+                                            ->numeric(),
 
-                                    Section::make('Frequency Range')
-                                        ->description('The bandwidth the driver occupies')
-                                        ->columns(2)
-                                        ->schema([
-                                            TextInput::make('low_frequency')
-                                                ->columns(1)
-                                                ->numeric(),
+                                        Section::make('Frequency Range')
+                                            ->description('The bandwidth the driver occupies')
+                                            ->columns(2)
+                                            ->schema([
+                                                TextInput::make('low_frequency')
+                                                    ->columns(1)
+                                                    ->numeric(),
 
-                                            TextInput::make('high_frequency')
-                                                ->columns(1)
-                                                ->numeric(),
-                                        ]),
+                                                TextInput::make('high_frequency')
+                                                    ->columns(1)
+                                                    ->numeric(),
+                                            ]),
 
-                                    TextInput::make('air_volume')
-                                        ->hint('The enclosed air volume of the driver')
-                                        ->default(0)
-                                        ->numeric(),
+                                        TextInput::make('air_volume')
+                                            ->hint('The enclosed air volume of the driver')
+                                            ->default(0)
+                                            ->numeric(),
 
-                                    Section::make('Driver File Uploads')
-                                        ->description('Upload the working files used to design your speaker')
-                                        ->collapsed()
-                                        ->collapsible()
-                                        ->schema([
-                                            FileUpload::make('frequency_files')
-                                                ->label('Frequency Measurements')
-                                                ->multiple()
-                                                ->preserveFilenames()
-                                                ->directory(function ($get) {
-                                                    $name = $get('../../name');
-                                                    $position = $get('position');
-                                                    return $this->getfrqpath($name, $position);
-                                                }),
+                                        Section::make('Driver File Uploads')
+                                            ->description('Upload the working files used to design your speaker')
+                                            ->collapsed()
+                                            ->collapsible()
+                                            ->schema([
+                                                FileUpload::make('frequency_files')
+                                                    ->label('Frequency Measurements')
+                                                    ->multiple()
+                                                    ->preserveFilenames()
+                                                    ->directory(function ($get) {
+                                                        $name = $get('../../name');
+                                                        $position = $get('position');
+                                                        return $this->getfrqpath($name, $position);
+                                                    }),
 
-                                            FileUpload::make('impedance_files')
-                                                ->label('Impedance Measurements')
-                                                ->multiple()
-                                                ->preserveFilenames()
-                                                ->directory(function ($get) {
-                                                    $name = $get('../../name');
-                                                    $position = $get('position');
-                                                    return $this->getzpath($name, $position);
-                                                }),
+                                                FileUpload::make('impedance_files')
+                                                    ->label('Impedance Measurements')
+                                                    ->multiple()
+                                                    ->preserveFilenames()
+                                                    ->directory(function ($get) {
+                                                        $name = $get('../../name');
+                                                        $position = $get('position');
+                                                        return $this->getzpath($name, $position);
+                                                    }),
 
-                                            FileUpload::make('other_files')
-                                                ->label('Other Files')
-                                                ->multiple()
-                                                ->preserveFilenames()
-                                                ->directory(function ($get) {
-                                                    $name = $get('../../name');
-                                                    $position = $get('position');
-                                                    return $this->getotherpath($name, $position);
-                                                }),]),
-                                    RichEditor::make('description')
-                                        ->hint('This area allows you to describe the design driver in more detail.')
-                                        ->fileAttachmentsDirectory('attachments'),
+                                                FileUpload::make('other_files')
+                                                    ->label('Other Files')
+                                                    ->multiple()
+                                                    ->preserveFilenames()
+                                                    ->directory(function ($get) {
+                                                        $name = $get('../../name');
+                                                        $position = $get('position');
+                                                        return $this->getotherpath($name, $position);
+                                                    }),]),
+                                        RichEditor::make('description')
+                                            ->hint('This area allows you to describe the design driver in more detail.')
+                                            ->fileAttachmentsDirectory('attachments'),
 
-                                    KeyValue::make('specifications')
-                                        ->hint('These measurements are taken by the designer during testing, not copied from factory specs.')
-                                        ->default([
-                                            'fs' => '',
-                                            'qts' => '',
-                                            'vas' => '',
-                                            'xmax' => '',
-                                            'le' => '',
-                                            're' => '',
-                                            'bl' => '',
-                                            'sd' => '',
-                                            'mms' => '',
-                                            'cms' => '',
-                                        ])
-                                        ->addable(false)
-                                        ->deletable(false)
-                                        ->reorderable(false)
-                                        ->editableKeys(false)
-                                        ->keyLabel('Parameter')
-                                        ->valueLabel('Value')
-                                ])
+                                        KeyValue::make('specifications')
+                                            ->hint('These measurements are taken by the designer during testing, not copied from factory specs.')
+                                            ->default([
+                                                'Re' => '',
+                                                'Fs' => '',
+                                                'Qms' => '',
+                                                'Qes' => '',
+                                                'Qts' => '',
+                                                'Rms' => '',
+                                                'Mms' => '',
+                                                'Cms' => '',
+                                                'Vas' => '',
+                                                'Sd' => '',
+                                                'BL' => '',
+                                                'Xmax' => '',
+                                                'Le' => '',
+                                                'SPL' => '',
+                                                'EBP' => '',
+                                                'Vd' => '',
+                                                'Mmd' => '',
+                                            ])
+                                            ->addable(false)
+                                            ->deletable(false)
+                                            ->reorderable(false)
+                                            ->editableKeys(false)
+                                            ->keyLabel('Parameter')
+                                            ->valueLabel('Value')
+                                    ])
 
-                        ])]),
-            DeleteAction::make()
-                ->after(function () {
-                    Notification::make()
-                        ->success()
-                        ->title('Project deleted')
-                        ->send();
-                })
-                ->mutateFormDataUsing(function (array $data): array {
-                    $data['user_id'] = auth()->id();
-                    return $data;
-                }),
-        ])
-        ->filters([
-            // Add any filters you want here
-        ])
-        ->bulkActions([
-            Tables\Actions\BulkActionGroup::make([
-                Tables\Actions\DeleteBulkAction::make(),
-            ]),
-        ]);
+                            ])]),
+                DeleteAction::make()
+                    ->after(function () {
+                        Notification::make()
+                            ->success()
+                            ->title('Project deleted')
+                            ->send();
+                    })
+                    ->mutateFormDataUsing(function (array $data): array {
+                        $data['user_id'] = auth()->id();
+                        return $data;
+                    }),
+            ])
+            ->filters([
+                // Add any filters you want here
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
     }
 
     public function form(Form $form): Form
@@ -762,10 +779,9 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
 ?>
 
 
-
 <x-layouts.app>
     @volt('dashboard.designs')
-            {{ $this->table }}
+    {{ $this->table }}
     @endvolt
 </x-layouts.app>
 

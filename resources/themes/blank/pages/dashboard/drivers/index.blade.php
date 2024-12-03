@@ -40,6 +40,14 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
 
     public ?array $data = [];
 
+    public function viewAction(): Action
+    {
+        $driver_id = '';
+
+        return Action::make('View Driver')
+            ->url(fn ($driver_id): string => route('driver', ['id' => $driver_id]));
+    }
+
     function getfrqpath($model)
     {
         if (!$model) {
@@ -148,16 +156,23 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                         MarkdownEditor::make('description'),
                         KeyValue::make('factory_specs')
                             ->default([
-                                'fs' => '',
-                                'qts' => '',
-                                'vas' => '',
-                                'xmax' => '',
-                                'le' => '',
-                                're' => '',
-                                'bl' => '',
-                                'sd' => '',
-                                'mms' => '',
-                                'cms' => '',
+                                'Re' => '',
+                                'Fs' => '',
+                                'Qms' => '',
+                                'Qes' => '',
+                                'Qts' => '',
+                                'Rms' => '',
+                                'Mms' => '',
+                                'Cms' => '',
+                                'Vas' => '',
+                                'Sd' => '',
+                                'BL' => '',
+                                'Xmax' => '',
+                                'Le' => '',
+                                'SPL' => '',
+                                'EBP' =>'',
+                                'Vd' => '',
+                                'Mmd' => '',
                             ])
                             ->addable(false)
                             ->deletable(false)
@@ -202,8 +217,12 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([
+                Action::make('View')
+                    ->icon('phosphor-eye')
+                    ->url(fn ($record): string => route('driver', ['id' => $record->id])),
                 EditAction::make()
-                    ->form([                        Toggle::make('active'),
+                    ->form([
+                        Toggle::make('active'),
                         TextInput::make('brand')
                             ->datalist(DB::table('drivers')->distinct()->orderBy('brand', 'asc')->pluck('brand')),
                         TextInput::make('model')
@@ -261,16 +280,23 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                         MarkdownEditor::make('description'),
                         KeyValue::make('factory_specs')
                             ->default([
-                                'fs' => '',
-                                'qts' => '',
-                                'vas' => '',
-                                'xmax' => '',
-                                'le' => '',
-                                're' => '',
-                                'bl' => '',
-                                'sd' => '',
-                                'mms' => '',
-                                'cms' => '',
+                                'Re' => '',
+                                'Fs' => '',
+                                'Qms' => '',
+                                'Qes' => '',
+                                'Qts' => '',
+                                'Rms' => '',
+                                'Mms' => '',
+                                'Cms' => '',
+                                'Vas' => '',
+                                'Sd' => '',
+                                'BL' => '',
+                                'Xmax' => '',
+                                'Le' => '',
+                                'SPL' => '',
+                                'EBP' =>'',
+                                'Vd' => '',
+                                'Mmd' => '',
                             ])
                             ->addable(false)
                             ->deletable(false)
@@ -278,20 +304,7 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                             ->editableKeys(false)
                             ->keyLabel('Parameter')
                             ->valueLabel('Value'),
-                    ])
-                    ->after(function () {
-                        Notification::make()
-                            ->success()
-                            ->title('Driver created')
-                            ->send();
-                    }),
-                DeleteAction::make()
-                    ->after(function () {
-                        Notification::make()
-                            ->success()
-                            ->title('Project deleted')
-                            ->send();
-                    }),
+                    ]),
             ])
             ->filters([
             ])
