@@ -259,6 +259,8 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                                 , 'Three-Way' => 'Three-Way', 'Four-Way+' => 'Four-Way+', 'Portable' => 'Portable', 'Esoteric' => 'Esoteric']),
 
                         TextInput::make('price')
+                            ->disabled()
+                            ->helperText('Marketplace functionality disabled for beta')
                             ->hint('The selling price of your design')
                             ->default('0.00')
                             ->inputMode('decimal')
@@ -518,6 +520,8 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                                     , 'Three-Way' => 'Three-Way', 'Four-Way+' => 'Four-Way+', 'Portable' => 'Portable', 'Esoteric' => 'Esoteric']),
 
                             TextInput::make('price')
+                                ->disabled()
+                                ->helperText('Marketplace functionality disabled for beta')
                                 ->hint('The selling price of your design')
                                 ->default('0.00')
                                 ->inputMode('decimal')
