@@ -27,7 +27,7 @@
                     </div>
                 @else
                     <div class="hidden md:flex flex-row">
-                        <x-button href="{{ route('cart') }}" tag="a" wire:key="cart-button" class="mx-2" icon="phosphor-shopping-cart"/>
+{{--                        <x-button href="{{ route('cart') }}" tag="a" wire:key="cart-button" class="mx-2" icon="phosphor-shopping-cart"/>--}}
                         <x-app.user-menu position="top"/>
                     </div>
                 @endif
@@ -67,7 +67,7 @@
                     @if(auth()->guest())
                         <div class="flex flex-wrap w-full space-y-3">
                             <a href="/auth/login" class="block w-full px-5 py-3 font-medium text-center transition duration-200 ease-in-out bg-gray-100 hover:text-gray-700" type="button">Sign In</a>
-                            <a href="/auth/register" class="block w-full px-5 py-3 font-semibold text-center text-white transition duration-200 ease-in-out bg-gray-900 focus:ring focus:ring-gray-900 hover:bg-gray-900">Try 14 Days Free Trial</a>
+                            <a href="/auth/register" class="block w-full px-5 py-3 font-semibold text-center text-white transition duration-200 ease-in-out bg-gray-900 focus:ring focus:ring-gray-900 hover:bg-gray-900">Register</a>
                         </div>
                     @else
                         <x-app.user-menu position="bottom" />
