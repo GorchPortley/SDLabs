@@ -32,6 +32,7 @@ class UserRegistered
         $flarum_user = $flarum->user();
         $flarum_user->attributes->email = $user->email;
         $flarum_user->attributes->password = $user->password;
+        $flarum_user->signup();
         $flarum_user->login();
     }
 }
