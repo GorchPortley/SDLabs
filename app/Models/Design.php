@@ -68,14 +68,14 @@ class Design extends Model
 
         static::created(function ($design) {
             try {
-                $apiKey = 'bidGs9^oX!9sNjvh@JhrKY$w*U$GzLeYc6WzkC3$';
+                $apiKey = env('FORUM_API_KEY');
                 $userId = $design->user_id;
-                $flarumUrl = 'https://sandbox.sdlabs.cc/forum'; // Remove trailing slash if present
+                $flarumUrl = env('FORUM_URL');
 
                 Log::info('Attempting Flarum API call', [
-                    'api_key' => substr($apiKey, 0, 5) . '...',
+                    'api_key' => $apiKey,
                     'user_id' => $userId,
-                    'url' => $flarumUrl . '/api/discussions' // Log full URL for debugging
+                    'url' => $flarumUrl . '/api/discussions'
                 ]);
 
                 $response = Http::withHeaders([
@@ -124,5 +124,5 @@ class Design extends Model
                 ]);
             }
         });
-    }
+}
 }
