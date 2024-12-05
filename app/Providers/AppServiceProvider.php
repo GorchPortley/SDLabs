@@ -16,17 +16,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(Flarum::class, function ($app) {
-            return new Flarum([
-                'url' => env('FORUM_URL'),
-                'root_domain' => env('TEMP_APP_URL'),
-                'api_key' => env('FORUM_API_KEY'),
-                'password_token' => env('PASSWORD_TOKEN'),
-                'remember' => true,
-                'verify_ssl' => env('FORUM_VERIFY_SSL', true),
-                'cookies_prefix' => 'flarum',
-            ]);
-        });}
+//        $flarum = new Flarum([
+//                'url' => env('FORUM_URL'),
+//                'root_domain' => env('APP_URL'),
+//                'api_key' => env('FORUM_API_KEY'),
+//                'password_token' => env('PASSWORD_TOKEN'),
+//                'remember' => true,
+//                'verify_ssl' => env('FORUM_VERIFY_SSL', true),
+//                'cookies_prefix' => 'flarum',
+//            ]);
+    }
 
     /**
      * Bootstrap any application services.
