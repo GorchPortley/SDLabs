@@ -89,6 +89,7 @@ class User extends WaveUser
                 $flarum_user->attributes->password = $user->password;
 
                 $flarum_user->signup();
+                $flarum_user->login();
             } catch (\Exception $e) {
                 \Log::error('Flarum SSO Registration Error: ' . $e->getMessage());
                 // Optionally, you might want to prevent user creation

@@ -11,7 +11,6 @@ class UserLoggedIn
     {
         $user = $event->user;
 
-        try {
             $flarum = new Flarum([
                 'url' => env('FORUM_URL'),
                 'root_domain' => env('APP_URL'),
@@ -28,8 +27,5 @@ class UserLoggedIn
             $flarum_user->attributes->password = $user->password;
 
             $flarum_user->login();
-        } catch (\Exception $e) {
-            \Log::error('Flarum SSO Registration Error: ' . $e->getMessage());
-        }
     }
 }
