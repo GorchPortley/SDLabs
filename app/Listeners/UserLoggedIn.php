@@ -19,18 +19,17 @@ class UserLoggedIn
                 'password_token' => env('FORUM_PASSWORD_TOKEN'),
                 'remember' => true,
                 'verify_ssl' => env('FORUM_VERIFY_SSL', true),
-                'cookies_prefix' => 'flarum',
             ]);
 
-            // Ensure user exists in Flarum
+            // Create user in Flarum
             $flarum_user = $flarum->user($user->email);
+            $flarum_user->attributes->username = $user->username ?? $user->name;
+            $flarum_user->attributes->email = $user->email;
+            $flarum_user->attributes->password = $user->password;
 
-            // Perform Flarum login
             $flarum_user->login();
-
-            \Log::info("Flarum SSO login successful for user: {$user->email}");
         } catch (\Exception $e) {
-            \Log::error("Flarum SSO Login Error: " . $e->getMessage());
+            \Log::error('Flarum SSO Registration Error: ' . $e->getMessage());
         }
     }
 }
