@@ -49,7 +49,7 @@
             @if($this->hasAccess)
                 <div>
                     <div class="w-full h-dvh">
-                        <iframe src="https://sandbox.sdlabs.cc/forum/embed/{{ $design->forum_slug }}" class="w-full h-dvh" seamless></iframe>
+                        <iframe src="https://sandbox.sdlabs.cc/forum/embed/{{ $design->forum_slug }}" class="w-full" seamless></iframe>
                     </div>
                 </div>
             @else
