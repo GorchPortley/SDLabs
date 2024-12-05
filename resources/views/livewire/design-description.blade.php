@@ -11,13 +11,13 @@
     <div class="px-2 py-4 h-dvh text-neutral-600 dark:text-neutral-300">
         <div x-show="selectedTab === 'summary'" id="tabpanelSummary" class="" role="tabpanel" aria-label="summary">
             <livewire:frequency-response-viewer :design="$design" />
-            <iframe class="w-full min-h-dvh" srcdoc="{{ $design->summary }}"></iframe>
+            <iframe class="w-full min-h-dvh" srcdoc="{{ $design->summary }}" seamless sandbox></iframe>
         </div>
         <div class="h-dvh" x-show="selectedTab === 'description'" id="tabpanelDescription" role="tabpanel" aria-label="description">
             @if($this->hasAccess)
                 <div>
                     <div class="w-full h-dvh">
-                        <iframe class="w-full h-dvh" srcdoc="{{ $design->description }}"></iframe>
+                        <iframe class="w-full h-dvh" srcdoc="{{ $design->description }}" seamless sandbox></iframe>
                     </div>
                 </div>
             @else
@@ -49,7 +49,7 @@
             @if($this->hasAccess)
                 <div>
                     <div class="w-full h-dvh">
-                        <iframe src="https://sandbox.sdlabs.cc/forum/embed/{{ $design->forum_slug }}" class="w-full h-dvh"></iframe>
+                        <iframe src="https://sandbox.sdlabs.cc/forum/embed/{{ $design->forum_slug }}" class="w-full h-dvh" seamless></iframe>
                     </div>
                 </div>
             @else
@@ -108,7 +108,7 @@
                                     x-transition:leave-end="opacity-0 -translate-y-2"
                                     class="divide-y divide-gray-200"
                                 >
-                                    <iframe class="w-full min-h-dvh" srcdoc="{{$component->description}}"></iframe>
+                                    <iframe class="w-full min-h-dvh" srcdoc="{{$component->description}}" sandbox seamless></iframe>
                                 </div>
                         @endforeach
                     </div>
