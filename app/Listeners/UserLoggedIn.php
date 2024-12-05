@@ -7,29 +7,30 @@ use Maicol07\SSO\Flarum;
 
 class UserLoggedIn
 {
-    public function handle(Login $event): void
+    public function handle(Login $event)
     {
         $user = $event->user;
 
-        $flarum = new Flarum([
-            'url' => env('FORUM_URL'),
-            'root_domain' => env('APP_URL'),
-            'api_key' => env('FORUM_API_KEY'),
-            'password_token' => env('FORUM_PASSWORD_TOKEN'),
-            'remember' => true,
-            'verify_ssl' => env('FORUM_VERIFY_SSL', true),
-            'cookies_prefix' => 'flarum',
-        ]);
-
         try {
-            $flarum_user = $flarum->user($user->email); // Use email as identifier
-            $flarum_user->attributes->email = $user->email;
-            $flarum_user->attributes->password = $user->password; // Be cautious with password handling
-            $flarum_user->signup();
+            $flarum = new Flarum([
+                'url' => env('FORUM_URL'),
+                'root_domain' => env('APP_URL'),
+                'api_key' => env('FORUM_API_KEY'),
+                'password_token' => env('FORUM_PASSWORD_TOKEN'),
+                'remember' => true,
+                'verify_ssl' => env('FORUM_VERIFY_SSL', true),
+                'cookies_prefix' => 'flarum',
+            ]);
+
+            // Ensure user exists in Flarum
+            $flarum_user = $flarum->user($user->email);
+
+            // Perform Flarum login
             $flarum_user->login();
+
+            \Log::info("Flarum SSO login successful for user: {$user->email}");
         } catch (\Exception $e) {
-            // Log the error or handle it appropriately
-            \Log::error('Flarum SSO Error: ' . $e->getMessage());
+            \Log::error("Flarum SSO Login Error: " . $e->getMessage());
         }
     }
 }
