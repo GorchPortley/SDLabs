@@ -69,7 +69,7 @@ class Design extends Model
         static::created(function ($design) {
             try {
                 $apiKey = env('FORUM_API_KEY');
-                $userId = $design->user_id;
+                $userId = auth()->user()->id;
                 $flarumUrl = env('FORUM_URL');
 
                 Log::info('Attempting Flarum API call', [
