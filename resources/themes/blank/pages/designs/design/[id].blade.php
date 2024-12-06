@@ -33,8 +33,8 @@ new class extends Component {
 
 <x-layouts.marketing>
     @volt('design')
-    <div class="bg-zinc-200 min-h-dvh dark:text-white">
-        <main class="mx-auto bg-white max-w-7xl px-4 sm:px-6 lg:px-8 min-h-full py-4">
+{{--    <div class="bg-zinc-200 h-dvh dark:text-white">--}}
+        <main class="mx-auto overflow-auto flex-grow bg-white max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
             <!-- Breadcrumb -->
             <nav class="mb-6" aria-label="Breadcrumb">
                 <ol class="flex items-center space-x-2">
@@ -266,11 +266,11 @@ new class extends Component {
                     </div>
                 @endif
                 <!-- Description Section -->
-                <div class="border-t border-gray-200 pt-8">
+{{--                <div class="border-t border-gray-200 pt-8">--}}
                     <livewire:design-description :design="$design"/>
-                </div>
+{{--                </div>--}}
             </div>
         </main>
-    </div>
+{{--    </div>--}}
     @endvolt
 </x-layouts.marketing>

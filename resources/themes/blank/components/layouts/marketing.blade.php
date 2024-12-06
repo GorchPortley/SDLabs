@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" class="min-h-full">
+<html lang="{{ app()->getLocale() }}" >
 <head>
     @include('theme::partials.head', ['seo' => ($seo ?? null) ])
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     @stack('head')
 </head>
-<body class="min-h-full flex flex-col">
+<body class="bg-zinc-200">
 <x-marketing.header />
 
-<main class="flex-grow">
-    {{ $slot }}
+<main >
+    {!! $slot !!}
 </main>
 
 @livewire('notifications')
