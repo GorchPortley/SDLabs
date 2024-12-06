@@ -66,10 +66,6 @@ class Design extends Model
     {
         parent::boot();
 
-        protected static function boot()
-    {
-        parent::boot();
-
         static::created(function ($design) {
             try {
                 $flarumUrl = env('FORUM_URL');
