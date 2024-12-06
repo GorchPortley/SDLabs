@@ -69,7 +69,7 @@ class Design extends Model
         static::created(function ($design) {
             try {
                 $flarumUrl = env('FORUM_URL');
-                $forumUsername = auth()->user()->getAuthIdentifierName();
+                $forumUsername = auth()->user()->name;
                 $forumPassword = auth()->user()->getAuthPassword();
 
                 Log::info('Flarum API Response:', [
