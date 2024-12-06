@@ -66,20 +66,38 @@ class Design extends Model
     {
         parent::boot();
 
+        protected static function boot()
+    {
+        parent::boot();
+
         static::created(function ($design) {
             try {
-                $apiKey = env('FORUM_API_KEY');
-                $userId = auth()->user()->id;
                 $flarumUrl = env('FORUM_URL');
+                $forumUsername = auth()->user()->getAuthIdentifierName();
+                $forumPassword = auth()->user()->getAuthPassword();
 
-                Log::info('Attempting Flarum API call', [
-                    'api_key' => $apiKey,
-                    'user_id' => $userId,
-                    'url' => $flarumUrl . '/api/discussions'
+                // First, get the authentication token
+                $tokenResponse = Http::withHeaders([
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json'
+                ])->post($flarumUrl . '/api/token', [
+                    'identification' => $forumUsername,
+                    'password' => $forumPassword
                 ]);
 
+                if (!$tokenResponse->successful()) {
+                    Log::error('Failed to obtain Flarum token', [
+                        'status' => $tokenResponse->status(),
+                        'body' => $tokenResponse->body()
+                    ]);
+                    return;
+                }
+
+                $token = $tokenResponse->json()['token'];
+
+                // Now create the discussion using the obtained token
                 $response = Http::withHeaders([
-                    'Authorization' => "Token {$apiKey}; userId={$userId}",
+                    'Authorization' => "Token {$token}",
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/vnd.api+json'
                 ])->post($flarumUrl . '/api/discussions', [
@@ -111,6 +129,7 @@ class Design extends Model
                         $design->save();
                     }
                 }
+
                 Log::info('Flarum API Response:', [
                     'status' => $response->status(),
                     'body' => $response->json()
@@ -124,5 +143,6 @@ class Design extends Model
                 ]);
             }
         });
+    }
 }
 }
