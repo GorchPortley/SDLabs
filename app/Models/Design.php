@@ -72,12 +72,6 @@ class Design extends Model
                 $forumUsername = auth()->user()->name;
                 $forumPassword = auth()->user()->getAuthPassword();
 
-                Log::info('Flarum API Response:', [
-                    'user' => $forumUsername,
-                    'pw' => $forumPassword,
-                    'url' => $flarumUrl,
-                ]);
-
                 // First, get the authentication token
                 $tokenResponse = Http::withHeaders([
                     'Accept' => 'application/json',
@@ -107,8 +101,7 @@ class Design extends Model
                         'type' => 'discussions',
                         'attributes' => [
                             'title' => $design->name,
-                            'content' => "New design posted: " . $design->description
-                        ],
+                            'content' => "New design posted: " . $design->summary . "View more at: " . env('APP_URL') . "/designs/design/" . $design->id],
                         'relationships' => [
                             'tags' => [
                                 'data' => [
