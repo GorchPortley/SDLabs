@@ -21,6 +21,84 @@ new class extends Component {
     }
 } ?>
 
+@push('head')
+    <style>.tiptap-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .tiptap-content table th, .tiptap-content table td {
+            border: 1px solid #e0e0e0;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        .tiptap-content table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+
+        .tiptap-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .tiptap-content table tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        .tiptap-content table th p, .tiptap-content table td p {
+            margin: 0;
+            padding: 0;
+        }
+
+        .tiptap-content .filament-tiptap-grid-builder {
+            display: grid;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .tiptap-content .filament-tiptap-grid-builder[data-cols="3"] {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .tiptap-content .filament-tiptap-grid-builder[data-cols="2"] {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .tiptap-content .filament-tiptap-grid-builder[data-cols="4"] {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .tiptap-content .filament-tiptap-grid-builder__column {
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .tiptap-content .filament-tiptap-grid-builder__column h2 {
+            margin-bottom: 0.75rem;
+        }
+
+        .tiptap-content .filament-tiptap-grid-builder__column p {
+        }
+
+        @media (max-width: 640px) {
+            .tiptap-content .filament-tiptap-grid-builder {
+                grid-template-columns: 1fr !important;
+            }
+
+            .tiptap-content table {
+                font-size: 0.875rem;
+            }
+
+            .tiptap-content table th, .tiptap-content table td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+    @endpush
 <x-layouts.marketing>
     @volt('driver')
     <div class="bg-zinc-200 min-h-dvh dark:text-white">
@@ -171,8 +249,10 @@ new class extends Component {
                 <!-- Description Section -->
                 <div class="border-t border-gray-200 pt-8">
                     <h2 class="text-xl font-semibold text-gray-900 mb-4">Description</h2>
-                    <div class="prose max-w-none">
-                        <iframe srcdoc="{{$driver->description}}" class="w-full"></iframe>
+                    <div class="w-full prose max-w-none">
+                        <div class="tiptap-content w-full">
+                            {!! tiptap_converter()->asHtml($driver->description) !!}
+                        </div>
                     </div>
                 </div>
             </div>

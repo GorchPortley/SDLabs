@@ -26,6 +26,7 @@ use Filament\Tables\{Columns\ToggleColumn,
     Actions\ViewAction,
     Columns\TextColumn
 };
+use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Support\Facades\DB;
 use Livewire\Volt\Component;
 use App\Models\Driver;
@@ -45,7 +46,7 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
         $driver_id = '';
 
         return Action::make('View Driver')
-            ->url(fn ($driver_id): string => route('driver', ['id' => $driver_id]));
+            ->url(fn($driver_id): string => route('driver', ['id' => $driver_id]));
     }
 
     function getfrqpath($model)
@@ -91,7 +92,7 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                 CreateAction::make()
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['user_id'] = auth()->id();
-                        if(auth()->user()->hasRole('manufacturer')){
+                        if (auth()->user()->hasRole('manufacturer')) {
                             $data['official'] = 1;
                         };
                         return $data;
@@ -153,7 +154,8 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                                     }),]),
 
                         TextInput::make('summary'),
-                        MarkdownEditor::make('description'),
+                        TipTapEditor::make('description')
+                        ->directory('attachments'),
                         KeyValue::make('factory_specs')
                             ->default([
                                 'Re' => '',
@@ -170,7 +172,7 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                                 'Xmax' => '',
                                 'Le' => '',
                                 'SPL' => '',
-                                'EBP' =>'',
+                                'EBP' => '',
                                 'Vd' => '',
                                 'Mmd' => '',
                             ])
@@ -219,7 +221,7 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
             ->actions([
                 Action::make('View')
                     ->icon('phosphor-eye')
-                    ->url(fn ($record): string => route('driver', ['id' => $record->id])),
+                    ->url(fn($record): string => route('driver', ['id' => $record->id])),
                 EditAction::make()
                     ->form([
                         Toggle::make('active'),
@@ -277,7 +279,8 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                                     }),]),
 
                         TextInput::make('summary'),
-                        MarkdownEditor::make('description'),
+                        TipTapEditor::make('description')
+                            ->directory('attachments'),
                         KeyValue::make('factory_specs')
                             ->default([
                                 'Re' => '',
@@ -294,7 +297,7 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                                 'Xmax' => '',
                                 'Le' => '',
                                 'SPL' => '',
-                                'EBP' =>'',
+                                'EBP' => '',
                                 'Vd' => '',
                                 'Mmd' => '',
                             ])
@@ -349,8 +352,8 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
 
 
 <x-layouts.app>
-        @volt('dashboard.drivers')
-        {{ $this->table }}
-        @endvolt
+    @volt('dashboard.drivers')
+    {{ $this->table }}
+    @endvolt
 </x-layouts.app>
 

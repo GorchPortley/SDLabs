@@ -28,7 +28,10 @@ use Filament\Tables\{Actions\Action,
     Actions\DeleteAction,
     Actions\EditAction,
     Actions\ViewAction,
-    Columns\TextColumn};
+    Columns\TextColumn
+};
+use FilamentTiptapEditor\Enums\TiptapOutput;
+use FilamentTiptapEditor\TiptapEditor;
 use Livewire\Volt\Component;
 use function Laravel\Folio\{middleware, name};
 
@@ -279,18 +282,20 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                                     ->hint('The power rating of the design')
                                     ->numeric(),
 
-                                RichEditor::make('summary')
+                                TiptapEditor::make('summary')
+                                    ->profile('default')
                                     ->hint('The selling point of your design')
-                                    ->fileAttachmentsDirectory('attachments')
-                                    ->columns(2),
+                                    ->Directory('attachments')
+                                    ->output(TiptapOutput::Html)
+                                    ->extraInputAttributes(['style' => 'min-height: 12rem;']),
 
                                 Section::make('Private Information')
                                     ->collapsible()
                                     ->schema([
-                                        RichEditor::make('description')
+                                        TipTapEditor::make('description')
                                             ->hint('The main information area of your design, describe the design in greater detail')
-                                            ->fileAttachmentsDirectory('attachments')
-                                            ->columns(2),
+                                            ->Directory('attachments')
+                                            ->extraInputAttributes(['style' => 'min-height: 12rem;']),
                                         KeyValue::make('bill_of_materials')
                                             ->hint('The BOM of your design'),
                                         Section::make('Design File Uploads')
@@ -419,9 +424,10 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                                                         $position = $get('position');
                                                         return $this->getotherpath($name, $position);
                                                     }),]),
-                                        RichEditor::make('description')
+                                        TiptapEditor::make('description')
                                             ->hint('This area allows you to describe the design driver in more detail.')
-                                            ->fileAttachmentsDirectory('attachments'),
+                                            ->Directory('attachments')
+                                            ->extraInputAttributes(['style' => 'min-height: 12rem;']),
 
                                         KeyValue::make('specifications')
                                             ->hint('These measurements are taken by the designer during testing, not copied from factory specs. All fields optional.')
@@ -550,18 +556,18 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                                     ->hint('The power rating of the design')
                                     ->numeric(),
 
-                                RichEditor::make('summary')
+                                TiptapEditor::make('summary')
                                     ->hint('The selling point of your design')
-                                    ->fileAttachmentsDirectory('attachments')
-                                    ->columns(2),
+                                    ->Directory('attachments')
+                                    ->extraInputAttributes(['style' => 'min-height: 12rem;']),
 
                                 Section::make('Private Information')
                                     ->collapsible()
                                     ->schema([
-                                        RichEditor::make('description')
+                                        TipTapEditor::make('description')
                                             ->hint('The main information area of your design, describe the design in greater detail')
-                                            ->fileAttachmentsDirectory('attachments')
-                                            ->columns(2),
+                                            ->Directory('attachments')
+                                            ->extraInputAttributes(['style' => 'min-height: 12rem;']),
                                         KeyValue::make('bill_of_materials')
                                             ->hint('The BOM of your design'),
                                         Section::make('Design File Uploads')
@@ -690,9 +696,10 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                                                         $position = $get('position');
                                                         return $this->getotherpath($name, $position);
                                                     }),]),
-                                        RichEditor::make('description')
+                                        TiptapEditor::make('description')
                                             ->hint('This area allows you to describe the design driver in more detail.')
-                                            ->fileAttachmentsDirectory('attachments'),
+                                            ->Directory('attachments')
+                                            ->extraInputAttributes(['style' => 'min-height: 12rem;']),
 
                                         KeyValue::make('specifications')
                                             ->hint('These measurements are taken by the designer during testing, not copied from factory specs.')
@@ -781,7 +788,9 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
 
 <x-layouts.app>
     @volt('dashboard.designs')
+<div>
     {{ $this->table }}
+</div>
     @endvolt
 </x-layouts.app>
 

@@ -1,4 +1,80 @@
 @push('head') <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
+<style>.tiptap-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1.25rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .tiptap-content table th, .tiptap-content table td {
+        border: 1px solid #e0e0e0;
+        padding: 0.75rem;
+        text-align: left;
+    }
+
+    .tiptap-content table th {
+        background-color: #f5f5f5;
+        font-weight: bold;
+    }
+
+    .tiptap-content table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .tiptap-content table tr:hover {
+        background-color: #f0f0f0;
+    }
+
+    .tiptap-content table th p, .tiptap-content table td p {
+        margin: 0;
+        padding: 0;
+    }
+
+    .tiptap-content .filament-tiptap-grid-builder {
+        display: grid;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .tiptap-content .filament-tiptap-grid-builder[data-cols="3"] {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .tiptap-content .filament-tiptap-grid-builder[data-cols="2"] {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .tiptap-content .filament-tiptap-grid-builder[data-cols="4"] {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .tiptap-content .filament-tiptap-grid-builder__column {
+        border-radius: 0.5rem;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .tiptap-content .filament-tiptap-grid-builder__column h2 {
+        margin-bottom: 0.75rem;
+    }
+
+    .tiptap-content .filament-tiptap-grid-builder__column p {
+    }
+
+    @media (max-width: 640px) {
+        .tiptap-content .filament-tiptap-grid-builder {
+            grid-template-columns: 1fr !important;
+        }
+
+        .tiptap-content table {
+            font-size: 0.875rem;
+        }
+
+        .tiptap-content table th, .tiptap-content table td {
+            padding: 0.5rem;
+        }
+    }
+</style>
 @endpush
 
 <div x-data="{ selectedTab: 'summary' }" class="w-full">
@@ -12,11 +88,19 @@
     <div class="px-2 py-4 text-neutral-600 dark:text-neutral-300">
         <div x-show="selectedTab === 'summary'" id="tabpanelSummary" class="w-full" role="tabpanel" aria-label="summary">
                 <livewire:frequency-response-viewer :design="$design" />
-            <div>{!! $design->summary !!}</div>
+            <div class="w-full prose max-w-none">
+            <div class="tiptap-content w-full">
+            {!! tiptap_converter()->asHtml($design->summary) !!}
+            </div>
+                </div>
         </div>
         <div class="w-full " x-show="selectedTab === 'description'" id="tabpanelDescription" role="tabpanel" aria-label="description">
             @if($this->hasAccess)
-                <div>{!! $design->description !!}</div>
+                <div class="w-full prose max-w-none">
+                    <div class="tiptap-content w-full">
+                        {!! tiptap_converter()->asHtml($design->description) !!}
+                    </div>
+                </div>
                     @else
                 <div class="w-full h-auto bg-zinc-600 p-8 rounded-lg text-center">
                     @auth
@@ -99,7 +183,11 @@
                                     x-transition:leave-end="opacity-0 -translate-y-2"
                                     class="divide-y divide-gray-200"
                                 >
-                                    <iframe class="w-full h-auto min-h-[200px]" srcdoc="{{$component->description}}" sandbox seamless></iframe>
+                                    <div class="w-full prose max-w-none">
+                                        <div class="tiptap-content w-full">
+                                            {!! tiptap_converter()->asHtml($component->description) !!}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
