@@ -72,6 +72,12 @@ class Design extends Model
                 $forumUsername = auth()->user()->getAuthIdentifierName();
                 $forumPassword = auth()->user()->getAuthPassword();
 
+                Log::info('Flarum API Response:', [
+                    'user' => $forumUsername,
+                    'pw' => $forumPassword,
+                    'url' => $flarumUrl,
+                ]);
+
                 // First, get the authentication token
                 $tokenResponse = Http::withHeaders([
                     'Accept' => 'application/json',
