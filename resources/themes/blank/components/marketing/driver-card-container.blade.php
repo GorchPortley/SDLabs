@@ -1,9 +1,9 @@
 <div class="grid flex-no-shrink grid-cols-1 lg:grid-cols-5 gap-6 p-4">
     @foreach($drivers as $driver)
-        <div x-data="{ showSpecs: false }" wire:key="{{$driver->id}}" class="relative flex flex-row xs:flex-col lg:flex-col bg-white rounded-lg border-2 border-gray-100 hover:shadow-lg shadow-sm overflow-hidden">
+        <div x-data="{ showSpecs: false }" wire:key="{{$driver->id}}" class="relative lg:h-[540px] h-[300px] flex flex-row xs:flex-col lg:flex-col bg-white rounded-lg border-2 border-gray-100 hover:shadow-lg shadow-sm overflow-hidden">
             <div class="w-1/2 lg:w-full">
                 <a href="/drivers/driver/{{$driver->id}}" class="">
-                    <img src="/storage/{{$driver->card_image}}" class="w-full h-full object-cover" alt="{{$driver->brand}} - {{$driver->model}}">
+                    <img src="/storage/{{$driver->card_image}}" class="w-[270px] h-[270px] object-scale-down" alt="{{$driver->brand}} - {{$driver->model}}">
                 </a>
             </div>
             @if($driver->official)
@@ -11,12 +11,12 @@
                     <i class="ph ph-seal-check"></i>
                 </div>
             @endif
-            <div class="w-1/2 flex-shrink-0 lg:w-full flex flex-col">
+            <div class="w-1/2 h-full flex-grow-1 lg:w-full lg:h-[270px] flex flex-col">
                 <h2 class="text-lg font-semibold text-center truncate px-4">{{$driver->model}}</h2>
                 <p class="text-gray-600 text-center truncate px-4">By: {{$driver->brand}}</p>
                 <p class="text-gray-800 text-center mb-2 px-4 truncate">{{$driver->tag}}</p>
 
-                <table class="w-full mb-4">
+                <table class="w-full mb-2">
                     <tbody>
                     <tr class="text-lg font-semibold text-center">
                         <td class="py-1">Size:</td>
@@ -33,7 +33,7 @@
                     </tbody>
                 </table>
 
-                <x-button tag="a" href="/drivers/driver/{{$driver->id}}" class="w-full mt-auto">View Driver</x-button>
+                <x-button tag="a" href="/drivers/driver/{{$driver->id}}" class="w-full">View Driver</x-button>
             </div>
 
             <!-- Specs Slide-out Panel -->
@@ -73,7 +73,7 @@
                 @click="showSpecs = true"
                 class="absolute right-0 top-0 h-full lg:relative"
                 color="success">
-                <p class="w-full h-full -rotate-90 lg:rotate-0">Show Specs</p>
+                <p class="w-full -rotate-90 lg:rotate-0">Show Specs</p>
             </x-button>
         </div>
     @endforeach
