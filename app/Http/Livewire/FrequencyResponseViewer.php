@@ -19,7 +19,7 @@ class FrequencyResponseViewer extends Component
     ];
 
     private const AMP_RANGE = [
-        'min' => 50,
+        'min' => 0,
         'max' => 120
     ];
 
@@ -67,7 +67,6 @@ class FrequencyResponseViewer extends Component
             }
         }
 
-        // Process both amplitude and phase data at once
         $amplitudeData = $this->processAmplitudeData($processedData);
         $phaseData = $this->processPhaseData($processedData);
 
@@ -135,7 +134,7 @@ class FrequencyResponseViewer extends Component
         return [
             'frequency' => $freq,
             'amplitude' => $amp,
-            'phase' => (float)$values[2]
+            'phase' => $values[2]
         ];
     }
 
@@ -143,7 +142,6 @@ class FrequencyResponseViewer extends Component
     {
         $chartData = [];
         $summedData = [];
-
         foreach ($processedData as $dataset) {
             $chartData[] = [
                 'label' => $dataset['label'],
@@ -164,7 +162,7 @@ class FrequencyResponseViewer extends Component
                 $imag = $amplitude * sin($phase);
 
                 if (!isset($summedData[$freq])) {
-                    $summedData[$freq] = ['real' => $real, 'imag' => $imag, 'count' => 1];
+                    $summedData[$freq] = ['real' => $real, 'imag' => $imag, 'count' => 0];
                 } else {
                     $summedData[$freq]['real'] += $real;
                     $summedData[$freq]['imag'] += $imag;
@@ -176,13 +174,17 @@ class FrequencyResponseViewer extends Component
         $summedResponse = [];
         if (!empty($summedData)) {
             ksort($summedData);
+
+            // Prepare data for smoothing
+            $processedData = [];
             foreach ($summedData as $freq => $complex) {
                 $magnitude = sqrt(pow($complex['real'], 2) + pow($complex['imag'], 2));
                 $db = 20 * log10(max($magnitude, 1e-20));
-                $db = max(min($db, self::AMP_RANGE['max']), self::AMP_RANGE['min']);
-
-                $summedResponse[] = ['x' => $freq, 'y' => $db];
+                $processedData[] = ['x' => $freq, 'y' => $db];
             }
+
+            // Apply smoothing to low frequencies
+            $summedResponse = $this->smoothLowFrequencies($processedData);
         }
 
         return [
@@ -190,6 +192,34 @@ class FrequencyResponseViewer extends Component
             'summedResponse' => $summedResponse
         ];
     }
+
+    private function smoothLowFrequencies(array $data, int $lowFreqThreshold = 60, int $windowSize = 33): array
+    {
+        // Sort data by frequency
+        usort($data, fn($a, $b) => $a['x'] <=> $b['x']);
+
+        $smoothedData = [];
+        foreach ($data as $index => $point) {
+            // Apply smoothing only to low frequencies
+            if ($point['x'] < $lowFreqThreshold) {
+                // Calculate moving average
+                $windowStart = max(0, $index - floor($windowSize / 2));
+                $windowEnd = min(count($data) - 1, $index + floor($windowSize / 2));
+
+                $windowValues = array_slice($data, $windowStart, $windowEnd - $windowStart + 1);
+                $avgValue = array_sum(array_column($windowValues, 'y')) / count($windowValues);
+
+                $smoothedData[] = ['x' => $point['x'], 'y' => $avgValue];
+            } else {
+                // Keep original values for frequencies above threshold
+                $smoothedData[] = $point;
+            }
+        }
+
+        return $smoothedData;
+    }
+
+
 
     private function processPhaseData(array $processedData): array
     {

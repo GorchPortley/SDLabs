@@ -13,7 +13,7 @@
             maintainAspectRatio: true,
             elements: {
                 line: {
-                    tension: 0.4,  // Makes lines smoother (0 = no smoothing, 1 = maximum smoothing)
+                    tension: 0.7,  // Makes lines smoother (0 = no smoothing, 1 = maximum smoothing)
                     borderWidth: 2  // Makes all lines thicker
                 },
                 point: {
@@ -49,7 +49,7 @@
                     },
                     y: {
                         min: 50,
-                        max: 100,
+                        max: 110,
                         title: { display: true, text: 'Amplitude (dB)' }
                     }
                 },
