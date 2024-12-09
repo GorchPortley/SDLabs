@@ -46,6 +46,13 @@
              box-shadow: 0 2px 4px rgba(0,0,0,0.1);
          }
 
+        .tiptap-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
         .tiptap-content table th, .tiptap-content table td {
             border: 1px solid #e0e0e0;
             padding: 0.75rem;
