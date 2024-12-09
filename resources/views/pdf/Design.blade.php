@@ -65,7 +65,7 @@
 <h2 class="section-title">Summary</h2>
 <div class="card">
     <div class="tiptap-content">
-        {!! tiptap_converter()->asHtml($design->summary) !!}
+        {!! $design->summary !!}
     </div>
 </div>
 
@@ -75,7 +75,7 @@
 <h2 class="section-title">Description</h2>
 <div class="card">
     <div class="tiptap-content">
-        {!! tiptap_converter()->asHtml($design->description) !!}
+        {!! $design->description !!}
     </div>
 </div>
 
@@ -95,7 +95,7 @@
 
         <div class="bg-indigo-50 p-4 rounded-lg">
             <div class="tiptap-content">
-                {!! tiptap_converter()->asHtml($component->description) !!}
+                {!! $component->description !!}
             </div>
         </div>
     </div>
