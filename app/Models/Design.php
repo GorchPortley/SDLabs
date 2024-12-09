@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Facades\Storage;
+use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Str;
 use RecursiveIteratorIterator;
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
@@ -154,11 +155,13 @@ class Design extends Model
 
     public function createDesignSnapshot(?Design $design, string $version)
     {
-        try {
-            $sourceDirectory = "files/{$design->user_id}/{$design->name}/";
-            $zipFileName = "{$design->name}-{$version}-SDLabs.zip";
-            $zipFilePath = Storage::path($sourceDirectory . $zipFileName);
+        $sourceDirectory = "files/{$design->user_id}/{$design->name}/";
+        $zipFileName = "{$design->name}-{$version}-SDLabs.zip";
+        $zipFilePath = Storage::path($sourceDirectory . $zipFileName);
 
+        Pdf::view('pdf.design', ['variation'=>$version,'design' => $design])
+            ->save(Storage::path($sourceDirectory . "{$design->name}-{$version}.pdf"));
+        try {
             if (!Storage::exists($sourceDirectory)) {
                 Log::warning("Design snapshot failed: Directory not found", [
                     'design_id' => $design->id,
@@ -166,6 +169,8 @@ class Design extends Model
                 ]);
                 return false;
             }
+
+
 
             $zip = new ZipArchive();
             if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
