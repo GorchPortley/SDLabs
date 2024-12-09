@@ -8,7 +8,6 @@
         body {
             font-family: 'Arial', sans-serif;
             line-height: 1.6;
-            color: #333;
         }
         .page-break {
             page-break-after: always;
@@ -27,7 +26,6 @@
             color: #3730A3;
         }
         .card {
-            background-color: #F0F9FF; /* Light blue background */
             border-radius: 8px;
             padding: 15px;
             margin-bottom: 15px;
