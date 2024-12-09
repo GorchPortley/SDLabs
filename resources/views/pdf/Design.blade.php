@@ -78,10 +78,7 @@
 <h2 class="section-title">Summary</h2>
 <div class="card">
     <div class="tiptap-content">
-        {!! preg_replace('/<img[^>]+>/', function($match) {
-            $src = preg_match('/src="([^"]*)"/', $match[0], $srcMatch) ? $srcMatch[1] : '';
-            return $src ? '<div class="image-container"><img src="' . storage_path('app/public/' . str_replace('/storage/', '', $src)) . '" /></div>' : $match[0];
-        }, tiptap_converter()->asHtml($design->summary)) !!}
+        {!! preg_replace('/(<img[^>]+src="[^"]*")/', '$1 style="max-width: 100%; height: auto; display: block; margin: 0 auto;"', tiptap_converter()->asHtml($design->summary)) !!}
     </div>
 </div>
 
@@ -91,10 +88,7 @@
 <h2 class="section-title">Description</h2>
 <div class="card">
     <div class="tiptap-content">
-        {!! preg_replace('/<img[^>]+>/', function($match) {
-            $src = preg_match('/src="([^"]*)"/', $match[0], $srcMatch) ? $srcMatch[1] : '';
-            return $src ? '<div class="image-container"><img src="' . storage_path('app/public/' . str_replace('/storage/', '', $src)) . '" /></div>' : $match[0];
-        }, tiptap_converter()->asHtml($design->description)) !!}
+        {!! preg_replace('/(<img[^>]+src="[^"]*")/', '$1 style="max-width: 100%; height: auto; display: block; margin: 0 auto;"', tiptap_converter()->asHtml($design->description)) !!}
     </div>
 </div>
 
@@ -114,10 +108,7 @@
 
         <div class="bg-indigo-50 p-4 rounded-lg">
             <div class="tiptap-content">
-                {!! preg_replace('/<img[^>]+>/', function($match) {
-                    $src = preg_match('/src="([^"]*)"/', $match[0], $srcMatch) ? $srcMatch[1] : '';
-                    return $src ? '<div class="image-container"><img src="' . storage_path('app/public/' . str_replace('/storage/', '', $src)) . '" /></div>' : $match[0];
-                }, tiptap_converter()->asHtml($component->description)) !!}
+                {!! preg_replace('/(<img[^>]+src="[^"]*")/', '$1 style="max-width: 100%; height: auto; display: block; margin: 0 auto;"', tiptap_converter()->asHtml($component->description)) !!}
             </div>
         </div>
     </div>
