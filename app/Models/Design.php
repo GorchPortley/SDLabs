@@ -161,7 +161,7 @@ class Design extends Model
         $zipFilePath = Storage::path($sourceDirectory . $zipFileName);
 
 
-        $pdf = Pdf::loadView('pdf.Design', ['variation'=>$version, 'design'=>$design]);
+        $pdf = Pdf::loadView('pdf.Design', ['variation'=>$version, 'design'=>$design])->setOption(['enable_remote' => true]);
         $pdf->save(Storage::path($sourceDirectory . "{$design->name}-{$version}.pdf"));
 
 //        Pdf::view('pdf.Design', ['variation'=>$version,'design' => $design])
