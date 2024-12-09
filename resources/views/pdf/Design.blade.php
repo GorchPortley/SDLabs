@@ -38,6 +38,19 @@
             font-weight: bold;
             margin-right: 5px;
         }
+        .image-container {
+            text-align: center;
+            margin: 15px 0;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
     </style>
 </head>
 <body>
@@ -65,7 +78,10 @@
 <h2 class="section-title">Summary</h2>
 <div class="card">
     <div class="tiptap-content">
-        {!! tiptap_converter()->asHtml($design->summary) !!}
+        {!! preg_replace('/<img[^>]+>/', function($match) {
+            $src = preg_match('/src="([^"]*)"/', $match[0], $srcMatch) ? $srcMatch[1] : '';
+            return $src ? '<div class="image-container"><img src="' . storage_path('app/public/' . str_replace('/storage/', '', $src)) . '" /></div>' : $match[0];
+        }, tiptap_converter()->asHtml($design->summary)) !!}
     </div>
 </div>
 
@@ -75,7 +91,10 @@
 <h2 class="section-title">Description</h2>
 <div class="card">
     <div class="tiptap-content">
-        {!! tiptap_converter()->asHtml($design->description) !!}
+        {!! preg_replace('/<img[^>]+>/', function($match) {
+            $src = preg_match('/src="([^"]*)"/', $match[0], $srcMatch) ? $srcMatch[1] : '';
+            return $src ? '<div class="image-container"><img src="' . storage_path('app/public/' . str_replace('/storage/', '', $src)) . '" /></div>' : $match[0];
+        }, tiptap_converter()->asHtml($design->description)) !!}
     </div>
 </div>
 
@@ -95,7 +114,10 @@
 
         <div class="bg-indigo-50 p-4 rounded-lg">
             <div class="tiptap-content">
-                {!! tiptap_converter()->asHtml($component->description) !!}
+                {!! preg_replace('/<img[^>]+>/', function($match) {
+                    $src = preg_match('/src="([^"]*)"/', $match[0], $srcMatch) ? $srcMatch[1] : '';
+                    return $src ? '<div class="image-container"><img src="' . storage_path('app/public/' . str_replace('/storage/', '', $src)) . '" /></div>' : $match[0];
+                }, tiptap_converter()->asHtml($component->description)) !!}
             </div>
         </div>
     </div>
