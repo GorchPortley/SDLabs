@@ -30,7 +30,10 @@ use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Support\Facades\DB;
 use Livewire\Volt\Component;
 use App\Models\Driver;
+use Maatwebsite\Excel\Facades\Excel;
 use function Laravel\Folio\{middleware, name};
+use Illuminate\Support\Collection;
+use App\Exports\SpecificationsExport;
 
 middleware('auth');
 name('dashboard.drivers');
@@ -155,7 +158,7 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
 
                         TextInput::make('summary'),
                         TipTapEditor::make('description')
-                        ->directory('attachments'),
+                            ->directory('attachments'),
                         KeyValue::make('factory_specs')
                             ->default([
                                 'Re' => '',
@@ -219,6 +222,47 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([
+                Action::make('spec_export')
+                    ->name('Collect Data')
+                    ->icon('phosphor-table')
+                    ->action(function ($record) {
+                        $components = $record->designs()->get();
+                        $driverBrand = $record->brand; // Replace with the actual column or relation for driver brand
+                        $driverModel = $record->model; // Replace with the actual column or relation for driver model
+                        $currentDate = now()->format('Y-m-d'); // Format the current date (e.g., 2024-12-09)
+
+                        $fileName = "{$driverBrand} {$driverModel}-SDLabs-export-{$currentDate}.xlsx";
+
+                        $data = $components->map(function ($component) {
+                            return array_merge(
+                                ['position' => $component->position,
+                                 'quantity' => $component->quantity,
+                                'low_frequency' => $component->low_frequency,
+                                    'high_frequency' => $component->high_frequency,
+                                    'air_volume' => $component->air_volume,
+                                    'Re' => $component->specifications['Re'] ?? null,
+                                    'Fs' => $component->specifications['Fs'] ?? null,
+                                    'Qms' => $component->specifications['Qms'] ?? null,
+                                    'Qes' => $component->specifications['Qes'] ?? null,
+                                    'Qts' => $component->specifications['Qts'] ?? null,
+                                    'Rms' => $component->specifications['Rms'] ?? null,
+                                    'Mms' => $component->specifications['Mms'] ?? null,
+                                    'Cms' => $component->specifications['Cms'] ?? null,
+                                    'Vas' => $component->specifications['Vas'] ?? null,
+                                    'Sd' => $component->specifications['Sd'] ?? null,
+                                    'BL' => $component->specifications['BL'] ?? null,
+                                    'Xmax' => $component->specifications['Xmax'] ?? null,
+                                    'Le' => $component->specifications['Le'] ?? null,
+                                    'SPL' => $component->specifications['SPL'] ?? null,
+                                    'EBP' => $component->specifications['EBP'] ?? null,
+                                    'Vd' => $component->specifications['Vd'] ?? null,
+                                    'Mmd' => $component->specifications['Mmd'] ?? null,
+                                ]
+                            );
+                        });
+                        return Excel::download(new SpecificationsExport($data), $fileName);
+                    })
+                    ->visible(fn() => auth()->user()->hasRole('manufacturer')),
                 Action::make('View')
                     ->icon('phosphor-eye')
                     ->url(fn($record): string => route('driver', ['id' => $record->id])),
