@@ -10,8 +10,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
+
 use Illuminate\Support\Facades\Storage;
-use Spatie\LaravelPdf\Facades\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
 use RecursiveIteratorIterator;
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
@@ -159,8 +160,12 @@ class Design extends Model
         $zipFileName = "{$design->name}-{$version}-SDLabs.zip";
         $zipFilePath = Storage::path($sourceDirectory . $zipFileName);
 
-        Pdf::view('pdf.Design', ['variation'=>$version,'design' => $design])
-            ->save(Storage::path($sourceDirectory . "{$design->name}-{$version}.pdf"));
+
+        $pdf = Pdf::loadView('pdf.Design', ['variation'=>$version, 'design'=>$design]);
+        $pdf->save(Storage::path($sourceDirectory . "{$design->name}-{$version}.pdf"));
+
+//        Pdf::view('pdf.Design', ['variation'=>$version,'design' => $design])
+//            ->save(Storage::path($sourceDirectory . "{$design->name}-{$version}.pdf"));
         try {
             if (!Storage::exists($sourceDirectory)) {
                 Log::warning("Design snapshot failed: Directory not found", [
