@@ -2,12 +2,21 @@
 
 namespace App\Models;
 
+use App\Models\DesignSnapshot;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+
+use Illuminate\Support\Facades\Storage;
+use Spatie\LaravelPdf\Facades\Pdf;
+use Illuminate\Support\Str;
+use RecursiveIteratorIterator;
+use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
+use ZipArchive;
+use App\Models\DesignDriver;
 
 class Design extends Model
 {
@@ -43,9 +52,13 @@ class Design extends Model
         'enclosure_files' => 'array',
         'electronic_files' => 'array',
         'design_other_files' => 'array',
-        'card_image'=> 'array',
+        'card_image' => 'array',
     ];
 
+    public function snapshots(): HasMany
+    {
+        return $this->hasMany(DesignSnapshot::class);
+    }
     public function designer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -139,4 +152,104 @@ class Design extends Model
             }
         });
     }
+
+    public function createDesignSnapshot(?Design $design, string $version)
+    {
+        $sourceDirectory = "files/{$design->user_id}/{$design->name}/";
+        $zipFileName = "{$design->name}-{$version}-SDLabs.zip";
+        $zipFilePath = Storage::path($sourceDirectory . $zipFileName);
+
+        Pdf::view('pdf.design', ['variation'=>$version,'design' => $design])
+            ->save(Storage::path($sourceDirectory . "{$design->name}-{$version}.pdf"));
+        try {
+            if (!Storage::exists($sourceDirectory)) {
+                Log::warning("Design snapshot failed: Directory not found", [
+                    'design_id' => $design->id,
+                    'directory' => $sourceDirectory
+                ]);
+                return false;
+            }
+
+
+
+            $zip = new ZipArchive();
+            if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+                Log::error("Failed to create zip archive", [
+                    'design_id' => $design->id,
+                    'path' => $zipFilePath
+                ]);
+                return false;
+            }
+
+            $files = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator(Storage::path($sourceDirectory), RecursiveDirectoryIterator::SKIP_DOTS),
+                RecursiveIteratorIterator::SELF_FIRST
+            );
+
+            foreach ($files as $file) {
+                $filepath = $file->getRealPath();
+                $relativePath = substr($filepath, strlen(Storage::path($sourceDirectory)));
+
+                if ($filepath === $zipFilePath) continue;
+
+                $file->isDir()
+                    ? $zip->addEmptyDir($relativePath)
+                    : $zip->addFile($filepath, $relativePath);
+            }
+            $zip->close();
+
+            $stashed_data = [
+                "name" => $design->name,
+                "designer" => $design->designer()->pluck('name'),
+                "version" => $version,
+                "images" => $design->card_image,
+                "category" => $design->category,
+                "build_cost" => $design->build_cost,
+                "impedance" => $design->impedance,
+                "power" => $design->power,
+                "summary" => $design->summary,
+                "description" => $design->description,
+                "bom" => $design->bill_of_materials,
+                "forum_link" => "https://www.sdlabs.cc/forum/$design->forum_slug",
+                "components" => $design->components()->get()->map(function ($component) {
+                    return [
+                        'position' => $component->position,
+                        'quantity' => $component->quantity,
+                        'low_frequency' => $component->low_frequency,
+                        'high_frequency' => $component->high_frequency,
+                        'air_volume' => $component->air_volume,
+                        'description' => $component->description,
+                        'specifications' => $component->specifications
+                    ];
+                })->toArray()
+            ];
+
+            DesignSnapshot::create([
+                'design_id' => $design->id,
+                'snapshot_name' => $zipFileName,
+                'stashed_data' => $stashed_data,
+                'stashed_paths' => ["1"=>"1"],
+                'download_path' => $sourceDirectory . $zipFileName,
+            ]);
+
+
+            return true;
+        } catch (\Exception $e) {
+            Log::error("Snapshot creation failed", [
+                'design_id' => $design->id,
+                'error' => $e->getMessage()
+            ]);
+            return false;
+        }
+
+    }
+
+    public function download(DesignSnapshot $snapshot)
+    {
+
+
+        $file= public_path(). "/storage/". $snapshot->download_path;
+
+
+        return response()->download($file);}
 }

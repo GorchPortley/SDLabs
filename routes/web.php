@@ -11,8 +11,12 @@
 |
 */
 
+use App\Models\Design;
 use Illuminate\Support\Facades\Route;
 use Wave\Facades\Wave;
 
 // Wave routes
 Wave::routes();
+
+Route::get('/design-snapshots/{snapshot}/download', [Design::class, 'download'])
+    ->name('design-snapshots.download');

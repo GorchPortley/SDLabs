@@ -19,6 +19,7 @@ new class extends Component {
         $this->design = Design::with([
             'designer',
             'components.driver',
+            'snapshots',
             'sales' => fn($q) => $q->where('user_id', auth()->id())
         ])->findOrFail($id);
     }
