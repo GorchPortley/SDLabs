@@ -1,42 +1,79 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <style>
-        @page {
-            margin: 20mm;
+<head><style>.tiptap-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-            color: #333;
+
+        .tiptap-content table th, .tiptap-content table td {
+            border: 1px solid #e0e0e0;
+            padding: 0.75rem;
+            text-align: left;
         }
-        .page-break {
-            page-break-after: always;
-        }
-        .header {
-            background-color: #1E40AF; /* Indigo-800 */
-            color: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-        }
-        .section-title {
-            border-bottom: 3px solid #3730A3; /* Indigo-900 */
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-            color: #3730A3;
-        }
-        .card {
-            background-color: #F0F9FF; /* Light blue background */
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .detail-label {
-            color: #1E40AF; /* Indigo-800 */
+
+        .tiptap-content table th {
+            background-color: #f5f5f5;
             font-weight: bold;
-            margin-right: 5px;
+        }
+
+        .tiptap-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .tiptap-content table tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        .tiptap-content table th p, .tiptap-content table td p {
+            margin: 0;
+            padding: 0;
+        }
+
+        .tiptap-content .filament-tiptap-grid-builder {
+            display: grid;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .tiptap-content .filament-tiptap-grid-builder[data-cols="3"] {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .tiptap-content .filament-tiptap-grid-builder[data-cols="2"] {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .tiptap-content .filament-tiptap-grid-builder[data-cols="4"] {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .tiptap-content .filament-tiptap-grid-builder__column {
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .tiptap-content .filament-tiptap-grid-builder__column h2 {
+            margin-bottom: 0.75rem;
+        }
+
+        .tiptap-content .filament-tiptap-grid-builder__column p {
+        }
+
+        @media (max-width: 640px) {
+            .tiptap-content .filament-tiptap-grid-builder {
+                grid-template-columns: 1fr !important;
+            }
+
+            .tiptap-content table {
+                font-size: 0.875rem;
+            }
+
+            .tiptap-content table th, .tiptap-content table td {
+                padding: 0.5rem;
+            }
         }
     </style>
 </head>
