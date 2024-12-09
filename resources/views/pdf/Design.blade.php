@@ -1,11 +1,50 @@
 <!DOCTYPE html>
 <html>
-<head><style>.tiptap-content table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 1.25rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+<head>
+    <style>
+        @page {
+            margin: 20mm;
         }
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+        .header {
+            background-color: #1E40AF; /* Indigo-800 */
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+        .section-title {
+            border-bottom: 3px solid #3730A3; /* Indigo-900 */
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            color: #3730A3;
+        }
+        .card {
+            background-color: #F0F9FF; /* Light blue background */
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .detail-label {
+            color: #1E40AF; /* Indigo-800 */
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .tiptap-content table {
+             width: 100%;
+             border-collapse: collapse;
+             margin-bottom: 1.25rem;
+             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+         }
 
         .tiptap-content table th, .tiptap-content table td {
             border: 1px solid #e0e0e0;
