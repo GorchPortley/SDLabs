@@ -486,6 +486,21 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                 Action::make('View')
                     ->icon('phosphor-eye')
                     ->url(fn($record): string => route('design', ['id' => $record->id])),
+                Action::make('createDesignSnapshot')
+                    ->icon('heroicon-m-camera')
+                    ->color('primary')
+                    ->form([
+                        TextInput::make('version')
+                            ->label('Snapshot Version')
+                            ->default('v' . now()->format('YmdHis'))
+                            ->required()
+                            ->placeholder('Enter version (e.g., v1.0)')
+                    ])
+                    ->action(function (array $data, ?Design $record) {
+                        $design = $record;
+                        $version = $data['version'];
+                        $design->createDesignSnapshot($design, $version);
+                    }),
                 EditAction::make()
                     ->form([
                         Toggle::make('active')

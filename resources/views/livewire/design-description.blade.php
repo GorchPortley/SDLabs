@@ -221,7 +221,18 @@
         <div class="" x-show="selectedTab === 'files'" id="tabpanelFiles" role="tabpanel" aria-label="files">
             @if($this->hasAccess)
                 <div>
-                        <iframe width="100%" height="800px" src="/filemanager"></iframe>
+
+                    <div class="w-full">
+                        @foreach($design->snapshots as $snapshot)
+                            <br>
+                            <div>
+                                <a href="{{ route('design-snapshots.download', $snapshot->id) }}" class="button">
+                                    <span>{{$snapshot->snapshot_name}}</span>
+                                    <i class="ph ph-download-simple"></i>
+                                </a>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
             @else
                 <div class="w-full h-auto bg-zinc-600 p-8 rounded-lg text-center">
