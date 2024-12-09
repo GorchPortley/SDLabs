@@ -159,7 +159,7 @@ class Design extends Model
         $zipFileName = "{$design->name}-{$version}-SDLabs.zip";
         $zipFilePath = Storage::path($sourceDirectory . $zipFileName);
 
-        Pdf::view('pdf.design', ['variation'=>$version,'design' => $design])
+        Pdf::view('pdf.Design', ['variation'=>$version,'design' => $design])
             ->save(Storage::path($sourceDirectory . "{$design->name}-{$version}.pdf"));
         try {
             if (!Storage::exists($sourceDirectory)) {
