@@ -38,19 +38,6 @@
             font-weight: bold;
             margin-right: 5px;
         }
-        .image-container {
-            text-align: center;
-            margin: 15px 0;
-        }
-        .image-container img {
-            max-width: 100%;
-            height: auto;
-        }
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
     </style>
 </head>
 <body>
@@ -78,7 +65,7 @@
 <h2 class="section-title">Summary</h2>
 <div class="card">
     <div class="tiptap-content">
-        {!! preg_replace('/(<img[^>]+src="[^"]*")/', '$1 style="max-width: 100%; height: auto; display: block; margin: 0 auto;"', tiptap_converter()->asHtml($design->summary)) !!}
+        {!! tiptap_converter()->asHtml($design->summary) !!}
     </div>
 </div>
 
@@ -88,7 +75,7 @@
 <h2 class="section-title">Description</h2>
 <div class="card">
     <div class="tiptap-content">
-        {!! preg_replace('/(<img[^>]+src="[^"]*")/', '$1 style="max-width: 100%; height: auto; display: block; margin: 0 auto;"', tiptap_converter()->asHtml($design->description)) !!}
+        {!! tiptap_converter()->asHtml($design->description) !!}
     </div>
 </div>
 
@@ -108,7 +95,7 @@
 
         <div class="bg-indigo-50 p-4 rounded-lg">
             <div class="tiptap-content">
-                {!! preg_replace('/(<img[^>]+src="[^"]*")/', '$1 style="max-width: 100%; height: auto; display: block; margin: 0 auto;"', tiptap_converter()->asHtml($component->description)) !!}
+                {!! tiptap_converter()->asHtml($component->description) !!}
             </div>
         </div>
     </div>
