@@ -9,23 +9,18 @@
                 <x-logo class="w-auto mb-6 h-7"></x-logo>
             </a>
             <nav class="flex flex-col w-full -mx-1 space-y-2">
-                <x-app.sidebar-link href="/dashboard" active="true">Menu Item 1</x-app.sidebar-link>
-                <x-app.sidebar-link onclick="sidebarLinkDemo(event)">Menu Item 2</x-app.sidebar-link>
-                <x-app.sidebar-dropdown text="Menu Dropdown" icon="phosphor-stack" id="example_dropdown" :active="false" :open="false">
-                    <x-app.sidebar-link onclick="sidebarLinkDemo(event)">Dropdown Item 1</x-app.sidebar-link>
-                    <x-app.sidebar-link onclick="sidebarLinkDemo(event)">Dropdown Item 2</x-app.sidebar-link>
-                    <x-app.sidebar-link onclick="sidebarLinkDemo(event)">Dropdown Item 3</x-app.sidebar-link>
-                    <x-app.sidebar-link onclick="sidebarLinkDemo(event)">Dropdown Item 4</x-app.sidebar-link>
+                <x-app.sidebar-link href="{{route('dashboard')}}">Dashboard</x-app.sidebar-link>
+                <x-app.sidebar-dropdown text="Manage My Data" icon="phosphor-stack" id="data_dropdown" :active="false" :open="true">
+                    <x-app.sidebar-link href="{{route('dashboard.designs')}}">My Designs</x-app.sidebar-link>
+                    <x-app.sidebar-link href="{{route('dashboard.drivers')}}">My Drivers</x-app.sidebar-link>
+                    <x-app.sidebar-link href="{{route('dashboard.files')}}">My Files</x-app.sidebar-link>
                 </x-app.sidebar-dropdown>
-                <x-app.sidebar-link onclick="sidebarLinkDemo(event)">Final Menu Item</x-app.sidebar-link>
+                <x-app.sidebar-dropdown text="My Library" icon="phosphor-stack" id="library_dropdown" :active="false" :open="true">
+                <x-app.sidebar-link href="{{route('dashboard.library')}}">Designs</x-app.sidebar-link>
+                <x-app.sidebar-link href="#" class="text-gray-600">Drivers(Coming Soon)</x-app.sidebar-link>
+                </x-app.sidebar-dropdown>
             </nav>
         </div>
-        <div class="relative px-6 py-4">
-            <div class="relative pb-4 -mx-1 space-y-1">
-                <x-app.sidebar-link target="_blank" href="https://devdojo.com/wave/docs">Documentation</x-app.sidebar-link>
-                <x-app.sidebar-link href="/changelog">Changelog</x-app.sidebar-link>
-            </div>
-            <x-app.user-menu />
+            <x-app.user-menu position="bottom" />
         </div>
-    </div>
 </aside>

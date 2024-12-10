@@ -1,5 +1,5 @@
 <section x-data="{ mobileNavOpen: false }" class="overflow-hidden">
-    <div class="flex items-center justify-between max-w-6xl p-5 mx-auto bg-white">
+    <div class="flex items-center justify-between p-5 mx-auto bg-white">
         <div class="w-auto">
             <div class="flex flex-wrap items-center">
                 <div class="w-auto mr-14">
@@ -9,10 +9,10 @@
                 </div>
                 <div class="hidden w-auto lg:block">
                     <ul class="flex items-center mr-16">
-                        <li class="font-medium mr-9 hover:text-gray-700"><a href="/">Home</a></li>
-                        <li class="font-medium mr-9 hover:text-gray-700"><a href="/blog">Blog</a></li>
-                        <li class="font-medium mr-9 hover:text-gray-700"><a href="#">Features</a></li>
-                        <li class="font-medium hover:text-gray-700"><a href="/pricing">Pricing</a></li>
+                        <li class="font-medium mr-9 hover:text-gray-700"><a href="{{route('designs')}}">Design Database</a></li>
+                        <li class="font-medium mr-9 hover:text-gray-700"><a href="{{route('drivers')}}">Driver Database</a></li>
+                        <li class="font-medium mr-9 hover:text-gray-700"><a href="/blog">Soap Box</a></li>
+                        <li class="font-medium hover:text-gray-700"><a href="/forum">Forum</a></li>
                     </ul>
                 </div>
             </div>
@@ -25,16 +25,10 @@
                             <a href="/auth/login" class="w-full px-5 py-3 font-medium transition duration-200 ease-in-out bg-transparent rounded-xl hover:text-gray-700" type="button">Sign In</a>
                         </div>
                     </div>
-                    <div class="hidden w-auto lg:block">
-                        <div class="inline-block">
-                            <x-button size="md" tag="a" href="/auth/register">Try 14 Days Free Trial</x-button>
-                        </div>
-                    </div>
                 @else
-                    <div class="hidden w-auto lg:block">
-                        <div class="inline-block">
-                            <x-button size="md" tag="a" href="/dashboard">View Dashboard</x-button>
-                        </div>
+                    <div class="hidden md:flex flex-row">
+{{--                        <x-button href="{{ route('cart') }}" tag="a" wire:key="cart-button" class="mx-2" icon="phosphor-shopping-cart"/>--}}
+                        <x-app.user-menu position="top"/>
                     </div>
                 @endif
                 <div class="w-auto lg:hidden">
@@ -63,20 +57,20 @@
                 </div>
                 <div class="flex flex-col justify-center w-full px-3 py-16">
                     <ul>
-                        <li class="mb-12"><a class="font-medium hover:text-gray-700" href="/">Home</a></li>
-                        <li class="mb-12"><a class="font-medium hover:text-gray-700" href="/blog">Blog</a></li>
-                        <li class="mb-12"><a class="font-medium hover:text-gray-700" href="#_">Features</a></li>
-                        <li><a class="font-medium hover:text-gray-700" href="/pricing">Pricing</a></li>
+                        <li class="mb-12"><a class="font-medium hover:text-gray-700" href="{{route('designs')}}">Design Database</a></li>
+                        <li class="mb-12"><a class="font-medium hover:text-gray-700" href="{{route('drivers')}}">Driver Database</a></li>
+                        <li class="mb-12"><a class="font-medium hover:text-gray-700" href="/blog">SoapBox</a></li>
+                        <li class="mb-12"><a class="font-medium hover:text-gray-700" href="/forum">Community Forum</a></li>
                     </ul>
                 </div>
                 <div class="flex flex-col justify-end w-full pb-8">
                     @if(auth()->guest())
                         <div class="flex flex-wrap w-full space-y-3">
                             <a href="/auth/login" class="block w-full px-5 py-3 font-medium text-center transition duration-200 ease-in-out bg-gray-100 hover:text-gray-700" type="button">Sign In</a>
-                            <a href="/auth/register" class="block w-full px-5 py-3 font-semibold text-center text-white transition duration-200 ease-in-out bg-gray-900 focus:ring focus:ring-gray-900 hover:bg-gray-900">Try 14 Days Free Trial</a>
+                            <a href="/auth/register" class="block w-full px-5 py-3 font-semibold text-center text-white transition duration-200 ease-in-out bg-gray-900 focus:ring focus:ring-gray-900 hover:bg-gray-900">Register</a>
                         </div>
                     @else
-                        <a href="/dashboard" class="block w-full px-5 py-3 font-semibold text-center text-white transition duration-200 ease-in-out bg-gray-900 focus:ring focus:ring-gray-900 hover:bg-gray-900">View Dashboard</a>
+                        <x-app.user-menu position="bottom" />
                     @endif
                 </div>
             </div>

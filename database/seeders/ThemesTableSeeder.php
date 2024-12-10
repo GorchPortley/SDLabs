@@ -14,21 +14,21 @@ class ThemesTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('themes')->delete();
-        
+
         \DB::table('themes')->insert(array (
-            0 => 
+            0 =>
             array (
                 'id' => 1,
-                'name' => 'Anchor Theme',
-                'folder' => 'anchor',
+                'name' => 'blank',
+                'folder' => 'blank',
                 'active' => 1,
                 'version' => 1.0
             )
         ));
-        
-        
+
+
     }
 }

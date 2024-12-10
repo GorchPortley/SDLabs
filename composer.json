@@ -8,6 +8,9 @@
         "php": "^8.1",
         "ext-exif": "*",
         "ext-gd": "*",
+        "ext-zip": "*",
+        "awcodes/filament-tiptap-editor": "^3.4",
+        "barryvdh/laravel-dompdf": "^3.0",
         "bezhansalleh/filament-google-analytics": "^2.0",
         "codeat3/blade-phosphor-icons": "^2.0",
         "devdojo/app": "0.11.0",
@@ -23,10 +26,14 @@
         "laravel/tinker": "^2.7",
         "laravel/ui": "^4.5",
         "livewire/livewire": "^3.0",
+        "maatwebsite/excel": "^3.1",
+        "maicol07/flarum-sso-plugin": "^3.3",
         "ralphjsmit/livewire-urls": "^1.4",
+        "spatie/browsershot": "^4.4",
         "spatie/laravel-permission": "^6.4",
         "stripe/stripe-php": "^15.3",
-        "tymon/jwt-auth": "@dev"
+        "tymon/jwt-auth": "@dev",
+        "unisharp/laravel-filemanager": "^2.9"
     },
     "require-dev": {
         "alebatistella/duskapiconf": "^1.2",

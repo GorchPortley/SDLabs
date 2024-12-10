@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Maicol07\SSO\Flarum;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,7 +16,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+//        $flarum = new Flarum([
+//                'url' => env('FORUM_URL'),
+//                'root_domain' => env('APP_URL'),
+//                'api_key' => env('FORUM_API_KEY'),
+//                'password_token' => env('PASSWORD_TOKEN'),
+//                'remember' => true,
+//                'verify_ssl' => env('FORUM_VERIFY_SSL', true),
+//                'cookies_prefix' => 'flarum',
+//            ]);
     }
 
     /**
