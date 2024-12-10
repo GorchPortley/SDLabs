@@ -1,12 +1,12 @@
 <div>
-<div class="grid grid-cols-1 lg:grid-cols-5 gap-6 p-4">
+<div class="grid flex-no-shrink grid-cols-1 lg:grid-cols-5 gap-6 p-4">
     @foreach($designs as $design)
-        <div x-data="{ showSpecs: false }" wire:key="{{ $design->id }}" class="relative flex lg:h-full h-[300px] flex-row xs:flex-col lg:flex-col w-full bg-white rounded-lg border-2 border-gray-100 hover:shadow-lg shadow-sm overflow-hidden">
-            <div class="w-1/2 lg:w-full flex-shrink-0">
+        <div x-data="{ showSpecs: false }" wire:key="{{ $design->id }}" class="relative lg:h-[540px] h-[300px] flex flex-row xs:flex-col lg:flex-col bg-white rounded-lg border-2 border-gray-100 hover:shadow-lg shadow-sm overflow-hidden">
+            <div class="w-1/2 h-full lg:w-full">
                 <a href="/designs/design/{{$design->id}}" class="">
                     <img
                         src="/storage/{{ is_array($design->card_image) && !empty($design->card_image) ? $design->card_image[0] : $design->card_image }}"
-                        class="w-full h-full object-cover"
+                        class="w-[270px] h-[270px] object-scale-down"
                         alt="{{ $design->name }}"
                         onerror="this.src='/images/placeholder.jpg'"
                     >
@@ -17,22 +17,22 @@
                     <i class="ph ph-seal-check"></i>
                 </div>
             @endif
-            <div class="w-1/2 lg:w-full flex flex-col justify-center">
-                    <h2 class="text-lg font-semibold text-center h-7 overflow-hidden text-ellipsis">{{$design->name}}</h2>
-                    <p class="text-gray-600 text-center h-6 overflow-hidden text-ellipsis">By: {{$design->designer?->name}}</p>
-                    <p class="text-gray-800 text-center mb-2 h-6 overflow-hidden text-ellipsis">{{$design->tag}}</p>
-                    <table class="w-full">
+            <div class="w-1/2 h-full flex-grow-1 lg:w-full lg:h-[270px] flex flex-col">
+                    <h2 class="text-lg font-semibold text-center truncate px-4">{{$design->name}}</h2>
+                    <p class="text-gray-600 text-center truncate px-4">By: {{$design->designer?->name}}</p>
+                    <p class="text-gray-800 text-center mb-2 px-4 truncate">{{$design->tag ?? 'A Nice Design'}}</p>
+                    <table class="w-full mb-2">
                         <tbody>
-                        <tr class="text-lg font-semibold text-center h-8">
-                            <td>Category</td>
+                        <tr class="text-lg font-semibold text-center">
+                            <td class="py-1">Category</td>
                             <td class="text-gray-600 truncate max-w-[100px]">{{$design->category}}</td>
                         </tr>
-                        <tr class="text-lg font-semibold text-center h-8">
-                            <td>Price</td>
+                        <tr class="text-lg font-semibold text-center">
+                            <td class="py-1">Price</td>
                             <td class="text-gray-600 truncate max-w-[100px]">{{$design->price}}</td>
                         </tr>
-                        <tr class="text-lg font-semibold text-center h-8">
-                            <td>Build Cost:</td>
+                        <tr class="text-lg font-semibold text-center">
+                            <td class="py-1">Build Cost:</td>
                             <td class="text-gray-600 truncate max-w-[100px]">{{$design->build_cost}}</td>
                         </tr>
                         </tbody>
@@ -44,7 +44,7 @@
                         :isInCart="in_array($design->id, $cartItems ?? [])"
                         wire:key="cart-{{ $design->id }}"
                     />
-                    <x-button tag="a" href="/designs/design/{{$design->id}}" class="w-full m-0">View Design</x-button>
+                    <x-button tag="a" href="/designs/design/{{$design->id}}" class="w-full">View Design</x-button>
                 </div>
 
             </div>
@@ -57,7 +57,7 @@
                 x-transition:leave-start="translate-x-0 lg:translate-y-0"
                 x-transition:leave-end="translate-x-full lg:translate-x-0 lg:translate-y-[100%]"
                 class="absolute right-0 lg:bottom-0 h-full lg:h-auto w-3/5 lg:w-full bg-white shadow-lg">
-                <table class="w-full border-collapse mb-4">
+                <table class="w-full border-collapse">
                     <tbody>
                     <tr class="border">
                         <td class="p-2">Impedance</td>
@@ -74,9 +74,9 @@
                 <x-button
                 x-show="!showSpecs"
                 @click="showSpecs = true"
-                class="lg:w-full w-[30px] h-full"
+                class="absolute right-0 top-0 h-full lg:relative"
                 color="success">
-                <p class="-rotate-90 lg:rotate-0">Show Specs</p>
+                <p class="w-full -rotate-90 lg:rotate-0">Show Specs</p>
             </x-button>
         </div>
     @endforeach

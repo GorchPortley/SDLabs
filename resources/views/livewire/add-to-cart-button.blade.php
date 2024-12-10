@@ -5,7 +5,7 @@
     @auth
         @if($design->price <= 0)
             @if($design->sales->isNotEmpty())
-                <x-button class="w-full" disabled color="success">Design Owned</x-button>
+                <x-button class="w-full" disabled color="success">Owned</x-button>
             @else
                 <x-button class="w-full" wire:click="addToCart" wire:loading.attr="disabled" color="success">
                     <span wire:loading.remove>Free Design</span>
