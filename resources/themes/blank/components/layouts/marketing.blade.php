@@ -1,23 +1,21 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="{{ app()->getLocale() }}" >
 <head>
     @include('theme::partials.head', ['seo' => ($seo ?? null) ])
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    @stack('head')
 </head>
-<body class="flex flex-col min-h-screen overflow-x-hidden @if($bodyClass ?? false){{ $bodyClass }}@endif">
+<body class="bg-zinc-200">
+<x-marketing.header />
 
-    <x-marketing.header />
+<main >
+    {!! $slot !!}
+</main>
 
-    <main class="w-full h-full">
-        {{ $slot }}
-    </main>
+@livewire('notifications')
+@filamentScripts
+@livewireScripts
 
-    <x-marketing.footer />
-
-    @livewire('notifications')
-    @filamentScripts
-    @livewireScripts
-    
-    {{ $javascript ?? '' }}
-
+{{ $javascript ?? '' }}
 </body>
 </html>

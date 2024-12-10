@@ -27,10 +27,12 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
             ->heading('Design Library')
             ->description('Designs you have purchased or collected')
             ->defaultPaginationPageOption(5)
-            ->recordUrl(fn (DesignPurchase $record): string => route('design', ['id' => $record->design->id]))
+            ->recordUrl(fn ($record): string =>
+                route('design', ['id' => $record->design?->id ?? 0]) ?? '#'
+            )
             ->columns([
                 TextColumn::make('design.name')
-                    ->description(fn(DesignPurchase $record): string=> $record->design->tag),
+                    ->description(fn(DesignPurchase $record): string=> $record->design->tag ?? '#'),
                 TextColumn::make('design.category')
                     ->label('Category'),
                 TextColumn::make('design.designer.name')
@@ -41,11 +43,7 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
 ?>
 
 <x-layouts.app>
-    @volt('library')
-    <x-app.container>
-
+    @volt('dashboard.design-library')
     {{ $this->table }}
-
-    </x-app.container>
     @endvolt
 </x-layouts.app>
