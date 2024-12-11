@@ -26,7 +26,7 @@
                         </div>
                     </div>
                 @else
-                    <div class="hidden md:flex flex-row">
+                    <div class="hidden lg:flex flex-row">
 {{--                        <x-button href="{{ route('cart') }}" tag="a" wire:key="cart-button" class="mx-2" icon="phosphor-shopping-cart"/>--}}
                         <x-app.user-menu position="top"/>
                     </div>

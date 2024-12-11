@@ -39,7 +39,7 @@
             <div class="my-2 w-full h-px bg-slate-100 dark:bg-gray-700"></div>
             <div class="flex relative flex-col p-2 space-y-1">
                 <x-app.sidebar-link href="/dashboard">View Dashboard</x-app.sidebar-link>
-                <x-app.sidebar-link href="/notifications">Notifications</x-app.sidebar-link>
+{{--                <x-app.sidebar-link href="/notifications">Notifications</x-app.sidebar-link>--}}
                 <x-app.sidebar-link href="{{ '/profile/' . auth()->user()->username }}">Public Profile
                 </x-app.sidebar-link>
                 <x-app.sidebar-link href="{{ route('settings.profile') }}">Settings</x-app.sidebar-link>

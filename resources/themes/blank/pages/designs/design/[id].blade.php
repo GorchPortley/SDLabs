@@ -114,8 +114,9 @@ new class extends Component {
 
                         <!-- Designer Info -->
                         <div>
-                            <p class="text-sm text-gray-500">Designed by</p>
+                            <p class="text-sm text-gray-500">Designed by</p><a href="https://www.sdlabs.cc/profile/{{$design->designer->username}}">
                             <p class="text-lg font-medium text-gray-900">{{ $design->designer->name ?? 'Speaker Designer' }}</p>
+                            </a>
                         </div>
 
                         <!-- Specifications -->

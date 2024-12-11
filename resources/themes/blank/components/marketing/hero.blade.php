@@ -6,6 +6,7 @@
         <p class="text-base font-medium text-gray-500 sm:text-lg">
             Discover, design, and bring your speaker ideas to life with SDLabs.
         </p>
+        <x-button tag="a" href="https://www.sdlabs.cc/blog/site-news/welcome-to-the-sdlabscc-beta">Read an introduction by Adrian D.</x-button>
         <div class="flex flex-col sm:flex-row sm:space-x-3 sm:space-y-0 space-y-3 w-full mx-auto items-stretch lg:items-center justify-center">
             @auth
                 <x-button tag="a" href="{{route('designs')}}">Browse Designs</x-button>
