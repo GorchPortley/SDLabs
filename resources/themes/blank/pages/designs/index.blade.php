@@ -57,7 +57,7 @@ new class extends Component {
     @volt('designs')
     <div>
         <div class="flex h-full w-full bg-gray-300 rounded-md">
-            <img src="https://placehold.co/1920x300">
+            <livewire:banner-display location="design_page">
         </div>
         <div class="flex-row lg:flex w-full h-full mt-5">
             <div class="lg:flex flex-col h-full lg:w-1/5 rounded-md p-4 bg-white shadow">
