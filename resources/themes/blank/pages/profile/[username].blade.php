@@ -8,11 +8,14 @@
     new class extends Component
     {
         public $username;
-
         #[Computed]
         public function user()
         {
-            return config('wave.user_model')::where('username', '=', $this->username)->with('roles')->firstOrFail();
+            return config('wave.user_model')::where('username', '=', $this->username)
+                ->with(['roles', 'designs' => function($query) {
+                    $query->where('active', 1);
+                }])
+                ->firstOrFail();
         }
     }
 ?>
@@ -27,7 +30,7 @@
                     level="h2"
                     class="mt-5"
                     :title="$this->user->name"
-                    :description="'Currently viewing ' . $this->user->username . '\'s profile'" 
+                    :description="'Currently viewing ' . $this->user->username . '\'s profile'"
                     align="left"
                 />
             @endguest
@@ -37,17 +40,26 @@
                         <img src="{{ $this->user->avatar() }}" class="w-24 h-24 rounded-full border-4 border-zinc-200">
                         <h2 class="mt-8 text-2xl font-bold">{{ $this->user->name }}</h2>
                         <p class="my-1 font-medium text-blue-blue">{{ '@' . $this->user->username }}</p>
-        
+
                         @if (auth()->check() && auth()->user()->isAdmin())
                             <a href="{{ route('impersonate', $this->user->id) }}" class="px-3 py-1 my-2 text-xs font-medium text-white rounded text-zinc-600 bg-zinc-200">Impersonate</a>
                         @endif
                         <p class="mx-auto max-w-lg text-base text-center text-zinc-500">{{ $this->user->profile('about') }}</p>
                 </x-card>
 
-                <x-card class="p-10 lg:w-2/3 lg:flex-2">
-                    <p class="text-sm text-zinc-600">This is the application user profile page.</p>
-                    <p class="mt-2 text-sm text-zinc-600">You can modify this file from your template <strong>resources/views/anchor</strong> at:</p>
-                    <code class="inline-block px-2 py-1 mt-2 font-mono text-sm font-medium bg-gray-100 rounded-md text-zinc-600">{{ 'pages/profile/[username].blade.php' }}</code>
+                <x-card class="p-10 lg:w-2/3 lg:flex-2 space-y-4">
+                    <div><H1 class="text-2xl font-bold">Submitted Designs</H1></div>
+                    @foreach($this->user->designs as $design)
+                        <a href="https://www.sdlabs.cc/designs/design/{{$design->id}}" class="block">
+                            <div class="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+                                <div class="flex justify-between items-center">
+                                    <h1 class="font-bold text-lg">{{$design->name}}</h1>
+                                    <span class="text-sm text-gray-600">{{$design->category}}</span>
+                                </div>
+                                <p class="text-gray-500 mt-2">{{$design->tag}}</p>
+                            </div>
+                        </a>
+                    @endforeach
                 </x-card>
             </div>
 
