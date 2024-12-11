@@ -127,7 +127,7 @@
         </div>
         <div class="w-full h-auto min-h-[200px]" x-show="selectedTab === 'discussion'" id="tabpanelDiscussion" role="tabpanel" aria-label="discussion">
             @if($this->hasAccess)
-                <iframe src="https://sandbox.sdlabs.cc/forum/embed/{{ $design->forum_slug }}" width="100%" height="800px"></iframe>
+                <iframe src="https://www.sdlabs.cc/forum/embed/{{ $design->forum_slug }}" width="100%" height="800px"></iframe>
             @else
                 <div class="w-full h-auto bg-zinc-600 p-8 rounded-lg text-center">
                     @auth
