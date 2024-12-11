@@ -82,7 +82,8 @@ new class extends Component {
     @volt('drivers')
     <div>
         <div class="flex h-full w-full bg-gray-300 rounded-md">
-            <img alt="temporary alt text" src="https://placehold.co/1920x300">
+
+            <livewire:banner-display location="driver_page">
         </div>
         <div class="lg:flex flex-row w-full h-full mt-5">
             <div class=" h-full lg:w-1/5 rounded-md p-4 bg-white shadow">
