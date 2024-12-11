@@ -83,7 +83,7 @@ class Design extends Model
         static::created(function ($design) {
             try {
                 $flarumUrl = env('FORUM_URL');
-                $forumUsername = auth()->user()->name;
+                $forumEmail = auth()->user()->email;
                 $forumPassword = auth()->user()->getAuthPassword();
 
                 // First, get the authentication token
@@ -91,7 +91,7 @@ class Design extends Model
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/json'
                 ])->post($flarumUrl . '/api/token', [
-                    'identification' => $forumUsername,
+                    'identification' => $forumEmail,
                     'password' => $forumPassword
                 ]);
 
