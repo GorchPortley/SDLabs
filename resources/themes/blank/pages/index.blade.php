@@ -11,6 +11,7 @@
         'type'          => 'website'
     ]"
 >
+    <livewire:banner-display location="front_page"/>
     <x-marketing.hero></x-marketing.hero>
     <x-marketing.features></x-marketing.features>
 </x-layouts.marketing>
