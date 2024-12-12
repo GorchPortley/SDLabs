@@ -487,6 +487,7 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                     ->icon('phosphor-eye')
                     ->url(fn($record): string => route('design', ['id' => $record->id])),
                 Action::make('createDesignSnapshot')
+                    ->label('New Snapshot')
                     ->icon('heroicon-m-camera')
                     ->color('primary')
                     ->form([
@@ -496,7 +497,7 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                             ->required()
                             ->placeholder('Enter version (e.g., v1.0)')
                     ])
-                    ->action(function (array $data, ?Design $record) {
+                    ->action(function (array $data, ?Driver $record) {
                         $design = $record;
                         $version = $data['version'];
                         $design->createDesignSnapshot($design, $version);
