@@ -222,6 +222,22 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([
+                Action::make('createDriverSnapshot')
+                    ->label('New Snapshot')
+                    ->icon('heroicon-m-camera')
+                    ->color('primary')
+                    ->form([
+                        TextInput::make('version')
+                            ->label('Snapshot Version')
+                            ->default('v' . now()->format('YmdHis'))
+                            ->required()
+                            ->placeholder('Enter version (e.g., v1.0)')
+                    ])
+                    ->action(function (array $data, ?Driver $record) {
+                        $driver = $record;
+                        $version = $data['version'];
+                        $driver->createDriverSnapshot($driver, $version);
+                    }),
                 Action::make('spec_export')
                     ->name('Collect Data')
                     ->icon('phosphor-table')
