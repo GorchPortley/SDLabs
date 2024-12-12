@@ -11,7 +11,9 @@
         'type'          => 'website'
     ]"
 >
-    <livewire:banner-display location="front_page"/>
+    <div class="hidden lg:block">
+        <livewire:banner-display  location="front_page"></livewire:banner-display>
+    </div>
     <x-marketing.hero></x-marketing.hero>
     <x-marketing.features></x-marketing.features>
 </x-layouts.marketing>

@@ -16,7 +16,8 @@ new class extends Component {
     public function mount(string $id)
     {
         $this->driver = Driver::with([
-            'designs.design'  // Load related designs with their parent design info
+            'snapshots',
+            'designs.design'
         ])->findOrFail($id);
     }
 } ?>
@@ -245,6 +246,18 @@ new class extends Component {
                     </div>
                     </div>
                 @endif
+                <div class="w-full">
+                    <span class="text-xl justify-center font-semibold text-gray-900">Download Files</span>
+                    @foreach($driver->snapshots as $snapshot)
+                        <br>
+                        <div>
+                            <a href="{{ route('driver-snapshots.download', $snapshot->id) }}" class="button">
+                                <span>{{$snapshot->snapshot_name}}</span>
+                                <i class="ph ph-download-simple"></i>
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
 
                 <!-- Description Section -->
                 <div class="border-t border-gray-200 pt-8">

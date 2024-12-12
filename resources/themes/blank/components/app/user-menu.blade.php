@@ -5,9 +5,9 @@
 <div>
 <div x-data="{ dropdownOpen: false }"
      :class="{ 'block z-50 bg-white dark:bg-gray-900 dark:border-gray-800' : open, 'hidden': ! open }"
-     class="relative flex-shrink-0 sm:p-0 sm:flex w-auto sm:bg-transparent sm:items-center" x-cloak>
+     class="relative flex-shrink-0 sm:p-0 sm:flex w-auto sm:bg-white sm:items-center" x-cloak>
     <button @click="dropdownOpen=!dropdownOpen"
-            class="flex px-3 py-2.5 w-full text-[13px] hover:bg-gray-100 justify-start justify-between items-center w-full hover:text-black border border-black space-x-1.5 overflow-hidden group-hover:autoflow-auto items">
+            class="flex px-3 py-2.5 w-full text-[13px] hover:bg-gray-100 justify-start justify-between items-center w-full hover:text-black border border-white space-x-1.5 overflow-hidden group-hover:autoflow-auto items">
         <span class="relative flex items-center space-x-2">
             <img
                 x-data="{ src: '', refreshAvatarSrc(){ this.src='{{ auth()->user()->avatar() }}' + '?' + new Date().getTime() } }"

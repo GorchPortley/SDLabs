@@ -12,6 +12,7 @@
 */
 
 use App\Models\Design;
+use App\Models\Driver;
 use Illuminate\Support\Facades\Route;
 use Wave\Facades\Wave;
 
@@ -20,3 +21,6 @@ Wave::routes();
 
 Route::get('/design-snapshots/{snapshot}/download', [Design::class, 'download'])
     ->name('design-snapshots.download');
+
+Route::get('/driver-snapshots/{snapshot}/download', [Driver::class, 'download'])
+    ->name('driver-snapshots.download');

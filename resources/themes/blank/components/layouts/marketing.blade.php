@@ -5,7 +5,7 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     @stack('head')
 </head>
-<body class="bg-zinc-200">
+<body class="">
 <x-marketing.header />
 
 <main >
