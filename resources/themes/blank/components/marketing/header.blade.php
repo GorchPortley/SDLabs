@@ -51,16 +51,16 @@
                                 <a href="{{ route('drivers', ["category" => "Other"]) }}" class="block px-4 py-2 hover:bg-gray-200">Others</a>
                             </div>
                         </li>
-
+                        <a class="font-bold" href="{{ route('blog') }}">
                         <li class="font-medium group flex justify-center items-center text-white h-full pr-4 pl-4 hover:text-amber-200">
                             <i class="ph ph-megaphone-simple mr-2 text-3xl"></i>
-                            <a class="font-bold" href="{{ route('blog') }}">Soap Box</a>
-                        </li>
-
+                            Soap Box
+                        </li></a>
+                        <a class="font-bold" href="/forum">
                         <li class="font-medium group flex justify-center items-center text-white h-full pr-4 pl-4 hover:text-amber-200">
                             <i class="ph ph-user-sound mr-2 text-3xl"></i>
-                            <a class="font-bold" href="/forum">Forum</a>
-                        </li>
+                            Forum
+                        </li></a>
                     </ul>
                 </div>
             </div>
