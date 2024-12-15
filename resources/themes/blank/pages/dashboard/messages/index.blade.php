@@ -11,9 +11,7 @@ name('dashboard.messages');
         title="Chat and Messages"
         description="Connect with fellow SDLabs users">
     </x-app.heading>
-    @volt('dashboard.files')
     <iframe src="/chatify"
             class="rounded-lg"
             style="width: 100%; height:800px; overflow: hidden;"></iframe>
-    @endvolt
 </x-layouts.app>
