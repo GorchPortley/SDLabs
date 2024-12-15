@@ -10,7 +10,11 @@ class UserLoggedIn
     public function handle(Login $event)
     {
         $user = $event->user;
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> 5383548929b5d768e4ed9b340b19d234de2e3a9d
         try {
             $flarum = new Flarum([
                 'url' => env('FORUM_URL'),
