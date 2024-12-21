@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class DesignDriver extends Pivot
 {
+//Begin Fillable Area
     protected $fillable = [
             'design_id',
             'driver_id',
@@ -28,7 +29,9 @@ class DesignDriver extends Pivot
         'impedance_files' => 'array',
         'other_files' => 'array'
     ];
+//End Fillable Area
 
+//Begin Relationships Area
     public function design(): BelongsTo
     {
         return $this->belongsTo(Design::class);
@@ -38,4 +41,6 @@ class DesignDriver extends Pivot
     {
         return $this->belongsTo(Driver::class);
     }
+//End Relationships Area
+
 }

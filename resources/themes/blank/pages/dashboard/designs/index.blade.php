@@ -497,7 +497,7 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                             ->required()
                             ->placeholder('Enter version (e.g., v1.0)')
                     ])
-                    ->action(function (array $data, ?Driver $record) {
+                    ->action(function (array $data, ?Design $record) {
                         $design = $record;
                         $version = $data['version'];
                         $design->createDesignSnapshot($design, $version);

@@ -22,7 +22,7 @@ class UserLoggedIn
             ]);
 
             // Create user in Flarum
-            $flarum_user = $flarum->user($user->id);
+            $flarum_user = $flarum->user($user->email);
             $flarum_user->attributes->username = $user->username ?? $user->name;
             $flarum_user->attributes->email = $user->email;
             $flarum_user->attributes->password = $user->password;

@@ -72,7 +72,7 @@ class User extends WaveUser
 
         // SSO Registration Handler
         static::creating(function ($user) {
-            try {
+
                 $flarum = new Flarum([
                     'url' => env('FORUM_URL'),
                     'root_domain' => env('APP_URL'),
@@ -87,20 +87,12 @@ class User extends WaveUser
                 $flarum_user->attributes->username = $user->username ?? $user->name;
                 $flarum_user->attributes->email = $user->email;
                 $flarum_user->attributes->password = $user->password;
-
                 $flarum_user->signup();
                 $flarum_user->login();
-            } catch (\Exception $e) {
-                \Log::error('Flarum SSO Registration Error: ' . $e->getMessage());
-                // Optionally, you might want to prevent user creation
-                // return false;
-            }
         });
 
-        // SSO Login Handler
+        // SSO Password Update Handler
         static::updated(function ($user) {
-            if ($user->wasChanged('password')) {
-                try {
                     $flarum = new Flarum([
                         'url' => env('FORUM_URL'),
                         'root_domain' => env('APP_URL'),
@@ -109,20 +101,19 @@ class User extends WaveUser
                         'remember' => true,
                         'verify_ssl' => env('FORUM_VERIFY_SSL', true),
                     ]);
-
-                    // Update user password in Flarum
                     $flarum_user = $flarum->user($user->email);
+                    if ($user->wasChanged('password')) {
                     $flarum_user->attributes->password = $user->password;
-                    $flarum_user->save();
-                } catch (\Exception $e) {
-                    \Log::error('Flarum SSO Password Update Error: ' . $e->getMessage());
-                }
-            }
+                    }
+                    if ($user->wasChanged('email')) {
+                    $flarum_user->attributes->email = $user->email;
+                    }
+                    $flarum_user->update();
+                
         });
 
         // SSO Deletion Handler
         static::deleting(function ($user) {
-            try {
                 $flarum = new Flarum([
                     'url' => env('FORUM_URL'),
                     'root_domain' => env('APP_URL'),
@@ -130,13 +121,8 @@ class User extends WaveUser
                     'password_token' => env('FORUM_PASSWORD_TOKEN'),
                     'verify_ssl' => env('FORUM_VERIFY_SSL', true),
                 ]);
-
-                // Delete user from Flarum
                 $flarum_user = $flarum->user($user->email);
                 $flarum_user->delete();
-            } catch (\Exception $e) {
-                \Log::error('Flarum SSO Deletion Error: ' . $e->getMessage());
-            }
         });
     }
     public function designs(): HasMany

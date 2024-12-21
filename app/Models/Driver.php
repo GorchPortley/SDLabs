@@ -18,6 +18,7 @@ class Driver extends Model
     /** @use HasFactory<\Database\Factories\DriverFactory> */
     use HasFactory;
 
+//Begin Fillable Area
     protected $fillable = [
         'user_id',
         'brand',
@@ -46,90 +47,109 @@ class Driver extends Model
         'impedance_files' => 'array',
         'other_files' => 'array',
     ];
+//End Fillable Area
 
-    public function creator(): BelongsTo
+//Begin Relationships Area
+    private function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function designs(): HasMany
+    private function designs(): HasMany
     {
         return $this->hasMany(DesignDriver::class);
     }
 
-    public function snapshots(): HasMany
+    private function snapshots(): HasMany
     {
         return $this->hasMany(DriverSnapshot::class);
     }
-    public function createDriverSnapshot(?Driver $driver, string $version)
+//End Relationships Area
+
+//Begin Snapshots Area
+
+    //Helper
+    private function getSourceDirectory(Driver $driver): string
     {
-        $sourceDirectory = "files/{$driver->user_id}/Drivers/{$driver->model}/";
-        $zipFileName = "{$driver->brand}-{$driver->model}-{$version}-SDLabs.zip";
-        $zipFilePath = Storage::path($sourceDirectory . $zipFileName);
+        return "files/{$driver->user_id}/Drivers/{$driver->model}/";
+    }
 
-        try {
-            if (!Storage::exists($sourceDirectory)) {
-                Log::warning("Design snapshot failed: Directory not found", [
-                    'driver_id' => $driver->id,
-                    'directory' => $sourceDirectory
-                ]);
-                return false;
-            }
+    //Helper
+    private function getZipFileName(Driver $driver, string $version): string
+    {
+        return "{$driver->brand}-{$driver->model}-{$version}-SDLabs.zip";
+    }
 
+    //Helper    
+    private function getZipFilePath(Driver $driver, string $version): string
+    {
+        return $this->getSourceDirectory($driver) . $this->getZipFileName($driver, $version);
+    }
 
-
-            $zip = new ZipArchive();
-            if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-                Log::error("Failed to create zip archive", [
-                    'design_id' => $driver->id,
-                    'path' => $zipFilePath
-                ]);
-                return false;
-            }
+    //Helper
+    private function createZipArchive(string $sourceDirectory, string $zipFilePath): bool
+    { 
+       $zip = new ZipArchive();
+    
+        if ($zip->open(Storage::path($zipFilePath), ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+            Log::error("Cannot open <$zipFilePath>");
+            return false;
+        }
 
             $files = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator(Storage::path($sourceDirectory), RecursiveDirectoryIterator::SKIP_DOTS),
                 RecursiveIteratorIterator::SELF_FIRST
             );
-
+    
             foreach ($files as $file) {
                 $filepath = $file->getRealPath();
                 $relativePath = substr($filepath, strlen(Storage::path($sourceDirectory)));
-
+    
+                // Skip the zip file itself
                 if ($filepath === $zipFilePath) continue;
-
-                $file->isDir()
-                    ? $zip->addEmptyDir($relativePath)
-                    : $zip->addFile($filepath, $relativePath);
+    
+                if ($file->isDir()) {
+                    $zip->addEmptyDir($relativePath);
+                } else {
+                    $zip->addFile($filepath, $relativePath);
+                }
             }
             $zip->close();
-
-            DriverSnapshot::create([
-                'driver_id' => $driver->id,
-                'snapshot_name' => $zipFileName,
-                'stashed_data' => ["1"=>"1"],
-                'download_path' => $sourceDirectory . $zipFileName,
-            ]);
-
-
             return true;
-        } catch (\Exception $e) {
-            Log::error("Snapshot creation failed", [
-                'driver_id' => $driver->id,
-                'error' => $e->getMessage()
-            ]);
-            return false;
-        }
-
     }
 
+    //Helper
+    private function submitSnapshotData(Driver $driver, string $sourceDirectory, string $zipFileName)
+    {
+        DriverSnapshot::create([
+            'driver_id' => $driver->id,
+            'snapshot_name' => $zipFileName,
+            'stashed_data' => ["1"=>"1"],
+            'download_path' => $sourceDirectory . $zipFileName,
+        ]);
+    }
+
+    //Helper
     public function download(DriverSnapshot $snapshot)
     {
 
 
-        $file= public_path(). "/storage/". $snapshot->download_path;
+        $file= private_path(). "/storage/". $snapshot->download_path;
 
 
-        return response()->download($file);}
+        return response()->download($file);
+    }
+
+    //Gets called in Dashboard->Driver->Create New Snapshot
+    public function createDriverSnapshot(?Driver $driver, string $version)
+    {
+        $sourceDirectory = $this->getSourceDirectory($driver);
+        $zipFileName = $this->getZipFileName($driver, $version);
+        $zipFilePath = $this->getZipFilePath($driver, $version);
+        $this->submitSnapshotData($driver, $sourceDirectory, $zipFileName);
+        $this->createZipArchive($sourceDirectory, $zipFilePath);
+
+    }
+//End Snapshots Area
 
 }
