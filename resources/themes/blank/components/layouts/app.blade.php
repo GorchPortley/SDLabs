@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
 <head>
+    
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-D6528Z9ZYR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-D6528Z9ZYR');
+</script>
+
     @include('theme::partials.head', ['seo' => ($seo ?? null) ])
 </head>
 <body x-data class="flex min-h-screen overflow-x-hidden  bg-gray-100 min-h-sreen @if($bodyClass ?? false){{ $bodyClass }}@endif">

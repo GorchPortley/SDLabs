@@ -14,14 +14,6 @@
                 <div class="flex lg:flex-col items-stretch w-auto lg:w-full lg:space-y-1 items-center space-x-2 lg:space-x-0">
                     <x-settings-sidebar-link :href="route('settings.profile')" icon="phosphor-user-circle-duotone">Profile</x-settings-sidebar-link>
                     <x-settings-sidebar-link :href="route('settings.security')" icon="phosphor-lock-duotone">Security</x-settings-sidebar-link>
-                    <x-settings-sidebar-link :href="route('settings.api')" icon="phosphor-code-duotone">API Keys</x-settings-sidebar-link>
-                </div>
-                
-
-                <div class="px-2.5 pt-3.5 pb-1.5 text-xs lg:block hidden font-semibold leading-6 text-zinc-500">Billing</div>
-                <div class="flex lg:flex-col items-stretch w-auto md:ml-0 ml-2 lg:w-full lg:space-y-1 items-center space-x-2 lg:space-x-0">
-                    <x-settings-sidebar-link :href="route('settings.subscription')" icon="phosphor-credit-card-duotone">Subscription</x-settings-sidebar-link>
-                    <x-settings-sidebar-link :href="route('settings.invoices')" icon="phosphor-invoice-duotone">Invoices</x-settings-sidebar-link>
                 </div>
             </nav>
         </aside>

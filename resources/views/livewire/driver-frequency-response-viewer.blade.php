@@ -41,8 +41,8 @@
                         title: { display: true, text: 'Frequency (Hz)' }
                     },
                     y: {
-                        min: 50,
-                        max: 100,
+                        min: 55,
+                        max: 110,
                         title: { display: true, text: 'Amplitude (dB)' }
                     }
                 },

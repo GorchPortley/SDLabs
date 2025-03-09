@@ -29,13 +29,13 @@
             data: {
                 datasets: [
                     ...@js($chartData),
-                    {
-                        label: 'Summed Response',
-                        data: @js($summedResponse),
-                        borderColor: '#000000',
-                        borderWidth: 2,
-                        fill: false
-                    }
+                    <!--{-->
+                    <!--    label: 'Summed Response',-->
+                    <!--    data: @js($summedResponse),-->
+                    <!--    borderColor: '#000000',-->
+                    <!--    borderWidth: 2,-->
+                    <!--    fill: false-->
+                    <!--}-->
                 ]
             },
             options: {
@@ -48,7 +48,7 @@
                         title: { display: true, text: 'Frequency (Hz)' }
                     },
                     y: {
-                        min: 50,
+                        min: 55,
                         max: 110,
                         title: { display: true, text: 'Amplitude (dB)' }
                     }
