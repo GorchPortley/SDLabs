@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
@@ -13,7 +14,7 @@ use Laravel\Scout\Searchable;
 
 class User extends WaveUser
 {
-    use Notifiable, HasProfileKeyValues, Searchable;
+    use Notifiable, HasProfileKeyValues, Searchable, HasFactory;
 
     public $guard_name = 'web';
 
