@@ -9,6 +9,7 @@
         "ext-exif": "*",
         "ext-gd": "*",
         "ext-zip": "*",
+        "algolia/algoliasearch-client-php": "^4.28",
         "awcodes/filament-tiptap-editor": "^3.4",
         "barryvdh/laravel-dompdf": "^3.0",
         "bezhansalleh/filament-google-analytics": "^2.0",
