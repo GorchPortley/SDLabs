@@ -11,6 +11,7 @@
 <p>If you have questions, please head to the Soap Box to read an introduction and some walkthroughs about what SDLabs.cc is about!</p>
     <p>feel free to email Adrian at admin@sdlabs.cc for any further questions or discussions!</p>
     <x-button tag="a" href="https://www.sdlabs.cc/blog/site-news/welcome-to-the-sdlabscc-beta">Read the introduction here</x-button>
+    <x-button tag="a" href="https://www.sdlabs.cc/blog/tutorials/how-to-use-sdlabscc">How to use SDLabs.cc</x-button>
     <x-button tag="a" href="https://www.sdlabs.cc/blog/">Browse the SoapBox!</x-button>
 </div>
     @endvolt

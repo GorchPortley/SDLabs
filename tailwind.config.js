@@ -29,18 +29,13 @@ export default {
         extend: {
             animation: {
                 'marquee': 'marquee 25s linear infinite',
-                'shimmer': 'shimmer 2s ease-in-out infinite'
             },
             keyframes: {
                 'marquee': {
                     from: { transform: 'translateX(0)' },
                     to: { transform: 'translateX(-100%)' },
-                },
-                shimmer: {
-                    '0%, 100%': { opacity: '1' },
-                    '50%': { opacity: '0.5' }
                 }
-            }
+            } 
         },
     },
 

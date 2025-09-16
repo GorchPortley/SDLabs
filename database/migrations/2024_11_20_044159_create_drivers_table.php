@@ -33,6 +33,7 @@ return new class extends Migration
             $table->json('impedance_files')->nullable();
             $table->json('other_files')->nullable();
             $table->boolean('official')->default(false);
+            $table->string('forum_slug')->nullable();
             $table->timestamps();
         });
     }

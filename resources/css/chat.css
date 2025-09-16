@@ -1,0 +1,113 @@
+/* Chat Component Styles */
+
+.chat-container {
+    height: 80vh;
+    min-height: 500px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Sidebar styles */
+.border-right {
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Messages container */
+#messages-container {
+    scroll-behavior: smooth;
+    padding-bottom: 15px;
+}
+
+/* Message bubbles */
+.message .rounded {
+    border-radius: 18px !important;
+    word-break: break-word;
+}
+
+.message.text-end .rounded {
+    border-top-right-radius: 4px !important;
+}
+
+.message:not(.text-end) .rounded {
+    border-top-left-radius: 4px !important;
+}
+
+/* Input area */
+.input-group .form-control {
+    border-radius: 20px;
+    padding-left: 15px;
+}
+
+.input-group .btn {
+    border-radius: 20px;
+    margin-left: 5px;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Attachment styling */
+label.input-group-text {
+    cursor: pointer;
+}
+
+.badge.bg-secondary {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    font-weight: normal;
+}
+
+/* User selection in new conversation modal */
+.list-group-item {
+    cursor: pointer;
+}
+
+.list-group-item:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* For smaller screens, make the layout stack */
+@media (max-width: 767.98px) {
+    .chat-container {
+        height: 100vh;
+        min-height: 100vh;
+        border-radius: 0;
+    }
+    
+    .row.h-100 {
+        flex-direction: column;
+    }
+    
+    .col-md-4, .col-md-8 {
+        height: auto !important;
+    }
+    
+    .col-md-4 {
+        height: 30vh !important;
+        overflow-y: auto;
+    }
+    
+    .col-md-8 {
+        height: 70vh !important;
+    }
+}

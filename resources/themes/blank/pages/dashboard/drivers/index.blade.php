@@ -103,18 +103,24 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                     ->form([
                         Toggle::make('active'),
                         TextInput::make('brand')
+                            ->required()
                             ->datalist(DB::table('drivers')->distinct()->orderBy('brand', 'asc')->pluck('brand')),
                         TextInput::make('model')
+                            ->required()
                             ->live(),
                         TextInput::make('tag'),
                         Select::make('category')
+                            ->required()
                             ->options(
                                 ['Subwoofer' => 'Subwoofer', 'Woofer' => 'Woofer', 'Tweeter' => 'Tweeter', 'Compression Driver' => 'Compression Driver', 'Exciter' => 'Exciter', 'Other' => 'Other']),
                         TextInput::make('size')
+                            ->required()
                             ->numeric(),
                         TextInput::make('impedance')
+                            ->required()
                             ->numeric(),
                         TextInput::make('power')
+                            ->required()
                             ->numeric(),
                         TextInput::make('price')
                             ->numeric(),
@@ -122,6 +128,7 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                             ->url(),
                         FileUpload::make('card_image')
                             ->label('Driver Image')
+                            ->multiple()
                             ->preserveFilenames()
                             ->directory('attachments'),
                         Section::make('Driver File Uploads')
@@ -186,12 +193,6 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                             ->keyLabel('Parameter')
                             ->valueLabel('Value'),
                     ])
-                    ->after(function () {
-                        Notification::make()
-                            ->success()
-                            ->title('Driver created')
-                            ->send();
-                    })
             ])
             ->columns([
                 ToggleColumn::make('active')
@@ -202,8 +203,7 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                     ->sortable(),
                 TextColumn::make('model')
                     ->searchable()
-                    ->sortable()
-                    ->description(fn(Driver $record): string => $record->tag),
+                    ->sortable(),
                 TextColumn::make('category')
                     ->searchable()
                     ->sortable(),
@@ -304,6 +304,7 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                         TextInput::make('link')
                             ->url(),
                         FileUpload::make('card_image')
+                            ->multiple()
                             ->label('Driver Image')
                             ->directory('attachments'),
                         Section::make('Driver File Uploads')

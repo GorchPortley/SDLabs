@@ -474,8 +474,6 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                     ->limit(50)
                     ->searchable(),
 
-                TextColumn::make('sales_count')->counts('sales'),
-
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

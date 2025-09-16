@@ -119,10 +119,50 @@ new class extends Component {
             <div class="space-y-8">
                 <!-- Top Section: Image and Details -->
                 <div class="lg:grid lg:grid-cols-2 lg:gap-8">
-                    <!-- Left: Image Section -->
-                    <div>
-                                <img src="/storage/{{$driver->card_image}}" class="w-full h-full object-contain" alt="{{$driver->brand}} - {{$driver->model}}">
-                        </div>
+                    <!-- Left: Image Carousel -->
+                    <div class="relative mb-6 lg:mb-0">
+            <div id="indicators-carousel" class="relative w-full" data-carousel="static">
+                <!-- Carousel wrapper - adjusting height and overflow -->
+                <div class="relative overflow-hidden rounded-lg aspect-square">
+                    <!-- Items - using aspect-ratio instead of fixed height -->
+                    @foreach ($driver->card_image as $image)
+                    <div class="hidden duration-700 ease-in-out w-full h-full" data-carousel-item="{{ $loop->first ? 'active' : '' }}">
+                        <img src="{{env('APP_URL')}}/storage/{{$image}}" 
+                             class="absolute block w-full h-full object-contain" 
+                             alt="Design image {{ $loop->iteration }}">
+                    </div>
+                    @endforeach
+                </div>
+                
+                <!-- Fixed carousel indicators - properly centered -->
+                <div class="absolute z-30 flex justify-center w-full space-x-3 bottom-5">
+                    @foreach ($driver->card_image as $image)
+                    <button type="button" class="w-3 h-3 invert rounded-full" 
+                            aria-current="{{ $loop->first ? 'true' : 'false' }}" 
+                            aria-label="Slide {{ $loop->iteration }}" 
+                            data-carousel-slide-to="{{ $loop->index }}"></button>
+                    @endforeach
+                </div>
+                
+                <!-- Slider controls -->
+                <button type="button" class="invert absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
+                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                        <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+                        </svg>
+                        <span class="sr-only">Previous</span>
+                    </span>
+                </button>
+                <button type="button" class="invert absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
+                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                        <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                        </svg>
+                        <span class="sr-only">Next</span>
+                    </span>
+                </button>
+            </div>
+        </div>
 
                     <!-- Right: Driver Info -->
                     <div class="space-y-6">
@@ -268,8 +308,18 @@ new class extends Component {
                         </div>
                     </div>
                 </div>
+
+                <!-- Discussion Section -->
+                <div class="border-t border-gray-200 pt-8">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Discussion
+                </h2>
+                 <div class="w-full h-auto min-h-[200px]"  id="tabpanelDiscussion" role="tabpanel" aria-label="discussion">
+                <iframe src="{{env('APP_URL')}}/forum/embed/{{ $driver->forum_slug }}" style="border: 0; width:100%; height: 800px; overflow: auto;" ></iframe>
+                </div>
+                </div>
             </div>
         </main>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     @endvolt
 </x-layouts.marketing>

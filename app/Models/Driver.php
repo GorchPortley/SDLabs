@@ -12,11 +12,24 @@ use Illuminate\Support\Facades\Storage;
 use RecursiveIteratorIterator;
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 use ZipArchive;
+use Laravel\Scout\Searchable;
 
 class Driver extends Model
 {
     /** @use HasFactory<\Database\Factories\DriverFactory> */
     use HasFactory;
+    use Searchable;
+
+    public function toSearchableArray()
+    {
+        return [
+            'id' => $this->id,
+            'brand' => $this->brand,
+            'model' => $this->model,
+            'active' => $this->active,
+            'tag' => $this->tag
+        ];
+    }
 
     protected $fillable = [
         'user_id',
@@ -37,7 +50,8 @@ class Driver extends Model
         'impedance_files',
         'other_files',
         'card_image',
-        'official'
+        'official',
+        'forum_slug'
     ];
     protected $casts = [
         'active' => 'boolean',
@@ -45,6 +59,7 @@ class Driver extends Model
         'frequency_files' => 'array',
         'impedance_files' => 'array',
         'other_files' => 'array',
+        'card_image' => 'array'
     ];
 
     public function creator(): BelongsTo

@@ -14,7 +14,7 @@ class DriverSeeder extends Seeder
     public function run(): void
     {
         Driver::factory()
-            ->count(100)
+            ->count(50)
             ->create();
     }
 }

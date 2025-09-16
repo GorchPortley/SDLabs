@@ -15,9 +15,7 @@ new class extends Component {
     {
         $query = Design::query()
             ->where('active', 1)
-            ->with(['designer', 'sales' => function($query) {
-                $query->where('user_id', auth()->id());
-            }]);
+            ->with('designer','reviews');
 
         // Filter by category
         if ($request->category) {
@@ -37,16 +35,11 @@ new class extends Component {
         $sortDirection = $request->direction ?? 'desc';
         $query->orderBy($sortField, $sortDirection);
 
-        // Get cart items
-        $user = auth()->user()?->load('cart.items');
-        $cartItems = $user?->cart?->items->pluck('design_id')->toArray() ?? [];
-
         // Get distinct categories for filter dropdown
         $categories = Design::distinct('category')->pluck('category');
 
         return [
             'designs' => $query->paginate(12),
-            'cartItems' => $cartItems,
             'categories' => $categories,
             'maxPrice' => ceil(Design::max('price'))
         ];
@@ -56,7 +49,7 @@ new class extends Component {
 <x-layouts.marketing>
     @volt('designs')
     <div>
-        <div class="flex h-full w-full bg-gray-300 rounded-md">
+        <div class="flex h-full w-full rounded-md">
             <livewire:banner-display location="design_page">
         </div>
         <div class="flex-row lg:flex w-full h-full mt-5">
@@ -131,9 +124,7 @@ new class extends Component {
 
             <div class="flex flex-col h-full w-full lg:w-4/5 rounded-md lg:pl-6">
                 <x-marketing.design-card-container
-                    :designs="$designs"
-                    :cartItems="$cartItems"
-                />
+                    :designs="$designs"/>
                 <div class="flex gap-4 justify-center mt-8">
                     {{ $designs->links() }}
                 </div>

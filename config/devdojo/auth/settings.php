@@ -4,7 +4,7 @@
  * These are some default authentication settings
  */
 return [
-    'redirect_after_auth' => '/dashboard',
+    'redirect_after_auth' => '/',
     'registration_show_password_same_screen' => true,
     'registration_include_name_field' => true,
     'registration_include_password_confirmation_field' => false,

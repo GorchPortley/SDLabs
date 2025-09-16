@@ -6,9 +6,9 @@
 return [
     'login' => [
         'page_title' => 'Sign in',
-        'headline' => 'Sign in',
-        'subheadline' => 'Login to your account below',
-        'show_subheadline' => false,
+        'headline' => 'SDLabs.cc Speaker Design Marketplace',
+        'subheadline' => 'Enter your Email Address below',
+        'show_subheadline' => true,
         'email_address' => 'Email Address',
         'password' => 'Password',
         'remember_me' => 'Remember me',
@@ -23,8 +23,8 @@ return [
     'register' => [
         'page_title' => 'Sign up',
         'headline' => 'Sign up',
-        'subheadline' => 'Register for your free account below.',
-        'show_subheadline' => false,
+        'subheadline' => 'Join Us!',
+        'show_subheadline' => true,
         'name' => 'Name',
         'email_address' => 'Email Address',
         'password' => 'Password',
@@ -53,7 +53,7 @@ return [
         'button' => 'Confirm password',
     ],
     'passwordResetRequest' => [
-        'page_title' => 'Request a Password Reset',
+        'page_title' => 'Forget Something?',
         'headline' => 'Reset password',
         'subheadline' => 'Enter your email below to reset your password',
         'show_subheadline' => false,
@@ -65,8 +65,8 @@ return [
     'passwordReset' => [
         'page_title' => 'Reset Your Password',
         'headline' => 'Reset Password',
-        'subheadline' => 'Reset your password below',
-        'show_subheadline' => false,
+        'subheadline' => 'It happens to the best of us...',
+        'show_subheadline' => true,
         'email' => 'Email Address',
         'password' => 'Password',
         'password_confirm' => 'Confirm Password',

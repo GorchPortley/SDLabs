@@ -7,8 +7,10 @@
             Discover, design, and bring your speaker ideas to life with SDLabs.
         </p>
         <x-button tag="a" class="animate-shimmer" href="https://www.sdlabs.cc/blog/site-news/welcome-to-the-sdlabscc-beta">Read an introduction</x-button>
+        <x-button tag="a" href="https://www.sdlabs.cc/blog/tutorials/how-to-use-sdlabscc">How to use SDLabs</x-button>
         <div class="flex flex-col sm:flex-row sm:space-x-3 sm:space-y-0 space-y-3 w-full mx-auto items-stretch lg:items-center justify-center">
             @auth
+                <x-button tag="a" href="{{route('dashboard')}}">Dashboard</x-button>
                 <x-button tag="a" href="{{route('designs')}}">Browse Designs</x-button>
                 <x-button tag="a" href="{{route('drivers')}}">Browse Drivers</x-button>
             @endauth

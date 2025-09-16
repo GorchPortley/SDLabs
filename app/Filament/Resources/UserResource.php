@@ -67,6 +67,8 @@ class UserResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('id')
+                ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('avatar')

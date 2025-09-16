@@ -7,22 +7,31 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
-
-
+use Laravel\Scout\Searchable;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Str;
 use RecursiveIteratorIterator;
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 use ZipArchive;
 use App\Models\DesignDriver;
+use Digikraaft\ReviewRating\Traits\HasReviewRating;
 
 class Design extends Model
 {
     /** @use HasFactory<\Database\Factories\DesignFactory> */
     use HasFactory;
+    use Searchable;
+    use HasReviewRating;
+
+    public function toSearchableArray()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'tag' => $this->tag,
+            'active' => $this->active
+        ];
+    }
 
     protected $fillable = [
         'user_id',
@@ -60,6 +69,7 @@ class Design extends Model
     {
         return $this->hasMany(DesignSnapshot::class);
     }
+    
     public function designer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -70,88 +80,10 @@ class Design extends Model
         return $this->hasMany(DesignDriver::class);
     }
 
-    public function sales(): hasMany
+    public function sales(): HasMany
     {
         return $this->hasMany(DesignPurchase::class)
             ->with('user');
-    }
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::created(function ($design) {
-            try {
-                $flarumUrl = env('FORUM_URL');
-                $forumEmail = auth()->user()->email;
-                $forumPassword = auth()->user()->getAuthPassword();
-
-                // First, get the authentication token
-                $tokenResponse = Http::withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json'
-                ])->post($flarumUrl . '/api/token', [
-                    'identification' => $forumEmail,
-                    'password' => $forumPassword
-                ]);
-
-                if (!$tokenResponse->successful()) {
-                    Log::error('Failed to obtain Flarum token', [
-                        'status' => $tokenResponse->status(),
-                        'body' => $tokenResponse->body()
-                    ]);
-                    return;
-                }
-
-                $token = $tokenResponse->json()['token'];
-
-                // Now create the discussion using the obtained token
-                $response = Http::withHeaders([
-                    'Authorization' => "Token {$token}",
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/vnd.api+json'
-                ])->post($flarumUrl . '/api/discussions', [
-                    'data' => [
-                        'type' => 'discussions',
-                        'attributes' => [
-                            'title' => $design->name,
-                            'content' => "New design posted: " . $design->summary . "View more at: " . env('APP_URL') . "/designs/design/" . $design->id],
-                        'relationships' => [
-                            'tags' => [
-                                'data' => [
-                                    [
-                                        'type' => 'tags',
-                                        'id' => '2'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ]);
-
-                if ($response->successful()) {
-                    $responseData = $response->json();
-                    $slug = $responseData['data']['attributes']['slug'] ?? null;
-
-                    if ($slug) {
-                        $design->forum_slug = $slug;
-                        $design->save();
-                    }
-                }
-
-                Log::info('Flarum API Response:', [
-                    'status' => $response->status(),
-                    'body' => $response->json()
-                ]);
-
-            } catch (\Exception $e) {
-                Log::error('Failed to create Flarum discussion:', [
-                    'error' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString(),
-                    'design_id' => $design->id
-                ]);
-            }
-        });
     }
 
     public function createDesignSnapshot(?Design $design, string $version)
@@ -215,7 +147,7 @@ class Design extends Model
                 "summary" => $design->summary,
                 "description" => $design->description,
                 "bom" => $design->bill_of_materials,
-                "forum_link" => "https://www.sdlabs.cc/forum/$design->forum_slug",
+                "forum_link" => env('APP_URL') . "forum/$design->forum_slug",
                 "components" => $design->components()->get()->map(function ($component) {
                     return [
                         'position' => $component->position,
@@ -251,10 +183,7 @@ class Design extends Model
 
     public function download(DesignSnapshot $snapshot)
     {
-
-
-        $file= public_path(). "/storage/". $snapshot->download_path;
-
-
-        return response()->download($file);}
+        $file = public_path() . "/storage/" . $snapshot->download_path;
+        return response()->download($file);
+    }
 }

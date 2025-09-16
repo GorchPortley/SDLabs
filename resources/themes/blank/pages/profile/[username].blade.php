@@ -50,7 +50,7 @@
                 <x-card class="p-10 lg:w-2/3 lg:flex-2 space-y-4">
                     <div><H1 class="text-2xl font-bold">Submitted Designs</H1></div>
                     @foreach($this->user->designs as $design)
-                        <a href="https://www.sdlabs.cc/designs/design/{{$design->id}}" class="block">
+                        <a href="{{env('APP_URL')}}/designs/design/{{$design->id}}" class="block">
                             <div class="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
                                 <div class="flex justify-between items-center">
                                     <h1 class="font-bold text-lg">{{$design->name}}</h1>

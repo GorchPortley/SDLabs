@@ -6,7 +6,7 @@
 @if(isset($seo->title))
     <title>{{ $seo->title }}</title>
 @else
-    <title>{{ setting('site.title', 'Laravel Wave') . ' - ' . setting('site.description', 'The Software as a Service Starter Kit built on Laravel & Voyager') }}</title>
+    <title>{{ setting('site.title', 'SDLabs.cc') . ' - ' . setting('site.description', 'The Speaker Design Marketplace') }}</title>
 @endif
 
 <meta charset="utf-8">
@@ -42,7 +42,7 @@
 @if(isset($seo->description))
     <meta name="description" content="{{ $seo->description }}">
 @endif
-
 @filamentStyles
 @vite(['resources/themes/blank/assets/css/app.css', 'resources/themes/blank/assets/js/app.js'])
 @livewireStyles
+<link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />

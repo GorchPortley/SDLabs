@@ -11,8 +11,8 @@
 
   gtag('config', 'G-D6528Z9ZYR');
 </script>
-
     @include('theme::partials.head', ['seo' => ($seo ?? null) ])
+
 </head>
 <body x-data class="flex min-h-screen overflow-x-hidden  bg-gray-100 min-h-sreen @if($bodyClass ?? false){{ $bodyClass }}@endif">
 
@@ -38,4 +38,5 @@
     {{ $javascript ?? '' }}
 
 </body>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
 </html>

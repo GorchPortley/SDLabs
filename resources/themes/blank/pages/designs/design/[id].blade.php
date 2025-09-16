@@ -9,32 +9,26 @@ name('design');
 
 new class extends Component {
     public Design $design;
-    public array $cartItems = [];
 
     public function mount(string $id)
     {
-        $user = auth()->user()?->load('cart.items');
-        $this->cartItems = collect($user?->cart?->items ?? [])->pluck('design_id')->toArray();
-
         $this->design = Design::with([
             'designer',
             'components.driver',
             'snapshots',
-            'sales' => fn($q) => $q->where('user_id', auth()->id())
         ])->findOrFail($id);
     }
 
     public function with(): array
     {
         return [
-            'cartItems' => $this->cartItems
         ];
     }
 } ?>
 
 <x-layouts.marketing>
     @volt('design')
-{{--    <div class="bg-zinc-200 h-dvh dark:text-white">--}}
+    <div class=" h-dvh dark:text-white">
         <main class="mx-auto overflow-auto flex-grow bg-white max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
             <!-- Breadcrumb -->
             <nav class="mb-6" aria-label="Breadcrumb">
@@ -44,119 +38,106 @@ new class extends Component {
                     <li class="text-gray-900">{{ $design->name }}</li>
                 </ol>
             </nav>
-
             <hr class="mb-8 border-t-2 border-gray-300">
-
             <!-- Content Container -->
             <div class="space-y-8">
-                <!-- Top Section: Image and Details -->
-                <div class="lg:grid lg:grid-cols-2 lg:gap-8">
-                    <div class="mb-6 lg:mb-0">
-                        <div x-data="{
-    currentIndex: 0,
-    images: {{ Js::from(is_array($design->card_image) ? $design->card_image : [$design->card_image]) }},
-
-    next() {
-        this.currentIndex = (this.currentIndex + 1) % this.images.length;
-    },
-    previous() {
-        this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
-    }
-}" class="relative aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
-                            <!-- Current image -->
-                            <template x-if="images.length > 0">
-                                <img
-                                    :src="`/storage/${images[currentIndex]}`"
-                                    :alt="`Image ${currentIndex + 1} of ${images.length}`"
-                                    class="w-full h-full object-contain"
-                                >
-                            </template>
-
-                            <!-- Navigation buttons - only show if there are multiple images -->
-                            <div x-show="images.length > 1"
-                                 class="absolute inset-0 flex items-center justify-between p-4">
-                                <!-- Previous -->
-                                <button
-                                    @click="previous()"
-                                    class="bg-black/50 text-white p-2 rounded-full hover:bg-black/70"
-                                >
-                                    ←
-                                </button>
-
-                                <!-- Next -->
-                                <button
-                                    @click="next()"
-                                    class="bg-black/50 text-white p-2 rounded-full hover:bg-black/70"
-                                >
-                                    →
-                                </button>
-                            </div>
-
-                            <!-- Image counter -->
-                            <div
-                                x-show="images.length > 1"
-                                class="absolute bottom-4 right-4 bg-black/50 text-white px-2 py-1 rounded text-sm"
-                            >
-                                <span x-text="`${currentIndex + 1} / ${images.length}`"></span>
-                            </div>
-                        </div>
+    <!-- Top Section: Image and Details -->
+    <div class="lg:grid lg:grid-cols-2 lg:gap-8">
+        <!-- Left: Image Carousel with improved sizing -->
+        <div class="relative mb-6 lg:mb-0">
+            <div id="indicators-carousel" class="relative w-full" data-carousel="static">
+                <!-- Carousel wrapper - adjusting height and overflow -->
+                <div class="relative overflow-hidden rounded-lg aspect-square">
+                    <!-- Items - using aspect-ratio instead of fixed height -->
+                    @foreach ($design->card_image as $image)
+                    <div class="hidden duration-700 ease-in-out w-full h-full" data-carousel-item="{{ $loop->first ? 'active' : '' }}">
+                        <img src="{{env('APP_URL')}}/storage/{{$image}}" 
+                             class="absolute block w-full h-full object-contain" 
+                             alt="Design image {{ $loop->iteration }}">
                     </div>
-
-                    <!-- Right: Design Info -->
-                    <div class="space-y-6">
-                        <!-- Title and Tag -->
-                        <div>
-                            <h1 class="text-3xl font-bold text-gray-900">{{ $design->name }}</h1>
-                            @if($design->tag)
-                                <p class="mt-2 text-lg text-gray-600 italic">{{ $design->tag }}</p>
-                            @endif
-                        </div>
-
-                        <!-- Designer Info -->
-                        <div>
-                            <p class="text-sm text-gray-500">Designed by</p><a href="https://www.sdlabs.cc/profile/{{$design->designer->username}}">
-                            <p class="text-lg font-medium text-gray-900">{{ $design->designer->name ?? 'Speaker Designer' }}</p>
-                            </a>
-                        </div>
-
-                        <!-- Specifications -->
-                        <div class="border-t border-gray-200 pt-6">
-                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Specifications</h2>
-                            <dl class="grid grid-cols-2 gap-x-6 gap-y-4">
-                                <div>
-                                    <dt class="text-sm text-gray-500">Power Handling</dt>
-                                    <dd class="mt-1 text-lg font-medium text-gray-900">{{ $design->power }}W</dd>
-                                </div>
-                                <div>
-                                    <dt class="text-sm text-gray-500">Impedance</dt>
-                                    <dd class="mt-1 text-lg font-medium text-gray-900">{{ $design->impedance }}Ω</dd>
-                                </div>
-                                <div>
-                                    <dt class="text-sm text-gray-500">Plans Price</dt>
-                                    <dd class="mt-1 text-lg font-medium text-gray-900">
-                                        ${{ number_format($design->price, 2) }}</dd>
-                                </div>
-                                <div>
-                                    <dt class="text-sm text-gray-500">Estimated Build Cost</dt>
-                                    <dd class="mt-1 text-lg font-medium text-gray-900">
-                                        ${{ number_format($design->build_cost, 2) }}</dd>
-                                </div>
-                                <div>
-                                    <dt class="text-sm text-gray-500">Category</dt>
-                                    <dd class="mt-1 text-lg font-medium text-gray-900">{{ $design->category }}</dd>
-                                </div>
-                                <div class="flex items-center">
-                                    <livewire:add-to-cart-button
-                                        :design="$design"
-                                        :isInCart="in_array($design->id, $cartItems)"
-                                        wire:key="cart-{{ $design->id }}"
-                                    />
-                                </div>
-                            </dl>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
-                <!-- Components Section - Now Collapsible -->
+                
+                <!-- Fixed carousel indicators - properly centered -->
+                <div class="absolute z-30 flex justify-center w-full space-x-3 bottom-5">
+                    @foreach ($design->card_image as $image)
+                    <button type="button" class="w-3 h-3 invert rounded-full" 
+                            aria-current="{{ $loop->first ? 'true' : 'false' }}" 
+                            aria-label="Slide {{ $loop->iteration }}" 
+                            data-carousel-slide-to="{{ $loop->index }}"></button>
+                    @endforeach
+                </div>
+                
+                <!-- Slider controls -->
+                <button type="button" class="invert absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
+                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                        <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+                        </svg>
+                        <span class="sr-only">Previous</span>
+                    </span>
+                </button>
+                <button type="button" class="invert absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
+                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                        <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                        </svg>
+                        <span class="sr-only">Next</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Right: Design Info -->
+        <div class="space-y-6">
+            <!-- Title and Tag -->
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">{{ $design->name }}</h1>
+                @if($design->tag)
+                    <p class="mt-2 text-lg text-gray-600 italic">{{ $design->tag }}</p>
+                @endif
+            </div>
+
+            <!-- Designer Info -->
+            <div>
+                <p class="text-sm text-gray-500">Designed by</p>
+                <a href="{{env('APP_URL')}}/profile/{{$design->designer->username}}">
+                    <p class="text-lg font-medium text-gray-900">{{ $design->designer->name ?? 'Speaker Designer' }}</p>
+                </a>
+            </div>
+
+            <!-- Specifications -->
+            <div class="border-t border-gray-200 pt-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Specifications</h2>
+                <dl class="grid grid-cols-2 gap-x-6 gap-y-4">
+                    <div>
+                        <dt class="text-sm text-gray-500">Power Handling</dt>
+                        <dd class="mt-1 text-lg font-medium text-gray-900">{{ $design->power }}W</dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm text-gray-500">Impedance</dt>
+                        <dd class="mt-1 text-lg font-medium text-gray-900">{{ $design->impedance }}Ω</dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm text-gray-500">Plans Price</dt>
+                        <dd class="mt-1 text-lg font-medium text-gray-900">
+                            ${{ number_format($design->price, 2) }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm text-gray-500">Estimated Build Cost</dt>
+                        <dd class="mt-1 text-lg font-medium text-gray-900">
+                            ${{ number_format($design->build_cost, 2) }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-sm text-gray-500">Category</dt>
+                        <dd class="mt-1 text-lg font-medium text-gray-900">{{ $design->category }}</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+                <!-- Components Section -->
                 @if($design->components->count() > 0)
                     <div x-data="{ isOpen: false }" class="border-t border-gray-200 pt-8">
                         <button @click="isOpen = !isOpen" class="flex items-center justify-between w-full text-xl font-semibold text-gray-900 pb-4 border-b-2 border-zinc-400">
@@ -268,11 +249,11 @@ new class extends Component {
                     </div>
                 @endif
                 <!-- Description Section -->
-{{--                <div class="border-t border-gray-200 pt-8">--}}
+                <div class="border-t border-gray-200 pt-8">
                     <livewire:design-description :design="$design"/>
-{{--                </div>--}}
+                                </div>
             </div>
         </main>
-{{--    </div>--}}
+    </div>
     @endvolt
 </x-layouts.marketing>

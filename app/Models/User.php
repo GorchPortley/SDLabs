@@ -9,10 +9,11 @@ use Maicol07\SSO\Flarum;
 use Wave\User as WaveUser;
 use Illuminate\Notifications\Notifiable;
 use Wave\Traits\HasProfileKeyValues;
+use Laravel\Scout\Searchable;
 
 class User extends WaveUser
 {
-    use Notifiable, HasProfileKeyValues;
+    use Notifiable, HasProfileKeyValues, Searchable;
 
     public $guard_name = 'web';
 
@@ -31,6 +32,7 @@ class User extends WaveUser
         'verification_code',
         'verified',
         'trial_ends_at',
+        'forum_password'
     ];
 
     /**
@@ -42,6 +44,16 @@ class User extends WaveUser
         'password',
         'remember_token',
     ];
+
+    public function toSearchableArray()
+{
+    return [
+        'id' => $this->id,
+        'username' => $this->username,
+        'name' => $this->name,
+        'email' => $this->email,
+    ];
+}
 
     protected static function boot()
     {
@@ -69,75 +81,8 @@ class User extends WaveUser
             // Assign the default role
             $user->assignRole( config('wave.default_user_role', 'registered') );
         });
-
-        // SSO Registration Handler
-        static::creating(function ($user) {
-            try {
-                $flarum = new Flarum([
-                        'url' => env('FORUM_URL'),
-                        'root_domain' => env('APP_URL'),
-                        'api_key' => env('FORUM_API_KEY'),
-                        'password_token' => env('FORUM_PASSWORD_TOKEN'),
-                        'remember' => true,
-                        'verify_ssl' => env('FORUM_VERIFY_SSL'),
-                    ]);
-
-                // Create user in Flarum
-                $flarum_user = $flarum->user($user->id);
-                $flarum_user->attributes->username = $user->username ?? $user->name;
-                $flarum_user->attributes->email = $user->email;
-                $flarum_user->attributes->password = $user->password;
-
-                $flarum_user->signup();
-                $flarum_user->login();
-            } catch (\Exception $e) {
-                \Log::error('Flarum SSO Registration Error: ' . $e->getMessage());
-            }
-        });
-
-        // SSO Login Handler
-        static::updated(function ($user) {
-            if ($user->wasChanged('password')) {
-                try {
-                    $flarum = new Flarum([
-                        'url' => 'https://www.sdlabs.cc/forum',
-                        'root_domain' => 'https://www.sdlabs.cc/',
-                        'api_key' => 'bidGs9^oX!9sNjvh@JhrKY$w*U$GzLeYc6WzkC3$',
-                        'password_token' => 'y6NcqNRRlbjkWG9Fm1xtszbktdyK6iRg',
-                        'remember' => true,
-                        'verify_ssl' => false,
-                    ]);
-
-                    // Update user password in Flarum
-                    $flarum_user = $flarum->user($user->email);
-                    $flarum_user->attributes->password = $user->password;
-                    $flarum_user->save();
-                } catch (\Exception $e) {
-                    \Log::error('Flarum SSO Password Update Error: ' . $e->getMessage());
-                }
-            }
-        });
-
-        // SSO Deletion Handler
-        static::deleting(function ($user) {
-            try {
-                $flarum = new Flarum([
-                        'url' => 'https://www.sdlabs.cc/forum',
-                        'root_domain' => 'https://www.sdlabs.cc/',
-                        'api_key' => 'bidGs9^oX!9sNjvh@JhrKY$w*U$GzLeYc6WzkC3$',
-                        'password_token' => 'y6NcqNRRlbjkWG9Fm1xtszbktdyK6iRg',
-                        'remember' => true,
-                        'verify_ssl' => false,
-                    ]);
-
-                // Delete user from Flarum
-                $flarum_user = $flarum->user($user->email);
-                $flarum_user->delete();
-            } catch (\Exception $e) {
-                \Log::error('Flarum SSO Deletion Error: ' . $e->getMessage());
-            }
-        });
     }
+
     public function designs(): HasMany
     {
         return $this->hasMany(Design::class);

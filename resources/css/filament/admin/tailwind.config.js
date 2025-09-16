@@ -9,7 +9,6 @@ export default {
         './resources/views/**/*.blade.php',
         './wave/resources/views/**/*.blade.php',
         './resources/views/filament/pages/*.blade.php',
-        './vendor/awcodes/filament-tiptap-editor/resources/**/*.blade.php',
         './app/Http/Middleware/WaveEditTab.php'
     ],
 }

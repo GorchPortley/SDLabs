@@ -8,7 +8,7 @@
         public function with(): array
         {
             return [
-                'posts' => \Wave\Post::orderBy('created_at', 'DESC')->paginate(6),
+                'posts' => \Wave\Post::where('STATUS', 'PUBLISHED')->orderBy('created_at', 'DESC')->paginate(6),
                 'categories' => \Wave\Category::all()
             ];
         }

@@ -2,7 +2,7 @@
 
 return [
     'direction' => 'ltr',
-    'max_content_width' => '9/12',
+    'max_content_width' => '12/12',
     'disable_stylesheet' => false,
     'disable_link_as_button' => false,
 
@@ -82,8 +82,8 @@ return [
     |--------------------------------------------------------------------------
     |
     */
-    'disable_floating_menus' => false,
-    'disable_bubble_menus' => false,
+    'disable_floating_menus' => true,
+    'disable_bubble_menus' => true,
     'disable_toolbar_menus' => false,
 
     'bubble_menu_tools' => ['bold', 'italic', 'strike', 'underline', 'superscript', 'subscript', 'lead', 'small', 'link'],

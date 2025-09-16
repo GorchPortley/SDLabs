@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 const themeFilePath = path.resolve(__dirname, 'theme.json');
-const activeTheme = fs.existsSync(themeFilePath) ? JSON.parse(fs.readFileSync(themeFilePath, 'utf8')).name : 'anchor';
+const activeTheme = fs.existsSync(themeFilePath) ? JSON.parse(fs.readFileSync(themeFilePath, 'utf8')).name : 'blank';
 console.log(`Active theme: ${activeTheme}`);
 
 export default defineConfig({

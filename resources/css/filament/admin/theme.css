@@ -1,6 +1,6 @@
 @import '/vendor/filament/filament/resources/css/theme.css';
 @import '/vendor/awcodes/filament-tiptap-editor/resources/css/plugin.css';
-/*
+/* 
 .fi-topbar nav{
     background:none !important;
     box-shadow:none !important;
@@ -65,7 +65,7 @@
 
 
 .fi-sidebar-header .fi-icon-btn{
-    width:40px;
+    width:40px; 
     height:40px;
     @apply rounded-lg -translate-x-2 translate-y-px;
 }
@@ -89,5 +89,6 @@
 .fi-sidebar-header .fi-icon-btn:hover::after {
     color: #ff0000; /* Hover color */
 }
+
 
 @config 'tailwind.config.js';
