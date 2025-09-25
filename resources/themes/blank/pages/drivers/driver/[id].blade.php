@@ -221,7 +221,7 @@ new class extends Component {
                         <button @click="isOpen = !isOpen"
                                 class="flex items-center justify-between w-full text-xl font-semibold text-gray-900 pb-4 border-b-2 border-zinc-400">
                             <span>Designs Using This Driver</span>
-                            <svg class="w-6 h-6 transition-transform" :class="{ 'rotate-180': !isOpen }" fill="none"
+                            <svg class="w-6 h-6 transition-transform" :class="{ 'rotate-90': isOpen }" fill="none"
                                  stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M19 9l-7 7-7-7"/>
@@ -264,15 +264,15 @@ new class extends Component {
                     <button @click="isOpen = !isOpen"
                             class="flex items-center justify-between w-full text-xl font-semibold text-gray-900 pb-4 border-b-2 border-zinc-400">
                         <span>Factory Data</span>
-                        <svg class="w-6 h-6 transition-transform" :class="{ 'rotate-180': !isOpen }" fill="none"
+                        <svg class="w-6 h-6 transition-transform" :class="{ 'rotate-90': isOpen }" fill="none"
                              stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
                     <div x-show="isOpen" class="border-t border-gray-200 pt-8">
-                        <livewire:DriverFrequencyResponseViewer :driver="$driver"></livewire:DriverFrequencyResponseViewer>
                         <div>
+                                                    <livewire:DriverFrequencyResponseViewer :driver="$driver"></livewire:DriverFrequencyResponseViewer>
                             <span class="text-xl justify-center font-semibold text-gray-900">T/S Parameters</span>
                         <dl class="grid grid-cols-2 gap-4 mx-20">
                             @foreach($driver->factory_specs as $key => $value)
@@ -292,7 +292,7 @@ new class extends Component {
                         <br>
                         <div>
                             <a href="{{ route('driver-snapshots.download', $snapshot->id) }}" class="button">
-                                <span>{{$snapshot->snapshot_name}}</span>
+                                <span class="text-gray-900">{{$snapshot->snapshot_name}}</span>
                                 <i class="ph ph-download-simple"></i>
                             </a>
                         </div>

@@ -102,7 +102,7 @@ new class extends Component {
             <div>
                 <p class="text-sm text-gray-500">Designed by</p>
                 <a href="{{env('APP_URL')}}/profile/{{$design->designer->username}}">
-                    <p class="text-lg font-medium text-gray-900">{{ $design->designer->name ?? 'Speaker Designer' }}</p>
+                    <p class="text-lg font-medium text-gray-900 hover:text-blue-400">{{ $design->designer->name ?? 'Speaker Designer' }}</p>
                 </a>
             </div>
 
@@ -139,12 +139,12 @@ new class extends Component {
 </div>
                 <!-- Components Section -->
                 @if($design->components->count() > 0)
-                    <div x-data="{ isOpen: false }" class="border-t border-gray-200 pt-8">
+                    <div x-data="{ isOpen: true }" class="border-t border-gray-200 pt-8">
                         <button @click="isOpen = !isOpen" class="flex items-center justify-between w-full text-xl font-semibold text-gray-900 pb-4 border-b-2 border-zinc-400">
                             <span>File Overview</span>
                             <svg
                                 class="w-6 h-6 transition-transform"
-                                :class="{ 'rotate-180': !isOpen }"
+                                :class="{ 'rotate-90': isOpen }"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -164,7 +164,7 @@ new class extends Component {
                             class="divide-y divide-gray-200"
                         >
                             <div class="w-full my-4 gap-4">
-                                <dl class="space-y-1">
+                                <dl class="space-y-1 text-gray-900">
                                     <div class="flex justify-between">
                                         <dt class="">Design Enclosure Files:</dt>
                                         <dd>{{ json_decode(count($design->enclosure_files)) }}</dd>
@@ -192,13 +192,21 @@ new class extends Component {
                             class="transform transition-transform duration-200"
                             :class="{ 'rotate-90': showDetails }"
                         >
-                            →
+                                                        <svg
+                                class="w-6 h-6 transition-transform"
+                                :class="{ 'rotate-180': isOpen }"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
                         </span>
                                                     <h4 class="text-lg font-medium text-gray-900">
                                                         {{$component->driver->brand}} - {{$component->driver->model}}
                                                     </h4>
                                                 </div>
-                                                <div class="mt-1 flex items-center space-x-4 text-sm text-gray-500">
+                                                <div class="mt-1 flex items-center space-x-4 text-sm text-gray-900">
                                                     <span>{{$component->position}}</span>
                                                     <span>•</span>
                                                     <span>{{$component->driver->size}}</span>
@@ -230,15 +238,15 @@ new class extends Component {
                                             <dl class="space-y-1">
                                                 <div class="flex justify-between">
                                                     <dt class="text-gray-600">Frequency Files:</dt>
-                                                    <dd>{{ json_decode(count($component->frequency_files)) }}</dd>
+                                                    <dd class="text-gray-900">{{ json_decode(count($component->frequency_files)) }}</dd>
                                                 </div>
                                                 <div class="flex justify-between">
                                                     <dt class="text-gray-600">Impedance Files:</dt>
-                                                    <dd>{{ json_decode(count($component->impedance_files))}}</dd>
+                                                    <dd class="text-gray-900">{{ json_decode(count($component->impedance_files))}}</dd>
                                                 </div>
                                                 <div class="flex justify-between">
                                                     <dt class="text-gray-600">Other Files:</dt>
-                                                    <dd>{{ json_decode(count($component->other_files))}}</dd>
+                                                    <dd class="text-gray-900">{{ json_decode(count($component->other_files))}}</dd>
                                                 </div>
                                             </dl>
                                         </div>
