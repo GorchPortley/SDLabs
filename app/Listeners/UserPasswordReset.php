@@ -28,8 +28,8 @@ class UserPasswordReset
         // First, find the Flarum user ID by email
         $userLookup = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'Authorization' => 'Token ' . env('API_KEY') . '; userId=1'
-        ])->get(env('FLARUM_HOST') . '/api/users', [
+            'Authorization' => 'Token ' . config('forum.api') . '; userId=1'
+        ])->get(config('forum.host') . '/api/users', [
             'filter' => [
                 'email' => $user->email
             ]
@@ -47,8 +47,8 @@ class UserPasswordReset
         // Now change the password
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'Authorization' => 'Token ' . env('API_KEY') . '; userId=1'
-        ])->post(env('FLARUM_HOST') . "/api/users/{$flarumUserId}/changePassword", [
+            'Authorization' => 'Token ' . config('forum.api') . '; userId=1'
+        ])->post(config('forum.host') . "/api/users/{$flarumUserId}/changePassword", [
             'data' => [
                 'type' => 'users',
                 'id' => $flarumUserId,

@@ -59,7 +59,7 @@ class UserLoggedIn
     public function loginUser($token, Login $event)
     {
         $user = $event->user;
-        $endpoint = env('FLARUM_HOST') . '/login';
+        $endpoint = config('forum.host') . '/login';
         
         Log::info('Attempting to login user to Flarum', [
             'user_id' => $user->id,
@@ -103,7 +103,7 @@ class UserLoggedIn
         $user->forum_password = $randomPassword;
         $user->save();
         
-        $endpoint = env('FLARUM_HOST') . '/api/users';
+        $endpoint = config('forum.host') . '/api/users';
         $payload = [
             'data' => [
                 'type' => 'users',
@@ -126,7 +126,7 @@ class UserLoggedIn
         try {
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
-                'Authorization' => 'Token ' . env('API_KEY') . '; userId=1'
+                'Authorization' => 'Token ' . config('forum.api') . '; userId=1'
             ])->post($endpoint, $payload);
             
             if ($response->successful()) {
@@ -160,7 +160,7 @@ class UserLoggedIn
     public function getToken(Login $event)
     {
         $user = $event->user;
-        $endpoint = env('FLARUM_HOST') . '/api/token';
+        $endpoint = config('forum.host') . '/api/token';
         $payload = [
             'identification' => $user->email,
             'password' => $user->forum_password,

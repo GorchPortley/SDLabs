@@ -35,8 +35,8 @@ class UserCreated
         
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'Authorization' => 'Token ' . env('API_KEY') . '; userId=1'
-        ])->post(env('FLARUM_HOST') . '/api/users', [
+            'Authorization' => 'Token ' . config('forum.api') . '; userId=1'
+        ])->post(config('forum.host') . '/api/users', [
             'data' => [
                 'type' => 'users',
                 'attributes' => [
