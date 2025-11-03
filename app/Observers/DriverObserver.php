@@ -21,7 +21,7 @@ class DriverObserver
                 $tokenResponse = Http::withHeaders([
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/json'
-                ])->post(env('APP_URL') . '/forum/api/token', [
+                ])->post(config('forum.root') . '/forum/api/token', [
                     'identification' => $forumEmail,
                     'password' => $forumPassword
                 ]);
@@ -41,12 +41,12 @@ class DriverObserver
                     'Authorization' => "Token {$token}",
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/vnd.api+json'
-                ])->post(env('APP_URL') . '/forum/api/discussions', [
+                ])->post(config('forum.root') . '/forum/api/discussions', [
                     'data' => [
                         'type' => 'discussions',
                         'attributes' => [
                             'title' => $driver->model,
-                            'content' => "New Driver posted: " . $driver->model . "View more at: " . env('APP_URL') . "/drivers/driver/" . $driver->id
+                            'content' => "New Driver posted: " . $driver->model . "View more at: " . config('forum.root') . "/drivers/driver/" . $driver->id
                         ],
                         'relationships' => [
                             'tags' => [

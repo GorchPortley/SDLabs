@@ -29,7 +29,7 @@ class DesignObserver
             $tokenResponse = Http::withHeaders([
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json'
-            ])->post(env('APP_URL') . '/forum/api/token', [
+            ])->post(config('forum.root') . '/forum/api/token', [
                 'identification' => $forumEmail,
                 'password' => $forumPassword
             ]);
@@ -49,12 +49,12 @@ class DesignObserver
                 'Authorization' => "Token {$token}",
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/vnd.api+json'
-            ])->post(env('APP_URL') . '/forum/api/discussions', [
+            ])->post(config('forum.root') . '/forum/api/discussions', [
                 'data' => [
                     'type' => 'discussions',
                     'attributes' => [
                         'title' => $design->name,
-                        'content' => "New design posted: " . $design->summary . "View more at: " . env('APP_URL') . "/designs/design/" . $design->id
+                        'content' => "New design posted: " . $design->summary . "View more at: " . config('forum.root') . "/designs/design/" . $design->id
                     ],
                     'relationships' => [
                         'tags' => [
