@@ -583,7 +583,8 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                                             ->Directory('attachments')
                                             ->extraInputAttributes(['style' => 'min-height: 12rem;']),
                                         KeyValue::make('bill_of_materials')
-                                            ->hint('The BOM of your design'),
+                                            ->hint('The BOM of your design')
+                                            ->live(),
                                         Section::make('Design File Uploads')
                                             ->description('Upload your design files here')
                                             ->collapsible()

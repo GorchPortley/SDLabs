@@ -133,7 +133,7 @@
             <div>
                 <div class="w-full">
                     @foreach($design->components as $component)
-                    <div x-data="{ isOpen: false }" class="border-t border-gray-200 pt-8">
+                    <div x-data="{ isOpen: true }" class="border-t border-gray-200 pt-8">
                         <button @click="isOpen = !isOpen" class="flex items-center justify-between w-full text-xl font-semibold text-gray-900 pb-4 border-b-2 border-zinc-400">
                             <span>
                                 {{$component->driver->brand}} - {{$component->driver->model}}
