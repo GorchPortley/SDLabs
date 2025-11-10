@@ -62,7 +62,6 @@ new class extends Component {
                             <select name="sort" class="w-1/2 rounded-md border-gray-300">
                                 <option value="created_at" {{ request('sort') === 'created_at' ? 'selected' : '' }}>Date</option>
                                 <option value="price" {{ request('sort') === 'price' ? 'selected' : '' }}>Price</option>
-                                <option value="title" {{ request('sort') === 'title' ? 'selected' : '' }}>Name</option>
                             </select>
                             <select name="direction" class="w-1/2 rounded-md border-gray-300">
                                 <option value="asc" {{ request('direction') === 'asc' ? 'selected' : '' }}>Ascending</option>

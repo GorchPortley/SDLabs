@@ -34,6 +34,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use function Laravel\Folio\{middleware, name};
 use Illuminate\Support\Collection;
 use App\Exports\SpecificationsExport;
+use App\Enums\DriverCategoryEnum;
 
 middleware('auth');
 name('dashboard.drivers');
@@ -111,8 +112,9 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                         TextInput::make('tag'),
                         Select::make('category')
                             ->required()
-                            ->options(
-                                ['Subwoofer' => 'Subwoofer', 'Woofer' => 'Woofer', 'Tweeter' => 'Tweeter', 'Compression Driver' => 'Compression Driver', 'Exciter' => 'Exciter', 'Other' => 'Other']),
+                            ->options(collect(DriverCategoryEnum::cases())->mapWithKeys(fn ($case) => [
+                                $case->name => $case->value,
+                            ])->toArray()),
                         TextInput::make('size')
                             ->required()
                             ->numeric(),
@@ -291,8 +293,9 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
                             ->live(),
                         TextInput::make('tag'),
                         Select::make('category')
-                            ->options(
-                                ['Subwoofer' => 'Subwoofer', 'Woofer' => 'Woofer', 'Tweeter' => 'Tweeter', 'Compression Driver' => 'Compression Driver', 'Exciter' => 'Exciter', 'Other' => 'Other']),
+                            ->options(collect(DriverCategoryEnum::cases())->mapWithKeys(fn ($case) => [
+                                $case->name => $case->value,
+                            ])->toArray()),                            
                         TextInput::make('size')
                             ->numeric(),
                         TextInput::make('impedance')

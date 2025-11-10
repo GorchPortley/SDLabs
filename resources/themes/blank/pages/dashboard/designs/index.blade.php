@@ -4,6 +4,7 @@
 use App\Models\Design;
 use App\Models\Driver;
 use App\Models\DesignDriver;
+use App\Enums\DesignCategoryEnum;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
@@ -258,9 +259,9 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
 
                                 Select::make('category')
                                     ->hint('What type of speaker is your design?')
-                                    ->options(['Subwoofer' => 'Subwoofer', 'Full-Range' => 'Full-Range', 'Two-Way' => 'Two-Way'
-                                        , 'Three-Way' => 'Three-Way', 'Four-Way+' => 'Four-Way+', 'Portable' => 'Portable', 'Esoteric' => 'Esoteric']),
-
+                                    ->options(collect(DesignCategoryEnum::cases())->mapWithKeys(fn ($case) => [
+                                        $case->name => $case->value,
+                                    ])->toArray()),
                                 TextInput::make('price')
                                     ->disabled()
                                     ->helperText('Marketplace functionality disabled for beta')
@@ -546,9 +547,9 @@ new class extends Component implements HasForms, Tables\Contracts\HasTable {
 
                                 Select::make('category')
                                     ->hint('What type of speaker is your design?')
-                                    ->options(['Subwoofer' => 'Subwoofer', 'Full-Range' => 'Full-Range', 'Two-Way' => 'Two-Way'
-                                        , 'Three-Way' => 'Three-Way', 'Four-Way+' => 'Four-Way+', 'Portable' => 'Portable', 'Esoteric' => 'Esoteric']),
-
+                                    ->options(collect(DesignCategoryEnum::cases())->mapWithKeys(fn ($case) => [
+                                        $case->name => $case->value,
+                                    ])->toArray()),
                                 TextInput::make('price')
                                     ->disabled()
                                     ->helperText('Marketplace functionality disabled for beta')
